@@ -1,8 +1,8 @@
 ---
 layout: page
-permalink: /archive/
-title: archive
-description: Materials for courses you taught. Replace this text with your description.
+permalink: /site-fighters/
+title: Site-Fighters
+description: Help me train Prismo!
 nav: true
 nav_order: 5
 ---

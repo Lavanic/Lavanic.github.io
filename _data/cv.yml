@@ -11,9 +11,9 @@
 - title: Education
   type: time_table
   contents:
-    - title: PhD
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1905
+    - title: Bachelor of Science - BS, Computer Science
+      institution: University of Minnesota College of Science and Engineering
+      year: 2027
       description:
         - Description 1.
         - Description 2.
@@ -23,7 +23,7 @@
             - Sub-description 2.
     - title: Federal teaching diploma
       institution: Eidgenössische Technische Hochschule, Zurich, Switzerland
-      year: 1900
+      year: 2023
       description:
         - Description 1.
         - Description 2.
