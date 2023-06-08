@@ -205,6 +205,10 @@ kramdown:
 # Includes & excludes
 include: ["_pages"]
 exclude:
+  - "*.unityweb"
+  - "*.data"
+  - "*.framework.js"
+  - "*.wasm"
   - bin
   - Gemfile
   - Gemfile.lock
