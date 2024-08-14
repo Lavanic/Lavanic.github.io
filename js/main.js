@@ -9,19 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
   resizeCanvas();
 
   const entities = [];
-  const entityCount = 100;
+  const entityCount = 50;
   const entityColors = ["#FFFFFF", "#E48DED", "#87CEEB"];
 
   class Entity {
     constructor() {
-      this.size = Math.random() * 10 + 7; // Size range between 4 and 10 pixels
+      this.size = Math.random() * 15 + 15; // Size range between 7 and 17 pixels
       this.x = Math.random() * canvas.width; // Random initial x position
       this.y = Math.random() * canvas.height; // Random initial y position
       this.angle = Math.atan2(
         this.y - canvas.height / 2,
         this.x - canvas.width / 2
       );
-      const speed = Math.random() * 0.1 + 0.1; // Slower speed range between 0.1 and 0.4
+      const speed = Math.random() * 0.1 + 0.1; // Slower speed range between 0.1 and 0.2
       this.dx = Math.cos(this.angle) * speed;
       this.dy = Math.sin(this.angle) * speed;
       this.color =
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
       this.x += this.dx;
       this.y += this.dy;
 
-      // Ensure opacity reaches maximum
       if (this.opacity < this.maxOpacity) {
         this.opacity += this.fadeInRate;
       }
@@ -54,14 +53,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     reset() {
-      this.size = Math.random() * 6 + 4; // Size range between 4 and 10 pixels
+      this.size = Math.random() * 10 + 7; // Size range between 7 and 17 pixels
       this.x = Math.random() * canvas.width; // Respawn at a random position
       this.y = Math.random() * canvas.height; // Respawn at a random position
       this.angle = Math.atan2(
         this.y - canvas.height / 2,
         this.x - canvas.width / 2
       );
-      const speed = Math.random() * 0.3 + 0.1; // Slower speed range between 0.1 and 0.4
+      const speed = Math.random() * 0.1 + 0.1; // Slower speed range between 0.1 and 0.2
       this.dx = Math.cos(this.angle) * speed;
       this.dy = Math.sin(this.angle) * speed;
       this.opacity = 0;
