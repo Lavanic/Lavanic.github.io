@@ -1,0 +1,76 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Courier New", monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom, #2a2c31, #3a3a3f 49.5%, #2a2c31);
+  background-attachment: fixed;
+  overflow: hidden;
+}
+
+#starCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  position: relative;
+}
+
+.content-block {
+  width: 80%;
+  max-width: 800px;
+  height: 80vh;
+  background-color: #28282f;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.border-pattern {
+  height: 20px;
+  background-color: #28282f;
+  position: relative;
+  overflow: hidden;
+}
+
+.border-pattern::before {
+  content: "----------------------------------------------------------------------------";
+  color: white;
+  font-size: 24px;
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .content-block {
+    width: 90%;
+    height: 85vh;
+  }
+
+  .border-pattern::before {
+    font-size: 18px;
+  }
+}
