@@ -25,36 +25,106 @@ body {
 header {
   width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   height: 100vh;
-  padding-top: 0vh; /* Logo position from top */
+  padding-top: 0vh; /* Adjusted to accommodate buttons */
 }
 
 .logo {
   max-width: 700px;
   width: 300%;
   height: auto;
+  margin-bottom: 2rem;
 }
 
-/* Responsive design */
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nav-btn {
+  background-color: #353535;
+  border: 2px solid #8d8485;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: bobbing 2s ease-in-out infinite;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.nav-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+  background-color: #454545;
+}
+
+@keyframes bobbing {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Steel effect */
+.nav-btn::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #8d8485, #353535);
+  z-index: -1;
+  filter: blur(5px);
+  opacity: 0.7;
+  border-radius: 17px;
+}
+
+/* Responsive adjustments */
 @media screen and (max-width: 768px) {
   header {
-    padding-top: 20vh; /* Adjust for mobile screens */
+    padding-top: 10vh;
   }
 
   .logo {
-    max-width: 200px; /* Smaller logo for mobile screens */
+    max-width: 200px;
+    margin-bottom: 1.5rem;
+  }
+
+  .nav-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
   }
 }
 
-/* For very small screens */
 @media screen and (max-width: 480px) {
   header {
-    padding-top: 15vh;
+    padding-top: 5vh;
   }
 
   .logo {
     max-width: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .nav-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: center;
   }
 }
