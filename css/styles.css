@@ -4,15 +4,20 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   font-family: "Courier New", monospace;
-  height: 100vh; /* Changed from min-height to height */
   display: flex;
   justify-content: center;
   align-items: center;
   background: linear-gradient(to bottom, #2a2c31, #3a3a3f 49.5%, #2a2c31);
   background-attachment: fixed;
-  overflow: hidden;
 }
 
 #starCanvas {
@@ -56,8 +61,8 @@ main {
 
 .border-pattern::before {
   content: "----------------------------------------------------------------------------";
-  color: rgba(255, 255, 255, 0.801);
-  font-size: 20px;
+  color: white;
+  font-size: 24px;
   position: absolute;
   width: 100%;
   text-align: center;
