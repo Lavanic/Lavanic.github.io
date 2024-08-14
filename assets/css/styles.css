@@ -8,29 +8,53 @@
 html,
 body {
   height: 100%;
+  width: 100%;
   font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: url("../images/background.png") no-repeat center center fixed;
-  background-size: cover;
   overflow: hidden;
 }
 
-.content {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  z-index: 1;
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: url("../images/backdrop.jpg") no-repeat center center fixed;
+  background-size: cover;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  padding-top: 0vh; /* Logo position from top */
 }
 
-p {
-  font-size: 1rem;
+.logo {
+  max-width: 700px;
+  width: 300%;
+  height: auto;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  header {
+    padding-top: 20vh; /* Adjust for mobile screens */
+  }
+
+  .logo {
+    max-width: 200px; /* Smaller logo for mobile screens */
+  }
+}
+
+/* For very small screens */
+@media screen and (max-width: 480px) {
+  header {
+    padding-top: 15vh;
+  }
+
+  .logo {
+    max-width: 150px;
+  }
 }
