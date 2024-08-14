@@ -69,10 +69,11 @@ main {
   overflow: hidden;
 }
 
+/* Adjustments for mobile devices */
 @media (max-width: 768px) {
   .content-block {
-    width: 90%;
-    height: 85vh;
+    width: 60%; /* Reduce width to 60% of the viewport */
+    height: 55vh; /* Reduce height to 55% of the viewport height */
   }
 
   .border-pattern::before {
