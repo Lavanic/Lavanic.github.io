@@ -386,11 +386,6 @@ main {
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
-  .nav-btn {
-    width: 80px;
-    height: 80px;
-  }
-
   .btn-gif {
     width: 40px;
     height: 40px;
@@ -404,6 +399,8 @@ main {
     order: -1;
     margin-bottom: 1rem;
     flex: 0 0 auto;
+    width: 1vw;
+    height: auto;
   }
 
   .personal-image {
@@ -411,7 +408,7 @@ main {
   }
 
   .about-text {
-    max-height: 50vh;
+    max-height: 30vh;
     overflow-y: auto;
   }
 
