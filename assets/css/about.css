@@ -1,25 +1,32 @@
 /* assets/css/about.css */
 .content-section {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .about-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  gap: 0px;
+  gap: 20px;
+  height: 100%;
 }
 
 .about-text {
-  flex: 1;
-  text-align: left;
+  flex: 2;
+  overflow-y: auto;
   padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .about-image {
@@ -28,14 +35,15 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  max-width: 300px;
 }
 
 .about-image img {
   width: 100%;
-  max-width: 300px;
   height: auto;
   border-radius: 10px;
   margin-bottom: 10px;
+  object-fit: cover;
 }
 
 .resume-button {
@@ -47,18 +55,83 @@
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 10px;
+  max-width: 100%;
 }
 
-@media (min-width: 768px) {
+@media screen and (max-width: 768px) {
+  .content-section {
+    flex-direction: column;
+    padding: 10px;
+  }
+
   .about-container {
     flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .about-text,
+  .about-image {
+    flex: 1;
   }
 
   .about-text {
-    flex: 2;
+    padding-right: 10px;
   }
 
   .about-image {
+    max-width: 50%;
+    margin-left: 10px;
+  }
+
+  .about-text h2 {
+    font-size: 1.5rem;
+  }
+
+  .about-text p {
+    font-size: 1rem;
+  }
+
+  .resume-button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .about-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: auto;
+  }
+
+  .about-text,
+  .about-image {
     flex: 1;
+  }
+
+  .about-text {
+    font-size: 0.9rem;
+    padding-right: 10px;
+  }
+
+  .about-image {
+    max-width: 45%;
+    margin-left: 10px;
+  }
+
+  .about-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .resume-button {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }
