@@ -30,7 +30,7 @@ header {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 9vh 0;
+  padding: 3vh 0;
 }
 
 .logo {
@@ -38,13 +38,14 @@ header {
   height: 25vh;
   object-fit: contain;
   opacity: 90%;
-  margin-bottom: 2vh;
+  margin-bottom: 3vh;
+  margin-top: 2vh;
 }
 
 nav {
   display: flex;
   justify-content: center;
-  gap: 0.5vw;
+  gap: 1.5vw;
   flex-wrap: wrap;
   width: 100%;
 }
@@ -60,8 +61,8 @@ nav {
   transition: all 0.3s ease;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  width: 90px;
-  height: 100px;
+  width: 100px;
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,7 +124,6 @@ main {
   height: 100%;
   background-color: #2b283e;
   border-radius: 12px;
-  padding: 20px;
   color: #ffffff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -218,7 +218,7 @@ main {
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   header {
-    padding: 2vh 0;
+    padding: 1vh 0;
     justify-content: flex-start;
   }
 

@@ -1,33 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll(".nav-btn");
   const contentContainer = document.getElementById("content-container");
-  const contentSections = document.querySelectorAll(".content-section");
-  let isInitialLoad = true;
+
+  async function loadContent(page) {
+    try {
+      const response = await fetch(`./assets/pages/${page}.html`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const content = await response.text();
+      contentContainer.innerHTML = content;
+      contentContainer.style.opacity = 1;
+    } catch (e) {
+      console.error("Error loading content:", e);
+      contentContainer.innerHTML =
+        "<p>Error loading content. Please try again later.</p>";
+    }
+  }
 
   function toggleContent(targetId) {
-    const targetSection = document.getElementById(targetId);
-
-    if (targetSection.classList.contains("active") && !isInitialLoad) {
-      // If clicking the same button, hide the content
-      contentContainer.classList.add("hidden");
-      setTimeout(() => {
-        contentContainer.style.display = "none";
-        targetSection.classList.remove("active");
-      }, 300); // Match this duration with the CSS transition
+    if (contentContainer.dataset.currentPage === targetId) {
+      contentContainer.style.opacity = 0;
+      contentContainer.dataset.currentPage = "";
     } else {
-      // Show the content and activate the correct section
-      contentContainer.style.display = "block";
-      setTimeout(() => {
-        contentContainer.classList.remove("hidden");
-      }, 0);
-
-      contentSections.forEach((section) => {
-        section.classList.remove("active");
-      });
-      targetSection.classList.add("active");
+      loadContent(targetId);
+      contentContainer.dataset.currentPage = targetId;
     }
-
-    isInitialLoad = false;
   }
 
   buttons.forEach((button) => {
@@ -39,6 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Show About section by default
-  toggleContent("about");
+  // Load About page by default
+  loadContent("about");
 });
