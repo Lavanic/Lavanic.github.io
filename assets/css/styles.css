@@ -5,8 +5,15 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: Arial, sans-serif;
+  background-color: #171429; /* Set default background color */
   background-image: url("../images/background.jpg");
   background-size: cover;
   background-position: center;
@@ -41,3 +48,8 @@ header {
     width: 70vw;
   }
 }
+
+/* To change the background image, replace 'background.jpg' with your new image file name */
+
+/* To change the default background color, modify this hex code */
+/* body { background-color: #171429; } */
