@@ -14,33 +14,7 @@ body {
   position: fixed;
   background: url("../images/background.jpg") no-repeat center center fixed;
   background-size: cover;
-}
-.content-section h3 {
-  font-size: 1.5em;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #4ecdc4; /* Different accent color for subheadings */
-}
-
-.content-section p {
-  font-size: 1em;
-  line-height: 1.6;
-  margin-bottom: 15px;
-}
-
-/* Ensure text is visible and styled within the content area */
-#content-container * {
-  color: #ffffff;
-}
-
-#content-container {
-  padding: 20px;
-  color: #ffffff;
-}
-
-.content-section {
-  display: block;
-  opacity: 1;
+  background-color: #292739; /* Default background color */
 }
 
 body {
@@ -48,7 +22,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #292739; /* Default background color */
 }
 
 header {
@@ -57,7 +30,7 @@ header {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  padding: 3vh 0;
+  padding: 2vh 0;
 }
 
 .logo {
@@ -80,7 +53,7 @@ nav {
 .nav-btn {
   background-color: #2b283e;
   color: #fff;
-  border: 1px solid #1e1e1e;
+  border: 2px solid #464157;
   padding: 10px;
   border-radius: 12px;
   font-size: 0.9rem;
@@ -98,6 +71,12 @@ nav {
   overflow: visible;
   animation: buttonEnter 0.5s ease-out backwards,
     bobbing 2s ease-in-out infinite;
+}
+
+.nav-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  background-color: #2b283eb3;
 }
 
 /* Screw effect for buttons */
@@ -138,7 +117,7 @@ nav {
 
 main {
   width: 60vw;
-  height: 90vh;
+  height: 50vh; /* Adjusted to be static */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -150,12 +129,18 @@ main {
   max-width: 620px;
   height: 100%;
   background-color: #2b283e;
+  border: 2px solid #464157;
   border-radius: 12px;
   color: #ffffff;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   transition: opacity 0.3s ease-in-out;
   overflow-y: auto;
+  margin-bottom: 50vh;
+
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 #content-container::before,
@@ -169,8 +154,8 @@ main {
   background: url("../images/screw.png") no-repeat center center;
   background-size: contain;
   z-index: 10;
-  opacity: 1; /* Add this line */
-  transition: none; /* Add this line */
+  opacity: 1;
+  transition: none;
 }
 
 #content-container::before {
@@ -191,18 +176,29 @@ main {
 }
 
 .content-section {
-  display: none;
-  opacity: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
 
-.content-section.active {
-  display: block;
-  opacity: 1;
+.content-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #ff6b6b;
 }
 
-#content-container.hidden {
-  opacity: 0;
+.content-section h3 {
+  font-size: 1.5em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #4ecdc4;
+}
+
+.content-section p {
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 15px;
 }
 
 /* Animations */
@@ -267,16 +263,8 @@ main {
   }
 
   main {
-    height: 20vh;
     width: 95vw;
-    margin-bottom: 2vh;
   }
-}
-
-.content-section h2 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #ff6b6b; /* Accent color for headings */
 }
 
 @media screen and (max-width: 480px) {
@@ -296,7 +284,6 @@ main {
   }
 
   main {
-    height: 70vh;
-    margin-bottom: 10vh;
+    height: 40vh;
   }
 }
