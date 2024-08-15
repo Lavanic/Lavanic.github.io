@@ -2,22 +2,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll(".nav-btn");
   const contentContainer = document.getElementById("content-container");
   const contentSections = document.querySelectorAll(".content-section");
+  let isInitialLoad = true;
 
   function toggleContent(targetId) {
     const targetSection = document.getElementById(targetId);
 
-    if (targetSection.classList.contains("active")) {
+    if (targetSection.classList.contains("active") && !isInitialLoad) {
       // If clicking the same button, hide the content
-      contentContainer.style.display = "none";
-      targetSection.classList.remove("active");
+      contentContainer.classList.add("hidden");
+      setTimeout(() => {
+        contentContainer.style.display = "none";
+        targetSection.classList.remove("active");
+      }, 300); // Match this duration with the CSS transition
     } else {
       // Show the content and activate the correct section
       contentContainer.style.display = "block";
+      setTimeout(() => {
+        contentContainer.classList.remove("hidden");
+      }, 0);
+
       contentSections.forEach((section) => {
         section.classList.remove("active");
       });
       targetSection.classList.add("active");
     }
+
+    isInitialLoad = false;
   }
 
   buttons.forEach((button) => {

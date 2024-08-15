@@ -12,14 +12,6 @@ body {
   font-family: Arial, sans-serif;
   overflow: hidden;
 }
-main {
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 2rem; /* Add some space between buttons and content */
-}
 
 body {
   display: flex;
@@ -37,55 +29,163 @@ header {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding-top: -5vh; /* Adjusted to move content up */
+  padding-top: 2vh;
 }
 
 .logo {
-  max-width: 700px; /* Reduced max-width */
-  width: 200%;
+  max-width: 50%;
+  width: auto;
   height: auto;
-  margin-bottom: 0rem; /* Reduced margin */
-  margin-top: -8vh;
+  margin-bottom: 1rem;
+  margin-top: -6rem;
 }
 
 nav {
   display: flex;
   justify-content: center;
-  gap: 0.9rem;
-  flex-wrap: nowrap;
-  margin-top: -4rem; /* Adjusted to reduce space */
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: -6rem;
 }
 
 .nav-btn {
   background-color: #353535;
   border: 2px solid #8d8485;
   color: #fff;
-  padding: 15px 10px;
+  padding: 10px;
   border-radius: 12px;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  animation: bobbing 2s ease-in-out infinite;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  width: 110px;
-  height: 120px;
+  width: 90px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  overflow: visible; /* Changed from hidden to visible to allow screws to show */
+  overflow: visible;
   animation: buttonEnter 0.5s ease-out backwards,
     bobbing 2s ease-in-out infinite;
 }
 
-.nav-btn:hover {
+.nav-btn:hover,
+.nav-btn.active {
   transform: translateY(-3px);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
   background-color: #454545;
 }
 
+/* Screw effect for buttons */
+.nav-btn::before,
+.nav-btn::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: url("../images/screw.png") no-repeat center center;
+  background-size: contain;
+}
+
+.nav-btn::before {
+  top: 3px;
+  left: 3px;
+}
+
+.nav-btn::after {
+  bottom: 3px;
+  right: 3px;
+}
+
+/* Steel effect for buttons */
+.nav-btn span {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #8d8485, #353535);
+  z-index: -1;
+  filter: blur(5px);
+  opacity: 0.7;
+  border-radius: 17px;
+}
+
+main {
+  width: 100%;
+  height: 90%;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 1rem;
+}
+
+#content-container {
+  width: 60%;
+  height: 90%;
+  max-width: 520px;
+  max-height: calc(100vh - 300px);
+  background-color: rgba(53, 53, 53, 0.953);
+  border: 2px solid #8d8485;
+  border-radius: 12px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: opacity 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+/* Screw effect for content container */
+#content-container::before,
+#content-container::after,
+#content-container span::before,
+#content-container span::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: url("../images/screw.png") no-repeat center center;
+  background-size: contain;
+}
+
+#content-container::before {
+  top: 5px;
+  left: 5px;
+}
+#content-container::after {
+  top: 5px;
+  right: 5px;
+}
+#content-container span::before {
+  bottom: 5px;
+  left: 5px;
+}
+#content-container span::after {
+  bottom: 5px;
+  right: 5px;
+}
+
+.content-section {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.content-section.active {
+  display: block;
+  opacity: 1;
+}
+
+#content-container.hidden {
+  opacity: 0;
+}
+
+/* Animations */
 @keyframes bobbing {
   0%,
   100% {
@@ -96,58 +196,7 @@ nav {
   }
 }
 
-/* Screw effect for content container */
-#content-container::before,
-#content-container::after,
-#content-container span::before,
-#content-container span::after {
-  content: "";
-  position: absolute;
-  width: 20px; /* Increased size */
-  height: 20px; /* Increased size */
-  background: url("../images/screw.png") no-repeat center center;
-  background-size: contain;
-}
-
-#content-container::before {
-  top: 0px;
-  left: 0px;
-}
-#content-container::after {
-  top: 0px;
-  right: 0px;
-}
-#content-container span::before {
-  bottom: 0px;
-  left: 0px;
-}
-#content-container span::after {
-  bottom: 0px;
-  right: 0px;
-}
-/* Animations */
-@keyframes neonFlicker {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
 @keyframes buttonEnter {
-  from {
-    transform: translateY(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes contentEnter {
   from {
     transform: translateY(50px);
     opacity: 0;
@@ -175,90 +224,53 @@ nav {
   animation-delay: 0.5s, 0.4s;
 }
 
-/* Steel effect - we need to rename this to avoid conflict */
-.nav-btn span {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #8d8485, #353535);
-  z-index: -1;
-  filter: blur(5px);
-  opacity: 0.7;
-  border-radius: 17px;
-}
-
-#content-container {
-  width: 90%;
-  height: 95%;
-  max-width: 620px;
-  background-color: rgba(53, 53, 53, 0.953);
-  border: 2px solid #8d8485;
-  border-radius: 12px;
-  padding: 20px;
-  color: #fff;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  position: relative;
-  animation: contentEnter 1s ease-out;
-}
-.content-section {
-  display: none;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.content-section.active {
-  display: block;
-  opacity: 1;
-}
-
-.nav-btn.active {
-  background-color: #454545;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-}
-
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   .logo {
-    max-width: 400px; /* Adjusted for better scaling */
-    margin-bottom: 1.5rem;
-  }
-
-  #content-container {
-    margin: 10px;
-    padding: 15px;
-    height: calc(100% - 20px); /* Account for margins */
-  }
-  .nav-btn {
-    padding: 12px 8px;
-    font-size: 0.8rem;
-    width: 80px;
-    height: 110px;
+    max-width: 70%;
+    margin-bottom: 1rem;
   }
 
   nav {
-    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .nav-btn {
+    width: 80px;
+    height: 90px;
+    font-size: 0.8rem;
+  }
+
+  #content-container {
+    max-height: calc(100vh - 250px);
   }
 }
 
 @media screen and (max-width: 480px) {
-  .logo {
-    max-width: 250px;
-    margin-bottom: 1rem;
+  header {
+    padding-top: 1vh;
   }
 
-  .nav-btn {
-    padding: 10px 6px;
-    font-size: 0.7rem;
-    width: 70px;
-    height: 100px;
+  .logo {
+    max-width: 60%;
   }
 
   nav {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .nav-btn {
+    width: 70px;
+    height: 80px;
+    font-size: 0.7rem;
+    padding: 5px;
+  }
+
+  #content-container {
+    max-height: calc(100vh - 200px);
+    padding: 15px;
   }
 }
