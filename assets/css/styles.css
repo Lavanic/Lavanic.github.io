@@ -219,7 +219,7 @@ main {
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   header {
-    height: 65vh;
+    height: 35vh;
     justify-content: flex-start;
   }
 
