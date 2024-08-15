@@ -234,12 +234,12 @@ main {
   .nav-btn {
     width: 80px;
     height: 80px;
-    gap: 2vw;
+    gap: 20vw;
     font-size: 0.8rem;
   }
 
   main {
-    height: 20vh;
+    height: 2vh;
     width: 95vw;
     /* margin-bottom: 20vh; */
   }
