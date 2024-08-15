@@ -34,7 +34,6 @@ header {
 
 .logo {
   width: 50vw;
-  height: auto;
   height: 25vh;
   object-fit: contain;
   opacity: 90%;
@@ -223,12 +222,12 @@ main {
   }
 
   .logo {
-    max-height: 35vh;
+    max-height: 45vh;
     margin-bottom: 0vh;
   }
 
   nav {
-    margin-top: auto;
+    margin-top: 2vw;
   }
 
   .nav-btn {
@@ -239,7 +238,8 @@ main {
 
   main {
     height: 70vh;
-    margin-bottom: 3vh;
+    width: 80vw;
+    margin-bottom: 10vh;
   }
 }
 
