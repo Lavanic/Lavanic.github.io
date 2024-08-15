@@ -144,7 +144,7 @@ main {
 
 #content-container {
   width: 90%;
-  max-width: 620px;
+  max-width: 1200px; /* Set a max-width for larger screens */
   height: 100%;
   background-color: #2b283e;
   border: 2px solid #464157;
@@ -195,7 +195,7 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: hidden;
+  overflow-y: auto;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
@@ -342,20 +342,21 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow-y: auto; /* Allow scrolling if content overflows */
+  overflow-y: auto;
 }
 
 .about-image {
-  flex: 0 0 40%;
+  flex: 0 0 30%; /* Reduced width for better proportions */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between; /* Distributes space between image and button */
+  height: 100%; /* Ensure full height */
 }
 
 .personal-image {
   max-width: 100%;
-  max-height: 70%;
+  max-height: 60%; /* Adjusted for better fit */
   object-fit: cover;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -363,7 +364,6 @@ main {
 
 .resume-button {
   margin-top: 20px;
-  display: inline-block;
   padding: 0.75rem 1.5rem;
   background-color: #ff6b6b;
   color: white;
@@ -371,6 +371,7 @@ main {
   border-radius: 5px;
   font-weight: bold;
   transition: background-color 0.3s ease;
+  font-size: 0.9rem; /* Adjusted for better readability */
 }
 
 .resume-container {
@@ -386,10 +387,37 @@ main {
 
 /* Responsive design */
 @media screen and (max-width: 768px) {
+  main {
+    width: 95vw;
+    height: 80vh; /* Increased height for mobile */
+  }
+
   .about-container {
-    display: flex;
-    gap: 20px; /* Add some space between text and image */
-    height: 100%;
+    flex-direction: row; /* Keep side-by-side layout on mobile */
+    align-items: flex-start; /* Align items to the top */
+  }
+
+  .about-text {
+    font-size: 0.9rem; /* Slightly reduced font size for mobile */
+  }
+
+  .about-image {
+    flex: 0 0 40%; /* Slightly increased width for mobile */
+  }
+
+  .personal-image {
+    max-height: 50%; /* Adjusted for mobile */
+  }
+
+  .resume-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Adjustments for navigation buttons */
+  .nav-btn {
+    width: 70px;
+    height: 70px;
   }
 
   .btn-gif {
@@ -397,55 +425,35 @@ main {
     height: 40px;
   }
 
-  .about-image {
-    flex: 0 0 40%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+  .nav-btn-text {
+    font-size: 0.7rem;
   }
+}
 
-  .personal-image {
-    max-width: 100%;
-    max-height: 70%;
-    object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .resume-container {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Further adjustments for very small screens */
+@media screen and (max-width: 480px) {
+  main {
+    height: 70vh;
   }
 
   .about-container {
-    flex-direction: column;
-  }
-
-  .about-image {
-    order: -1;
-    margin-bottom: 1rem;
-    flex: 0 0 auto;
-    width: 20vw;
-    height: auto;
-  }
-
-  .personal-image {
-    max-height: 150px;
+    gap: 10px;
   }
 
   .about-text {
-    /* max-height: 30vh; */
     font-size: 0.8rem;
-    overflow-y: auto;
+  }
+
+  .about-image {
+    flex: 0 0 35%;
+  }
+
+  .personal-image {
+    max-height: 40%;
   }
 
   .resume-button {
-    /* padding: 0.4rem 0.8rem; */
-    font-size: 0.4rem;
-    width: 90px;
-    height: 40px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
   }
 }
