@@ -1,4 +1,4 @@
-/* Reset and Box-Sizing */
+/* Reset and general styles */
 * {
   margin: 0;
   padding: 0;
@@ -24,6 +24,7 @@ body {
   align-items: center;
 }
 
+/* Header and logo styles */
 header {
   width: 100%;
   display: flex;
@@ -41,6 +42,7 @@ header {
   margin-top: 2vh;
 }
 
+/* Navigation styles */
 nav {
   display: flex;
   justify-content: center;
@@ -73,7 +75,6 @@ nav {
     bobbing 2s ease-in-out infinite;
 }
 
-/* New class for the button text */
 .nav-btn-text {
   font-size: 0.8rem;
   text-align: center;
@@ -82,7 +83,7 @@ nav {
   bottom: 5px;
   left: 0;
   right: 0;
-  color: #fff; /* Ensure text color contrasts with button */
+  color: #fff;
 }
 
 .btn-gif {
@@ -98,48 +99,13 @@ nav {
   background-color: #2b283eb3;
 }
 
-/* Screw effect for buttons */
-.nav-btn::before,
-.nav-btn::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  background: url("../images/screw.png") no-repeat center center;
-  background-size: contain;
-}
-
-.nav-btn::before {
-  top: 3px;
-  left: 3px;
-}
-
-.nav-btn::after {
-  bottom: 3px;
-  right: 3px;
-}
-
-/* Steel effect for buttons */
-.nav-btn .steel-effect {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #8d8485, #353535);
-  z-index: -1;
-  filter: blur(5px);
-  opacity: 0.2;
-  border-radius: 17px;
-}
-
+/* Main content styles */
 main {
-  width: 60vw;
-  height: 60vh;
+  width: 90vw;
+  height: 70vh;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 3vh;
 }
 
@@ -160,40 +126,8 @@ main {
   flex-direction: column;
 }
 
-#content-container::before,
-#content-container::after,
-#content-container > span::before,
-#content-container > span::after {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: url("../images/screw.png") no-repeat center center;
-  background-size: contain;
-  z-index: 10;
-  opacity: 1;
-}
-
-#content-container::before {
-  top: 5px;
-  left: 5px;
-}
-#content-container::after {
-  top: 5px;
-  right: 5px;
-}
-#content-container > span::before {
-  bottom: 5px;
-  left: 5px;
-}
-#content-container > span::after {
-  bottom: 5px;
-  right: 5px;
-}
-
 .content-section {
   flex-grow: 1;
-  flex: 1;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -205,27 +139,145 @@ main {
   opacity: 1;
 }
 
-.content-section h2 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  color: #ff6b6b;
+/* About page specific styles */
+.about-container {
+  display: flex;
+  gap: 20px;
+  height: 100%;
 }
 
-.content-section h3 {
-  font-size: 1.5em;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #4ecdc4;
+.about-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
 }
 
-.content-section p {
-  font-size: 1em;
-  line-height: 1.6;
-  margin-bottom: 15px;
+.about-image {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100%;
 }
 
 .personal-image {
-  max-width: 60%;
+  max-width: 100%;
+  max-height: 60%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resume-button {
+  margin-top: 20px;
+  padding: 0.75rem 1.5rem;
+  background-color: #ff6b6b;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.resume-button:hover {
+  background-color: #ff4f4f;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  header {
+    padding: 1vh 0;
+  }
+
+  .logo {
+    width: 75vw;
+    margin-bottom: 1vh;
+  }
+
+  nav {
+    margin-top: 1vh;
+  }
+
+  .nav-btn {
+    width: 70px;
+    height: 80px;
+    font-size: 0.7rem;
+  }
+
+  .btn-gif {
+    width: 40px;
+    height: 40px;
+  }
+
+  main {
+    width: 95vw;
+    height: 75vh;
+  }
+
+  #content-container {
+    padding: 15px;
+  }
+
+  .about-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .about-text {
+    font-size: 0.9rem;
+  }
+
+  .about-image {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 15px;
+  }
+
+  .personal-image {
+    max-width: 40%;
+    max-height: 150px;
+  }
+
+  .resume-button {
+    margin-top: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  header {
+    height: auto;
+  }
+
+  .logo {
+    max-height: 20vh;
+  }
+
+  main {
+    height: 70vh;
+  }
+
+  .about-text {
+    font-size: 0.8rem;
+  }
+
+  .personal-image {
+    max-width: 35%;
+    max-height: 120px;
+  }
+
+  .resume-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+  }
 }
 
 /* Animations */
@@ -265,190 +317,4 @@ main {
 }
 .nav-btn:nth-child(5) {
   animation-delay: 0.5s, 0.4s;
-}
-
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
-  header {
-    padding: 0.2vh 0;
-    justify-content: flex-start;
-  }
-
-  .logo {
-    width: 75vw;
-    margin-bottom: 0;
-  }
-
-  nav {
-    margin-top: 0.5vw;
-  }
-
-  .nav-btn {
-    width: 80px;
-    height: 80px;
-    font-size: 0.8rem;
-  }
-
-  main {
-    width: 95vw;
-    height: 80vh; /* Increased height for mobile */
-  }
-
-  .about-container {
-    flex-direction: row; /* Keep side-by-side layout on mobile */
-    align-items: flex-start; /* Align items to the top */
-  }
-
-  .about-text {
-    font-size: 0.3rem; /* Slightly reduced font size for mobile */
-  }
-
-  .about-image {
-    flex: 0 0 40%; /* Slightly increased width for mobile */
-  }
-
-  .personal-image {
-    max-height: 70%; /* Adjusted for mobile */
-  }
-
-  .resume-button {
-    width: fit-content;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  /* Adjustments for navigation buttons */
-  .nav-btn {
-    width: 60px;
-    height: 70px;
-  }
-
-  .btn-gif {
-    width: 40px;
-    height: 40px;
-  }
-
-  .nav-btn-text {
-    font-size: 0.7rem;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  header {
-    height: 60vh;
-  }
-
-  .logo {
-    max-height: 30vh;
-  }
-
-  .nav-btn {
-    width: 60px;
-    height: 70px;
-    font-size: 0.7rem;
-    padding: 10px;
-  }
-
-  main {
-    height: 40vh;
-  }
-}
-
-/* Typing effect */
-.typed-cursor {
-  opacity: 1;
-  animation: blink 0.7s infinite;
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
-}
-
-/* about page */
-.about-container {
-  display: flex;
-  gap: 20px; /* Add some space between text and image */
-  height: 100%;
-}
-
-.about-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow-y: auto;
-}
-
-.about-image {
-  flex: 0 0 30%; /* Reduced width for better proportions */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between; /* Distributes space between image and button */
-  height: 100%; /* Ensure full height */
-}
-
-.personal-image {
-  max-width: 100%;
-  max-height: 60%; /* Adjusted for better fit */
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.resume-button {
-  margin-top: 20px;
-  padding: 0.75rem 1.5rem;
-  background-color: #ff6b6b;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  font-size: 0.9rem; /* Adjusted for better readability */
-}
-
-.resume-container {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.resume-button:hover {
-  background-color: #ff4f4f;
-}
-
-/* Further adjustments for very small screens */
-@media screen and (max-width: 480px) {
-  main {
-    height: 70vh;
-  }
-
-  .about-container {
-    gap: 10px;
-  }
-
-  .about-text {
-    font-size: 0.8rem;
-  }
-
-  .about-image {
-    flex: 0 0 35%;
-  }
-
-  .personal-image {
-    max-height: 40%;
-  }
-
-  .resume-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.7rem;
-  }
 }
