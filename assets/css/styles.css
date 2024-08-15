@@ -15,13 +15,40 @@ body {
   background: url("../images/background.jpg") no-repeat center center fixed;
   background-size: cover;
 }
+.content-section h3 {
+  font-size: 1.5em;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #4ecdc4; /* Different accent color for subheadings */
+}
+
+.content-section p {
+  font-size: 1em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+/* Ensure text is visible and styled within the content area */
+#content-container * {
+  color: #ffffff;
+}
+
+#content-container {
+  padding: 20px;
+  color: #ffffff;
+}
+
+.content-section {
+  display: block;
+  opacity: 1;
+}
 
 body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: #1b182e; /* Default background color */
+  background-color: #292739; /* Default background color */
 }
 
 header {
@@ -131,17 +158,19 @@ main {
   overflow-y: auto;
 }
 
-/* Screw effect for content container */
 #content-container::before,
 #content-container::after,
-#content-container span::before,
-#content-container span::after {
+#content-container > span::before,
+#content-container > span::after {
   content: "";
   position: absolute;
   width: 20px;
   height: 20px;
   background: url("../images/screw.png") no-repeat center center;
   background-size: contain;
+  z-index: 10;
+  opacity: 1; /* Add this line */
+  transition: none; /* Add this line */
 }
 
 #content-container::before {
@@ -152,11 +181,11 @@ main {
   top: 5px;
   right: 5px;
 }
-#content-container span::before {
+#content-container > span::before {
   bottom: 5px;
   left: 5px;
 }
-#content-container span::after {
+#content-container > span::after {
   bottom: 5px;
   right: 5px;
 }
@@ -240,8 +269,14 @@ main {
   main {
     height: 20vh;
     width: 95vw;
-    margin-bottom: 20rem;
+    margin-bottom: 2vh;
   }
+}
+
+.content-section h2 {
+  font-size: 2em;
+  margin-bottom: 20px;
+  color: #ff6b6b; /* Accent color for headings */
 }
 
 @media screen and (max-width: 480px) {
