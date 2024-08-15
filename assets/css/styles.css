@@ -399,7 +399,7 @@ main {
   }
 
   .about-text {
-    font-size: 0.5rem; /* Slightly reduced font size for mobile */
+    font-size: 0.3rem; /* Slightly reduced font size for mobile */
   }
 
   .about-image {
@@ -407,10 +407,11 @@ main {
   }
 
   .personal-image {
-    max-height: 50%; /* Adjusted for mobile */
+    max-height: 70%; /* Adjusted for mobile */
   }
 
   .resume-button {
+    width: fit-content;
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
   }
