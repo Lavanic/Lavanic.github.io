@@ -9,12 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const content = await response.text();
-      console.log(`Content loaded for ${page}:`, content);
       contentContainer.innerHTML = content;
-      contentContainer
-        .querySelector(".content-section")
-        .classList.add("active");
+      const section = contentContainer.querySelector(".content-section");
+      if (section) {
+        section.classList.add("active");
+      }
       contentContainer.style.opacity = 1;
+
+      // Start typing animation
+      if (window.startTypingAnimation) {
+        window.startTypingAnimation();
+      }
     } catch (e) {
       console.error("Error loading content:", e);
       contentContainer.innerHTML =

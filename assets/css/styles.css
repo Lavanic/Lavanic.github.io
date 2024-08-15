@@ -14,7 +14,7 @@ body {
   position: fixed;
   background: url("../images/background.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-color: #292739; /* Default background color */
+  background-color: #292739;
 }
 
 body {
@@ -28,7 +28,6 @@ header {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
   padding: 2vh 0;
 }
@@ -64,13 +63,20 @@ nav {
   width: 100px;
   height: 110px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   text-align: center;
   position: relative;
   overflow: visible;
   animation: buttonEnter 0.5s ease-out backwards,
     bobbing 2s ease-in-out infinite;
+}
+
+.btn-gif {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 10px;
 }
 
 .nav-btn:hover {
@@ -117,7 +123,7 @@ nav {
 
 main {
   width: 60vw;
-  height: 50vh; /* Adjusted to be static */
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -135,9 +141,7 @@ main {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
   transition: opacity 0.3s ease-in-out;
-  overflow-y: auto;
-  margin-bottom: 50vh;
-
+  overflow: hidden;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -155,7 +159,6 @@ main {
   background-size: contain;
   z-index: 10;
   opacity: 1;
-  transition: none;
 }
 
 #content-container::before {
@@ -177,9 +180,16 @@ main {
 
 .content-section {
   flex-grow: 1;
-  overflow-y: auto;
-  opacity: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+  opacity: 0;
   transition: opacity 0.3s ease-in-out;
+}
+
+.content-section.active {
+  opacity: 1;
 }
 
 .content-section h2 {
@@ -199,6 +209,10 @@ main {
   font-size: 1em;
   line-height: 1.6;
   margin-bottom: 15px;
+}
+
+.personal-image {
+  max-width: 60%;
 }
 
 /* Animations */
@@ -249,7 +263,7 @@ main {
 
   .logo {
     width: 75vw;
-    margin-bottom: 0vh;
+    margin-bottom: 0;
   }
 
   nav {
@@ -285,5 +299,91 @@ main {
 
   main {
     height: 40vh;
+  }
+}
+
+/* Typing effect */
+.typed-cursor {
+  opacity: 1;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+/* about page */
+.about-container {
+  display: flex;
+  gap: 2rem;
+  height: 100%;
+}
+
+.about-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.about-image {
+  flex: 0 0 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.personal-image {
+  max-width: 100%;
+  max-height: 70%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.resume-button {
+  margin-top: 20px;
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #ff6b6b;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.resume-container {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resume-button:hover {
+  background-color: #ff4f4f;
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 768px) {
+  .about-container {
+    flex-direction: column;
+  }
+
+  .about-image {
+    order: -1;
+    margin-bottom: 1rem;
+  }
+
+  .personal-image {
+    max-width: 60%;
   }
 }
