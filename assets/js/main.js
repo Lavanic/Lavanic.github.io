@@ -1,57 +1,26 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".nav-btn");
-  const contentContainer = document.getElementById("content-container");
+// main.js
 
-  async function loadContent(page) {
-    try {
-      console.log(`Attempting to load ${page}`);
-      const response = await fetch(`./assets/pages/${page}.html`);
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      const content = await response.text();
-      contentContainer.innerHTML = content;
-      const section = contentContainer.querySelector(".content-section");
-      if (section) {
-        section.classList.add("active");
-      }
-      contentContainer.style.opacity = 1;
+// Function to handle the responsive behavior of the logo
+function handleLogoResponsiveness() {
+  const logo = document.querySelector(".logo");
+  const viewportWidth = window.innerWidth;
 
-      // Start typing animation
-      if (window.startTypingAnimation) {
-        window.startTypingAnimation();
-      }
-    } catch (e) {
-      console.error("Error loading content:", e);
-      contentContainer.innerHTML =
-        "<p>Error loading content. Please try again later.</p>";
-    }
+  // Adjust logo size based on viewport width
+  if (viewportWidth < 768) {
+    logo.style.width = "70vw"; // 70% of viewport width for mobile
+  } else {
+    logo.style.width = "33.33vw"; // Approximately 1/3 of viewport width for desktop
   }
 
-  function toggleContent(targetId) {
-    console.log(`Toggling content for ${targetId}`);
-    if (contentContainer.dataset.currentPage === targetId) {
-      contentContainer.style.opacity = 0;
-      contentContainer.dataset.currentPage = "";
-      setTimeout(() => {
-        contentContainer.innerHTML = "";
-      }, 300);
-    } else {
-      loadContent(targetId);
-      contentContainer.dataset.currentPage = targetId;
-    }
-  }
+  // Log the current logo width for testing
+  console.log(`Current logo width: ${logo.style.width}`);
+}
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const targetId = button.getAttribute("data-target");
-      console.log(`Button clicked: ${targetId}`);
-      buttons.forEach((btn) => btn.classList.remove("active"));
-      button.classList.add("active");
-      toggleContent(targetId);
-    });
-  });
+// Call the function on page load and window resize
+window.addEventListener("load", handleLogoResponsiveness);
+window.addEventListener("resize", handleLogoResponsiveness);
 
-  // Load About page by default
-  console.log("Loading default 'about' page");
-  loadContent("about");
-});
+// Add this comment and the following lines to test different logo sizes
+// To test different logo sizes, uncomment and modify these lines:
+// document.querySelector('.logo').style.width = '50vw'; // Test with 50% viewport width
+// console.log('Logo size changed for testing');
