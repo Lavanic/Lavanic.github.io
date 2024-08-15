@@ -14,7 +14,7 @@ body {
   position: fixed;
   background: url("../images/background.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-color: #292739;
+  background-color: #292739; /* Fallback color */
 }
 
 body {
@@ -99,7 +99,7 @@ nav {
   background-color: #2b283eb3;
 }
 
-/* Main content styles */
+/* Main content container styles */
 main {
   width: 90vw;
   height: 70vh;
@@ -139,54 +139,6 @@ main {
   opacity: 1;
 }
 
-/* About page specific styles */
-.about-container {
-  display: flex;
-  gap: 20px;
-  height: 100%;
-}
-
-.about-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  overflow-y: auto;
-}
-
-.about-image {
-  flex: 0 0 30%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 100%;
-}
-
-.personal-image {
-  max-width: 100%;
-  max-height: 60%;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.resume-button {
-  margin-top: 20px;
-  padding: 0.75rem 1.5rem;
-  background-color: #ff6b6b;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.resume-button:hover {
-  background-color: #ff4f4f;
-}
-
 /* Responsive design */
 @media screen and (max-width: 768px) {
   header {
@@ -221,35 +173,6 @@ main {
   #content-container {
     padding: 15px;
   }
-
-  .about-container {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .about-text {
-    font-size: 0.9rem;
-  }
-
-  .about-image {
-    flex: 0 0 auto;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding-bottom: 15px;
-  }
-
-  .personal-image {
-    max-width: 40%;
-    max-height: 150px;
-  }
-
-  .resume-button {
-    margin-top: 0;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
 }
 
 @media screen and (max-width: 480px) {
@@ -263,20 +186,6 @@ main {
 
   main {
     height: 70vh;
-  }
-
-  .about-text {
-    font-size: 0.8rem;
-  }
-
-  .personal-image {
-    max-width: 35%;
-    max-height: 120px;
-  }
-
-  .resume-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.7rem;
   }
 }
 

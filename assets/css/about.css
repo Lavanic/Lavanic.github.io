@@ -1,0 +1,64 @@
+/* assets/css/about.css */
+.content-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.about-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 0px;
+}
+
+.about-text {
+  flex: 1;
+  text-align: left;
+  padding-right: 20px;
+}
+
+.about-image {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.resume-button {
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .about-container {
+    flex-direction: row;
+  }
+
+  .about-text {
+    flex: 2;
+  }
+
+  .about-image {
+    flex: 1;
+  }
+}
