@@ -110,7 +110,7 @@ nav {
 
 main {
   width: 60vw;
-  height: 90vh;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -234,14 +234,13 @@ main {
   .nav-btn {
     width: 80px;
     height: 80px;
-    gap: 20vw;
     font-size: 0.8rem;
   }
 
   main {
-    height: 2vh;
+    height: 20vh;
     width: 95vw;
-    /* margin-bottom: 20vh; */
+    margin-bottom: 20rem;
   }
 }
 
