@@ -269,7 +269,7 @@ main {
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   header {
-    padding: 1vh 0;
+    padding: 0.5vh 0;
     justify-content: flex-start;
   }
 
@@ -416,7 +416,7 @@ main {
 
   /* Adjustments for navigation buttons */
   .nav-btn {
-    width: 50px;
+    width: 60px;
     height: 70px;
   }
 
