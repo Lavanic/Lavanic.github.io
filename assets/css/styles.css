@@ -399,7 +399,7 @@ main {
     order: -1;
     margin-bottom: 1rem;
     flex: 0 0 auto;
-    width: 1vw;
+    width: 20vw;
     height: auto;
   }
 
@@ -409,11 +409,15 @@ main {
 
   .about-text {
     max-height: 30vh;
+    font-size: 0.8rem;
+
     overflow-y: auto;
   }
 
   .resume-button {
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
+    width: 40px;
+    height: 20px;
   }
 }
