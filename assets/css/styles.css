@@ -223,22 +223,22 @@ main {
 
   .logo {
     width: 75vw;
-    /* max-height: 55vh; */
     margin-bottom: 0vh;
   }
 
   nav {
-    margin-top: 1vw;
+    margin-top: 0.5vw;
   }
 
   .nav-btn {
     width: 80px;
     height: 80px;
+    gap: 1vw;
     font-size: 0.8rem;
   }
 
   main {
-    height: 40vh;
+    height: 20vh;
     width: 95vw;
     margin-bottom: 20vh;
   }
