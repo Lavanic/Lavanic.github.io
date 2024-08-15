@@ -88,6 +88,7 @@ nav {
 .btn-gif {
   width: 70px;
   height: 70px;
+  opacity: 70%;
   margin-bottom: 10px;
 }
 
@@ -398,7 +399,7 @@ main {
   }
 
   .about-text {
-    font-size: 0.9rem; /* Slightly reduced font size for mobile */
+    font-size: 0.5rem; /* Slightly reduced font size for mobile */
   }
 
   .about-image {
