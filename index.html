@@ -10,15 +10,67 @@
     <header>
       <img src="./assets/images/takeone.gif" alt="Site Logo" class="logo" />
       <nav>
-        <button class="nav-btn" style="animation-delay: 0s">About</button>
-        <button class="nav-btn" style="animation-delay: 0.1s">Skills</button>
-        <button class="nav-btn" style="animation-delay: 0.2s">Recs</button>
-        <button class="nav-btn" style="animation-delay: 0.3s">Projects</button>
-        <button class="nav-btn" style="animation-delay: 0.4s">Contact</button>
+        <button
+          class="nav-btn active"
+          data-target="about"
+          style="animation-delay: 0s"
+        >
+          <span></span>About
+        </button>
+        <button
+          class="nav-btn"
+          data-target="skills"
+          style="animation-delay: 0.1s"
+        >
+          <span></span>Skills
+        </button>
+        <button
+          class="nav-btn"
+          data-target="recs"
+          style="animation-delay: 0.2s"
+        >
+          <span></span>Recs
+        </button>
+        <button
+          class="nav-btn"
+          data-target="projects"
+          style="animation-delay: 0.3s"
+        >
+          <span></span>Projects
+        </button>
+        <button
+          class="nav-btn"
+          data-target="contact"
+          style="animation-delay: 0.4s"
+        >
+          <span></span>Contact
+        </button>
       </nav>
     </header>
     <main>
-      <!-- Content for each section will go here -->
+      <div id="content-container">
+        <span></span>
+        <section id="about" class="content-section active">
+          <h2>About Me</h2>
+          <p>This is the about section. Add your content here.</p>
+        </section>
+        <section id="skills" class="content-section">
+          <h2>Skills</h2>
+          <p>This is the skills section. Add your content here.</p>
+        </section>
+        <section id="recs" class="content-section">
+          <h2>Recommendations</h2>
+          <p>This is the recommendations section. Add your content here.</p>
+        </section>
+        <section id="projects" class="content-section">
+          <h2>Projects</h2>
+          <p>This is the projects section. Add your content here.</p>
+        </section>
+        <section id="contact" class="content-section">
+          <h2>Contact</h2>
+          <p>This is the contact section. Add your content here.</p>
+        </section>
+      </div>
     </main>
     <script src="./assets/js/main.js"></script>
   </body>
