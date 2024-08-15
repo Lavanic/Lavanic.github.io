@@ -21,6 +21,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  background-color: #1b182e; /* Default background color */
 }
 
 header {
@@ -233,14 +234,14 @@ main {
   .nav-btn {
     width: 80px;
     height: 80px;
-    gap: 1vw;
+    gap: 2vw;
     font-size: 0.8rem;
   }
 
   main {
     height: 20vh;
     width: 95vw;
-    margin-bottom: 20vh;
+    /* margin-bottom: 20vh; */
   }
 }
 
