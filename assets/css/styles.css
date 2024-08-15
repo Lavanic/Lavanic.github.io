@@ -18,7 +18,7 @@ body {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  background: url("../images/backdrop.jpg") no-repeat center center fixed;
+  background: url("../images/background.png") no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
 }
@@ -40,6 +40,7 @@ header {
   height: auto;
   max-height: 40vh;
   object-fit: contain;
+  opacity: 85%;
 }
 
 nav {
