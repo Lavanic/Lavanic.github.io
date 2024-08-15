@@ -144,7 +144,7 @@ main {
 
 #content-container {
   width: 90%;
-  max-width: 1200px; /* Set a max-width for larger screens */
+  max-width: 620px;
   height: 100%;
   background-color: #2b283e;
   border: 2px solid #464157;
@@ -416,7 +416,7 @@ main {
 
   /* Adjustments for navigation buttons */
   .nav-btn {
-    width: 70px;
+    width: 50px;
     height: 70px;
   }
 
