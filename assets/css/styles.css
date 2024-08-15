@@ -222,12 +222,12 @@ main {
   }
 
   .logo {
-    max-height: 45vh;
+    max-height: 55vh;
     margin-bottom: 0vh;
   }
 
   nav {
-    margin-top: 2vw;
+    margin-top: 1vw;
   }
 
   .nav-btn {
@@ -237,8 +237,8 @@ main {
   }
 
   main {
-    height: 70vh;
-    width: 80vw;
+    height: 50vh;
+    width: 90vw;
     margin-bottom: 10vh;
   }
 }
