@@ -270,7 +270,7 @@ main {
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
   header {
-    padding: 2vh 0;
+    padding: 0.2vh 0;
     justify-content: flex-start;
   }
 
@@ -291,6 +291,45 @@ main {
 
   main {
     width: 95vw;
+    height: 80vh; /* Increased height for mobile */
+  }
+
+  .about-container {
+    flex-direction: row; /* Keep side-by-side layout on mobile */
+    align-items: flex-start; /* Align items to the top */
+  }
+
+  .about-text {
+    font-size: 0.3rem; /* Slightly reduced font size for mobile */
+  }
+
+  .about-image {
+    flex: 0 0 40%; /* Slightly increased width for mobile */
+  }
+
+  .personal-image {
+    max-height: 70%; /* Adjusted for mobile */
+  }
+
+  .resume-button {
+    width: fit-content;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  /* Adjustments for navigation buttons */
+  .nav-btn {
+    width: 60px;
+    height: 70px;
+  }
+
+  .btn-gif {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-btn-text {
+    font-size: 0.7rem;
   }
 }
 
@@ -384,52 +423,6 @@ main {
 
 .resume-button:hover {
   background-color: #ff4f4f;
-}
-
-/* Responsive design */
-@media screen and (max-width: 768px) {
-  main {
-    width: 95vw;
-    height: 80vh; /* Increased height for mobile */
-  }
-
-  .about-container {
-    flex-direction: row; /* Keep side-by-side layout on mobile */
-    align-items: flex-start; /* Align items to the top */
-  }
-
-  .about-text {
-    font-size: 0.3rem; /* Slightly reduced font size for mobile */
-  }
-
-  .about-image {
-    flex: 0 0 40%; /* Slightly increased width for mobile */
-  }
-
-  .personal-image {
-    max-height: 70%; /* Adjusted for mobile */
-  }
-
-  .resume-button {
-    width: fit-content;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-  }
-
-  /* Adjustments for navigation buttons */
-  .nav-btn {
-    width: 60px;
-    height: 70px;
-  }
-
-  .btn-gif {
-    width: 40px;
-    height: 40px;
-  }
-
-  .nav-btn-text {
-    font-size: 0.7rem;
-  }
 }
 
 /* Further adjustments for very small screens */
