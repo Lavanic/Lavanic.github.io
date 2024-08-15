@@ -29,15 +29,17 @@ header {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 2vh;
+  height: 70vh; /* Adjust this value as needed */
+  padding-top: 5vh;
+  position: relative;
 }
 
 .logo {
-  max-width: 50%;
+  max-width: 80%;
   width: auto;
   height: auto;
-  margin-bottom: 1rem;
-  margin-top: -6rem;
+  max-height: 40vh;
+  object-fit: contain;
 }
 
 nav {
@@ -45,7 +47,10 @@ nav {
   justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-top: -6rem;
+  position: absolute;
+  bottom: 5vh;
+  left: 0;
+  right: 0;
 }
 
 .nav-btn {
@@ -116,19 +121,16 @@ nav {
 
 main {
   width: 100%;
-  height: 90%;
-  flex-grow: 1;
+  height: 30vh; /* Adjust this value as needed */
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 1rem;
 }
 
 #content-container {
-  width: 60%;
-  height: 90%;
-  max-width: 520px;
-  max-height: calc(100vh - 300px);
+  width: 90%;
+  max-width: 620px;
+  height: 100%;
   background-color: rgba(53, 53, 53, 0.953);
   border: 2px solid #8d8485;
   border-radius: 12px;
@@ -226,13 +228,16 @@ main {
 
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
+  header {
+    height: 60vh;
+  }
+
   .logo {
-    max-width: 70%;
-    margin-bottom: 1rem;
+    max-height: 30vh;
   }
 
   nav {
-    gap: 0.3rem;
+    bottom: 3vh;
   }
 
   .nav-btn {
@@ -241,25 +246,22 @@ main {
     font-size: 0.8rem;
   }
 
-  #content-container {
-    max-height: calc(100vh - 250px);
+  main {
+    height: 40vh;
   }
 }
 
 @media screen and (max-width: 480px) {
   header {
-    padding-top: 1vh;
+    height: 55vh;
   }
 
   .logo {
-    max-width: 60%;
+    max-height: 25vh;
   }
 
   nav {
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.3rem;
+    bottom: 2vh;
   }
 
   .nav-btn {
@@ -269,8 +271,7 @@ main {
     padding: 5px;
   }
 
-  #content-container {
-    max-height: calc(100vh - 200px);
-    padding: 15px;
+  main {
+    height: 45vh;
   }
 }
