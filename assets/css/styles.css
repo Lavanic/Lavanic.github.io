@@ -29,17 +29,16 @@ header {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: -10vh;
-  padding: 2vh 0;
+  padding: 0vh 0;
 }
 
 .logo {
   max-width: 90%;
   width: auto;
   height: auto;
-  max-height: 55vh;
+  max-height: 45vh;
   object-fit: contain;
-  opacity: 88%;
+  opacity: 90%;
 }
 
 nav {
@@ -115,6 +114,7 @@ main {
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  margin-bottom: 2vh;
 }
 
 #content-container {
@@ -224,7 +224,7 @@ main {
 
   .logo {
     max-height: 35vh;
-    margin-bottom: 2vh;
+    margin-bottom: 0vh;
   }
 
   nav {
@@ -239,6 +239,7 @@ main {
 
   main {
     height: 35vh;
+    margin-bottom: 1vh;
   }
 }
 
