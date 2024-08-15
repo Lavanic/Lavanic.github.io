@@ -222,7 +222,8 @@ main {
   }
 
   .logo {
-    max-height: 55vh;
+    width: 75vw;
+    /* max-height: 55vh; */
     margin-bottom: 0vh;
   }
 
@@ -231,15 +232,15 @@ main {
   }
 
   .nav-btn {
-    width: 70px;
+    width: 80px;
     height: 80px;
     font-size: 0.8rem;
   }
 
   main {
-    height: 50vh;
-    width: 90vw;
-    margin-bottom: 10vh;
+    height: 40vh;
+    width: 95vw;
+    margin-bottom: 20vh;
   }
 }
 
