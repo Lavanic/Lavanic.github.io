@@ -73,6 +73,18 @@ nav {
     bobbing 2s ease-in-out infinite;
 }
 
+/* New class for the button text */
+.nav-btn-text {
+  font-size: 0.8rem;
+  text-align: center;
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  color: #fff; /* Ensure text color contrasts with button */
+}
+
 .btn-gif {
   width: 70px;
   height: 70px;
@@ -107,7 +119,7 @@ nav {
 }
 
 /* Steel effect for buttons */
-.nav-btn span {
+.nav-btn .steel-effect {
   content: "";
   position: absolute;
   top: -2px;
@@ -321,7 +333,7 @@ main {
 /* about page */
 .about-container {
   display: flex;
-  gap: 2rem;
+  gap: 20px; /* Add some space between text and image */
   height: 100%;
 }
 
@@ -330,7 +342,7 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: hidden;
+  overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
 .about-image {
@@ -372,8 +384,18 @@ main {
   background-color: #ff4f4f;
 }
 
-/* Responsive design for smaller screens */
+/* Responsive design */
 @media screen and (max-width: 768px) {
+  .nav-btn {
+    width: 80px;
+    height: 80px;
+  }
+
+  .btn-gif {
+    width: 40px;
+    height: 40px;
+  }
+
   .about-container {
     flex-direction: column;
   }
@@ -381,9 +403,20 @@ main {
   .about-image {
     order: -1;
     margin-bottom: 1rem;
+    flex: 0 0 auto;
   }
 
   .personal-image {
-    max-width: 60%;
+    max-height: 150px;
+  }
+
+  .about-text {
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .resume-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
   }
 }
