@@ -23,6 +23,21 @@ function handleResponsiveness() {
     mainContainer.style.height = "80vh";
     topBar.style.height = "52px";
   }
+
+  // Adjust button font size based on screen width
+  const navButtons = document.querySelectorAll(".nav-button");
+  const fontSize = viewportWidth < 768 ? "12px" : "20px"; // Adjust these values as needed
+  navButtons.forEach((button) => {
+    button.style.fontSize = fontSize;
+  });
+
+  // Adjust screw size based on screen width
+  const screws = document.querySelectorAll(".screw");
+  const screwSize = viewportWidth < 768 ? "20px" : "30px"; // Adjust these values as needed
+  screws.forEach((screw) => {
+    screw.style.width = screwSize;
+    screw.style.height = screwSize;
+  });
 }
 
 function lockOrientation() {
