@@ -95,7 +95,7 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-grow: 1;
-  margin: 0 1vw; /* Space between screws and buttons */
+  margin: 0 2vw; /* Space between screws and buttons */
   height: 100%;
 }
 
@@ -111,7 +111,7 @@ header {
 }
 
 .nav-icon {
-  height: 35%;
+  max-height: 200%;
   opacity: 83%;
   width: auto;
   transition: filter 0.3s ease;
@@ -144,7 +144,7 @@ header {
 
   .nav-button {
     font-size: 12px; /* Smaller font on mobile */
-    padding: 1px;
+    padding: 2px;
   }
 
   .logo {
