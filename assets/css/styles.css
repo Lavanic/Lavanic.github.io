@@ -48,7 +48,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 1vh; /* Additional reduction of gap */
+  margin-bottom: 5vh; /* Additional reduction of gap */
 }
 
 .logo {
@@ -99,7 +99,7 @@ header {
 .nav-button {
   font-family: "IBM Plex Mono", monospace;
   font-weight: bold;
-  font-size: 200px;
+  font-size: 20px;
   color: #f4eff1;
   background: none;
   border: none;
@@ -140,18 +140,20 @@ header {
 
   .logo {
     width: 70vw;
+    margin-top: 7vh;
   }
 
   body {
-    background-size: contain; /* Shrink background image width to fit on mobile */
-    background-repeat: no-repeat;
+    background-size: cover; /* Shrink background image width to fit on mobile */
+    background-repeat: round; /* Repeat the background image */
     background-position: top center;
   }
 
   .main-container {
     width: 90%;
     height: 85vh;
-    margin: 15px auto;
+    margin: 0px auto;
+    margin-top: -5vh;
   }
 
   .top-bar {
