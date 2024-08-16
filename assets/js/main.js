@@ -10,7 +10,7 @@ function handleResponsiveness() {
   // Logo responsiveness
   const smallerDimension = Math.min(viewportWidth, viewportHeight);
   if (smallerDimension < 768) {
-    logo.style.width = "70vmin";
+    logo.style.width = "60vmin";
   } else {
     logo.style.width = "73.33vmin";
   }
@@ -18,7 +18,7 @@ function handleResponsiveness() {
   // Main container responsiveness
   if (viewportWidth < 768) {
     mainContainer.style.height = "65vh";
-    topBar.style.height = "74px";
+    topBar.style.height = "54px";
   } else {
     mainContainer.style.height = "80vh";
     topBar.style.height = "52px";
