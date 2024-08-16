@@ -119,7 +119,7 @@ header {
 }
 
 .nav-button:hover .nav-icon {
-  filter: drop-shadow(0 0 5px #f4eff1);
+  filter: brightness(1.2);
 }
 
 .content-area {
@@ -144,8 +144,7 @@ header {
   }
 
   .nav-button {
-    font-size: 12px; /* Smaller font on mobile */
-    padding: 2px;
+    transform: rotate(-25deg);
   }
 
   .logo {
