@@ -33,7 +33,7 @@ body {
 }
 
 header {
-  padding: 20px;
+  padding: 0px;
   width: 100%;
 }
 
@@ -47,13 +47,14 @@ header {
   max-width: 100%;
   height: auto;
   width: 10vw;
+  opacity: 85%;
 }
 
 .main-container {
   width: 55%;
   max-width: 1400px; /* Adjust this value as needed */
   height: 90vh;
-  margin: 20px auto;
+  margin: 2vh auto;
   background: linear-gradient(180deg, #90b6a4 0%, #6a9f86 100%);
   border-radius: 12px;
   display: flex;
