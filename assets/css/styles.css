@@ -18,7 +18,7 @@ body {
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #54957c;
+  background-color: #508c72;
   background-image: url("../images/backmat.jpg");
   background-size: cover;
   background-position: center;
@@ -140,12 +140,12 @@ header {
 
   .logo {
     width: 70vw;
-    margin-top: 7vh;
+    margin-top: 0vh;
   }
 
   body {
-    background-size: cover; /* Shrink background image width to fit on mobile */
-    background-repeat: round; /* Repeat the background image */
+    background-size: contain; /* Shrink background image width to fit on mobile */
+    background-repeat: no-repeat;
     background-position: top center;
   }
 
