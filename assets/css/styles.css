@@ -3,6 +3,9 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-width: 0px;
 }
 
 html,
@@ -10,8 +13,7 @@ body {
   height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: 0px;
 }
 
 body {
