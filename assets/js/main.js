@@ -9,7 +9,7 @@ function handleResponsiveness() {
 
   // Nav Icons
   const navIcons = document.querySelectorAll(".nav-icon");
-  const iconHeight = viewportWidth < 768 ? "25%" : "35%";
+  const iconHeight = viewportWidth < 768 ? "20%" : "35%";
   navIcons.forEach((icon) => {
     icon.style.height = iconHeight;
   });
@@ -30,13 +30,6 @@ function handleResponsiveness() {
     mainContainer.style.height = "80vh";
     topBar.style.height = "52px";
   }
-
-  // Adjust button font size based on screen width
-  const navButtons = document.querySelectorAll(".nav-button");
-  const fontSize = viewportWidth < 768 ? "12px" : "20px"; // Adjust these values as needed
-  navButtons.forEach((button) => {
-    button.style.fontSize = fontSize;
-  });
 
   // Adjust screw size based on screen width
   const screws = document.querySelectorAll(".screw");

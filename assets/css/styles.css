@@ -113,7 +113,7 @@ header {
 .nav-icon {
   height: 35%;
   opacity: 87%;
-  width: 100%;
+  width: auto;
   transition: filter 0.3s ease;
 }
 
@@ -138,7 +138,7 @@ header {
   }
 
   .nav-icon {
-    height: 25%;
+    height: 22%;
   }
 
   .nav-button {
