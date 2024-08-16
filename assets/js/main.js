@@ -17,7 +17,7 @@ function handleResponsiveness() {
 
   // Main container responsiveness
   if (viewportWidth < 768) {
-    mainContainer.style.height = "85vh";
+    mainContainer.style.height = "65vh";
     topBar.style.height = "74px";
   } else {
     mainContainer.style.height = "80vh";
