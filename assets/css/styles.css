@@ -95,7 +95,7 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-grow: 1;
-  margin: 0 2vw; /* Space between screws and buttons */
+  margin: 0 1vw; /* Space between screws and buttons */
   height: 100%;
 }
 
@@ -103,7 +103,7 @@ header {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0;
+  padding: 8px;
   height: 100%;
   display: flex;
   align-items: center;
@@ -111,7 +111,7 @@ header {
 }
 
 .nav-icon {
-  max-height: 200%;
+  height: 33%;
   opacity: 83%;
   width: auto;
   transition: filter 0.3s ease;
