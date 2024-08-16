@@ -85,8 +85,8 @@ header {
 }
 
 .screw {
-  width: 30px; /* Adjust size as needed */
-  height: 30px;
+  width: 20px; /* Adjust size as needed */
+  height: 20px;
   object-fit: contain;
 }
 
@@ -96,21 +96,29 @@ header {
   align-items: center;
   flex-grow: 1;
   margin: 0 1vw; /* Space between screws and buttons */
+  height: 100%;
 }
 
 .nav-button {
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: bold;
-  font-size: 20px;
-  color: #f4eff1;
   background: none;
   border: none;
   cursor: pointer;
-  transition: text-shadow 0.3s ease;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.nav-button:hover {
-  text-shadow: 0 0 10px #f4eff1; /* Glow effect on hover */
+.nav-icon {
+  height: 35%;
+  opacity: 87%;
+  width: 100%;
+  transition: filter 0.3s ease;
+}
+
+.nav-button:hover .nav-icon {
+  filter: drop-shadow(0 0 5px #f4eff1);
 }
 
 .content-area {
@@ -127,6 +135,10 @@ header {
 
   .nav-buttons {
     margin: 0 0.3vw; /* Space between screws and buttons */
+  }
+
+  .nav-icon {
+    height: 25%;
   }
 
   .nav-button {

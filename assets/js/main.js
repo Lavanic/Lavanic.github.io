@@ -7,6 +7,13 @@ function handleResponsiveness() {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
 
+  // Nav Icons
+  const navIcons = document.querySelectorAll(".nav-icon");
+  const iconHeight = viewportWidth < 768 ? "25%" : "35%";
+  navIcons.forEach((icon) => {
+    icon.style.height = iconHeight;
+  });
+
   // Logo responsiveness
   const smallerDimension = Math.min(viewportWidth, viewportHeight);
   if (smallerDimension < 768) {
@@ -33,7 +40,7 @@ function handleResponsiveness() {
 
   // Adjust screw size based on screen width
   const screws = document.querySelectorAll(".screw");
-  const screwSize = viewportWidth < 768 ? "20px" : "30px"; // Adjust these values as needed
+  const screwSize = viewportWidth < 768 ? "15px" : "25px"; // Adjust these values as needed
   screws.forEach((screw) => {
     screw.style.width = screwSize;
     screw.style.height = screwSize;
@@ -43,16 +50,15 @@ function handleResponsiveness() {
 function initTabSwitching() {
   const navButtons = document.querySelectorAll(".nav-button");
   const contentArea = document.querySelector(".content-area");
-
   navButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      const page = button.textContent.toLowerCase();
+      const page = button.getAttribute("data-page");
       loadPage(page, contentArea);
     });
   });
 
-  // Load default page (About)
-  loadPage("about", contentArea);
+  // Load default page (Home)
+  loadPage("home", contentArea);
 }
 
 function loadPage(page, contentArea) {

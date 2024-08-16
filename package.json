@@ -11,7 +11,7 @@
     "portfolio",
     "website"
   ],
-  "author": "Your Name",
+  "author": "Oliver Ohrt",
   "license": "MIT",
   "devDependencies": {
     "live-server": "^1.2.2"
