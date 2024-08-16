@@ -129,8 +129,8 @@ header {
 /* Media query for mobile devices */
 @media screen and (max-width: 768px) {
   .screw {
-    width: 20px; /* Smaller screws on mobile */
-    height: 20px;
+    width: 10px; /* Smaller screws on mobile */
+    height: 10px;
     opacity: 85%;
   }
 
@@ -166,8 +166,8 @@ header {
   }
 
   .top-bar {
-    height: 54px; /* Match the height from your JavaScript */
+    height: 58px; /* Match the height from your JavaScript */
     margin: 10px; /* Even margins */
-    padding: 0 5px; /* Adjust padding for screws */
+    padding: 0 1px; /* Adjust padding for screws */
   }
 }

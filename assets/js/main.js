@@ -25,7 +25,7 @@ function handleResponsiveness() {
   // Main container responsiveness
   if (viewportWidth < 768) {
     mainContainer.style.height = "65vh";
-    topBar.style.height = "54px";
+    topBar.style.height = "58px";
   } else {
     mainContainer.style.height = "80vh";
     topBar.style.height = "52px";
@@ -33,7 +33,7 @@ function handleResponsiveness() {
 
   // Adjust screw size based on screen width
   const screws = document.querySelectorAll(".screw");
-  const screwSize = viewportWidth < 768 ? "15px" : "25px"; // Adjust these values as needed
+  const screwSize = viewportWidth < 768 ? "10px" : "25px"; // Adjust these values as needed
   screws.forEach((screw) => {
     screw.style.width = screwSize;
     screw.style.height = screwSize;
