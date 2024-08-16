@@ -13,6 +13,7 @@
 html,
 body {
   height: 100%;
+  max-height: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
   scrollbar-width: 0px;
@@ -153,6 +154,9 @@ header {
   }
 
   body {
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
     background-size: contain; /* Shrink background image width to fit on mobile */
     background-repeat: no-repeat;
     background-position: top center;
