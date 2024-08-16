@@ -55,7 +55,7 @@ header {
 
 .logo {
   height: auto;
-  width: 73.3vw;
+  width: 33.3vw;
 }
 
 .main-container {
@@ -116,12 +116,6 @@ header {
 .content-area {
   flex-grow: 1;
   padding: 10px;
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.146
-  ); /* Added black background for testing */
 }
 
 /* Media query for mobile devices */
@@ -161,5 +155,6 @@ header {
   .top-bar {
     height: 54px; /* Match the height from your JavaScript */
     margin: 10px; /* Even margins */
+    padding: 0 5px; /* Adjust padding for screws */
   }
 }

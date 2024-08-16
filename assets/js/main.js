@@ -40,6 +40,49 @@ function handleResponsiveness() {
   });
 }
 
+function initTabSwitching() {
+  const navButtons = document.querySelectorAll(".nav-button");
+  const contentArea = document.querySelector(".content-area");
+
+  navButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const page = button.textContent.toLowerCase();
+      loadPage(page, contentArea);
+    });
+  });
+
+  // Load default page (About)
+  loadPage("about", contentArea);
+}
+
+function loadPage(page, contentArea) {
+  fetch(`assets/pages/${page}.html`)
+    .then((response) => response.text())
+    .then((html) => {
+      contentArea.innerHTML = html;
+      loadPageStyles(page);
+    })
+    .catch((error) => {
+      console.error("Error loading page:", error);
+      contentArea.innerHTML = "<p>Error loading content.</p>";
+    });
+}
+
+function loadPageStyles(page) {
+  const head = document.head;
+  const link = document.createElement("link");
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.href = `assets/css/${page}.css`;
+  head.appendChild(link);
+}
+
+window.addEventListener("load", function () {
+  handleResponsiveness();
+  lockOrientation();
+  initTabSwitching();
+});
+
 function lockOrientation() {
   if (screen.orientation && screen.orientation.lock) {
     screen.orientation.lock("portrait").catch(function (error) {
