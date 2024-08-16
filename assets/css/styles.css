@@ -38,14 +38,14 @@ body {
 header {
   padding: 0px;
   width: 100%;
-  margin-bottom: -1vh; /* Reduce the gap between logo and main container */
+  margin-bottom: 1vh; /* Reduce the gap between logo and main container */
 }
 
 .logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0vh; /* Additional reduction of gap */
+  margin-bottom: 1vh; /* Additional reduction of gap */
 }
 
 .logo {
@@ -82,7 +82,7 @@ header {
     255,
     255,
     255,
-    0.574
+    0.146
   ); /* Added black background for testing */
 }
 
