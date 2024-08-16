@@ -112,7 +112,7 @@ header {
 
 .nav-icon {
   height: 35%;
-  opacity: 87%;
+  opacity: 83%;
   width: auto;
   transition: filter 0.3s ease;
 }
@@ -131,10 +131,11 @@ header {
   .screw {
     width: 20px; /* Smaller screws on mobile */
     height: 20px;
+    opacity: 85%;
   }
 
   .nav-buttons {
-    margin: 0 0.3vw; /* Space between screws and buttons */
+    margin: 0 0.9vw; /* Space between screws and buttons */
   }
 
   .nav-icon {
@@ -143,7 +144,7 @@ header {
 
   .nav-button {
     font-size: 12px; /* Smaller font on mobile */
-    padding: 5px;
+    padding: 1px;
   }
 
   .logo {
