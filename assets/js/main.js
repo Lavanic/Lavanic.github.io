@@ -9,7 +9,7 @@ function handleResponsiveness() {
 
   // Nav Icons
   const navIcons = document.querySelectorAll(".nav-icon");
-  const iconHeight = viewportWidth < 768 ? "43%" : "3vh";
+  const iconHeight = viewportWidth < 768 ? "27%" : "3vh";
   navIcons.forEach((icon) => {
     icon.style.height = iconHeight;
   });
@@ -33,7 +33,7 @@ function handleResponsiveness() {
 
   // Adjust screw size based on screen width
   const screws = document.querySelectorAll(".screw");
-  const screwSize = viewportWidth < 768 ? "10px" : "25px"; // Adjust these values as needed
+  const screwSize = viewportWidth < 768 ? "20px" : "25px"; // Adjust these values as needed
   screws.forEach((screw) => {
     screw.style.width = screwSize;
     screw.style.height = screwSize;
