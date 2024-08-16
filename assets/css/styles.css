@@ -44,7 +44,7 @@ header {
 }
 
 .logo {
-  max-width: 100%;
+  max-width: 300%;
   height: auto;
   /* Desktop size: Approximately 1/3 of the screen width */
   width: 30vw; /* vw = viewport width */
