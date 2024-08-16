@@ -17,7 +17,7 @@ function handleResponsiveness() {
   // Logo responsiveness
   const smallerDimension = Math.min(viewportWidth, viewportHeight);
   if (smallerDimension < 768) {
-    logo.style.width = "60vmin";
+    logo.style.width = "75vmin";
   } else {
     logo.style.width = "73.33vmin";
   }
