@@ -9,6 +9,8 @@ html,
 body {
   height: 100%;
   overflow-x: hidden;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 body {
@@ -21,6 +23,13 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
 }
 
 header {
@@ -47,17 +56,6 @@ header {
     /* Mobile size: 70% of the screen width */
     width: 70vw;
   }
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
 /* To change the background image, replace 'background.jpg' with your new image file name */
