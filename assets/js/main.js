@@ -12,7 +12,7 @@ function handleResponsiveness() {
   if (smallerDimension < 768) {
     logo.style.width = "70vmin";
   } else {
-    logo.style.width = "33.33vmin";
+    logo.style.width = "83.33vmin";
   }
 
   // Main container responsiveness
