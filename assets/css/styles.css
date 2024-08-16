@@ -129,80 +129,44 @@ header {
 
 /* Media query for mobile devices */
 @media screen and (max-width: 768px) {
+  /* ... (keep the existing mobile styles) ... */
+
   .screw {
-    width: 30px; /* Smaller screws on mobile */
-    height: 30px;
-    padding: 1px;
+    width: 10px;
+    height: 10px;
     opacity: 85%;
   }
-
   .nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    width: 100%;
-    height: 100%;
-    position: relative;
-    margin-bottom: 10px;
+    margin: 0 0.9vw;
   }
-
   .nav-icon {
     height: 22%;
-    width: auto;
   }
-
   .nav-button {
-    position: absolute;
-    padding-bottom: 2px;
-    margin: 0;
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-    transform-origin: bottom left;
-    transform: rotate(-20deg);
+    font-size: 12px;
+    padding: 2px;
   }
-
-  /* Position each button individually */
-  .nav-button:nth-child(1) {
-    left: 1%;
-  }
-  .nav-button:nth-child(2) {
-    left: 18%;
-  }
-  .nav-button:nth-child(3) {
-    left: 36%;
-  }
-  .nav-button:nth-child(4) {
-    left: 50%;
-  }
-  .nav-button:nth-child(5) {
-    left: 72%;
-  }
-
   .logo {
     width: 80vw;
     margin-top: 0vh;
   }
-
   body {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: hidden;
-    background-size: contain; /* Shrink background image width to fit on mobile */
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: top center;
   }
-
   .main-container {
     width: 95%;
     height: 85vh;
     margin: 0px auto;
     margin-top: -5vh;
   }
-
   .top-bar {
-    height: 58px; /* Match the height from your JavaScript */
-    margin: 10px; /* Even margins */
-    padding: 0 1px; /* Adjust padding for screws */
+    height: 58px;
+    margin: 10px;
+    padding: 0 1px;
   }
 }
