@@ -145,6 +145,8 @@ header {
 .content-area {
   flex-grow: 1;
   padding: 10px;
+  margin-top: -2vh;
+  overflow-y: auto;
 }
 
 /* Media query for mobile devices */
@@ -164,7 +166,7 @@ header {
     margin: 0 0.9vw;
   }
   .nav-icon {
-    height: 22%;
+    height: 100%;
   }
   .nav-button {
     height: 70%;
