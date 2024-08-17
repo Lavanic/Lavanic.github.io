@@ -9,7 +9,7 @@ function handleResponsiveness() {
 
   // Nav Icons
   const navIcons = document.querySelectorAll(".nav-icon");
-  const iconHeight = viewportWidth < 768 ? "27%" : "3vh";
+  const iconHeight = viewportWidth < 768 ? "27%" : "2.8vh";
   navIcons.forEach((icon) => {
     icon.style.height = iconHeight;
   });
@@ -40,6 +40,7 @@ function handleResponsiveness() {
   });
 }
 
+// Modify the initTabSwitching function
 function initTabSwitching() {
   const navButtons = document.querySelectorAll(".nav-button");
   const contentArea = document.querySelector(".content-area");
@@ -49,17 +50,30 @@ function initTabSwitching() {
       loadPage(page, contentArea);
     });
   });
-
   // Load default page (Home)
   loadPage("home", contentArea);
 }
 
+// Add this function to handle active state
+function setActiveTab(page) {
+  const navButtons = document.querySelectorAll(".nav-button");
+  navButtons.forEach((button) => {
+    if (button.getAttribute("data-page") === page) {
+      button.classList.add("active");
+    } else {
+      button.classList.remove("active");
+    }
+  });
+}
+
+// Modify the loadPage function
 function loadPage(page, contentArea) {
   fetch(`assets/pages/${page}.html`)
     .then((response) => response.text())
     .then((html) => {
       contentArea.innerHTML = html;
       loadPageStyles(page);
+      setActiveTab(page); // Add this line
     })
     .catch((error) => {
       console.error("Error loading page:", error);
