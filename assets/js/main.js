@@ -9,7 +9,7 @@ function handleResponsiveness() {
 
   // Nav Icons
   const navIcons = document.querySelectorAll(".nav-icon");
-  const iconHeight = viewportWidth < 768 ? "2.1vh" : "2.8vh";
+  const iconHeight = viewportWidth < 768 ? "2vh" : "2.8vh";
   navIcons.forEach((icon) => {
     icon.style.height = iconHeight;
   });
