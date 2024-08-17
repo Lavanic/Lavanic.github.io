@@ -11,14 +11,15 @@
   border-radius: 10px;
   padding: 20px;
   display: flex;
-  align-items: flex-start;
-  overflow: auto;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .intro-text {
   color: white;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1.6;
   margin: 0;
 }
@@ -61,11 +62,9 @@
   .home-content {
     flex-direction: column;
   }
-
   .image-resume-container {
     order: -1;
   }
-
   .home-image {
     max-width: 200px;
   }
@@ -74,6 +73,12 @@
 /* Responsive font sizing */
 @media (min-width: 769px) {
   .intro-text {
-    font-size: calc(10px + 0.2vw);
+    font-size: calc(8px + 0.5vw);
+  }
+}
+
+@media (min-width: 1200px) {
+  .intro-text {
+    font-size: calc(7px + 0.5vw);
   }
 }
