@@ -66,14 +66,51 @@ function setActiveTab(page) {
   });
 }
 
-// Modify the loadPage function
+const text = `Hey there, I'm <span class="blue-text">Oliver Ohrt</span>, a sophomore at <span class="red-text">UW-Madison</span> pursuing a Bachelor of Science in <span class="blue-text">Computer Science</span>. With a passion for coding and a strong foundation in languages like <span class="yellow-text">Java</span>, <span class="yellow-text">Python</span>, and <span class="yellow-text">Rust</span>, I've led multiple projects that showcase my problem-solving skills and leadership abilities. I've won three hackathons, most recently for developing Badger+, an application tailored for <span class="red-text">UW Madison<span> students. My experience ranges from crafting innovative web applications to guiding students as a <span class="blue-text">Robotics Instructor</span> at <span class="green-text">iD Tech</span> Camps. I'm looking to bring my technical expertise and collaborative spirit to a dynamic internship where I can continue to grow and make an impact.`;
+
+let i = 0;
+function typeWriter() {
+  const typedTextElement = document.getElementById("typed-text");
+  if (typedTextElement && i < text.length) {
+    if (text.charAt(i) === "<") {
+      const closingIndex = text.indexOf(">", i);
+      const spanElement = document.createElement("span");
+      spanElement.className = text.substring(i + 1, closingIndex).split('"')[1];
+      typedTextElement.appendChild(spanElement);
+      i = closingIndex + 1;
+    } else if (
+      typedTextElement.lastElementChild &&
+      typedTextElement.lastElementChild.tagName === "SPAN"
+    ) {
+      typedTextElement.lastElementChild.textContent += text.charAt(i);
+      i++;
+    } else {
+      const textNode = document.createTextNode(text.charAt(i));
+      typedTextElement.appendChild(textNode);
+      i++;
+    }
+    // Scroll to the bottom of the container
+    typedTextElement.parentElement.scrollTop =
+      typedTextElement.parentElement.scrollHeight;
+    setTimeout(typeWriter, 20);
+  }
+}
+
 function loadPage(page, contentArea) {
   fetch(`assets/pages/${page}.html`)
     .then((response) => response.text())
     .then((html) => {
       contentArea.innerHTML = html;
       loadPageStyles(page);
-      setActiveTab(page); // Add this line
+      setActiveTab(page);
+      if (page === "home") {
+        i = 0; // Reset the counter
+        const typedTextElement = document.getElementById("typed-text");
+        if (typedTextElement) {
+          typedTextElement.innerHTML = ""; // Clear existing text
+          setTimeout(typeWriter, 100); // Start typing effect after a short delay
+        }
+      }
     })
     .catch((error) => {
       console.error("Error loading page:", error);

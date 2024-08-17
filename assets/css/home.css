@@ -7,21 +7,48 @@
 
 .text-container {
   flex: 2;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.642);
   border-radius: 10px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   max-height: 100%;
+  position: relative;
 }
 
 .intro-text {
   color: white;
+  white-space: pre-wrap;
+  word-wrap: break-word;
   font-family: "IBM Plex Mono", monospace;
-  font-size: 9px;
+  font-size: 6px;
   line-height: 1.6;
   margin: 0;
+  position: relative;
+}
+
+.cursor {
+  display: inline-block;
+  vertical-align: bottom;
+  color: white;
+  animation: blink 0.7s infinite;
+}
+
+.intro-text .blue-text {
+  color: #add8e6 !important;
+}
+
+.intro-text .red-text {
+  color: #ffb6c1 !important;
+}
+
+.intro-text .yellow-text {
+  color: #ffffe0 !important;
+}
+
+.intro-text .green-text {
+  color: #90ee90 !important;
 }
 
 .image-resume-container {
@@ -37,8 +64,8 @@
   height: auto;
   max-height: 38vh;
   object-fit: cover;
-  border-radius: 4px;
-  aspect-ratio: 1 / 2;
+  border-radius: 15px;
+  aspect-ratio: 2 / 3;
 }
 
 .resume-button {
@@ -50,6 +77,7 @@
   padding: 10px 20px;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  height: 6vh;
   width: 100%;
   text-align: center;
   box-sizing: border-box;
@@ -80,6 +108,18 @@
 
 @media (min-width: 1200px) {
   .intro-text {
-    font-size: calc(7px + 0.5vw);
+    font-size: calc(6px + 0.5vw);
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
