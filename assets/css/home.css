@@ -39,14 +39,17 @@
 .intro-text .blue-text {
   color: #add8e6 !important;
 }
+
 .intro-text .red-text {
   color: #ffb6c1 !important;
 }
+
 .intro-text .yellow-text {
-  color: #ffffe0 !important;
+  color: #efefb0 !important;
 }
+
 .intro-text .green-text {
-  color: #90ee90 !important;
+  color: #baefba !important;
 }
 
 .image-resume-container {
@@ -88,18 +91,17 @@
 /* Responsive layout for mobile devices */
 @media (max-width: 768px) {
   .home-content {
-    display: block;
+    flex-direction: column;
     height: 100%;
     position: relative;
-    padding: 10px;
   }
 
   .image-resume-container {
-    float: right;
-    width: 40%;
-    max-width: 200px;
-    margin-left: 10px;
-    margin-bottom: 10px;
+    position: static;
+    width: 100%;
+    max-width: none;
+    padding: 10px 0;
+    box-sizing: border-box;
   }
 
   .home-image {
@@ -112,18 +114,17 @@
     font-size: 12px;
     padding: 8px;
     height: auto;
-    margin-top: 10px;
   }
 
   .text-container {
     width: 100%;
-    height: auto;
-    padding: 15px;
-    overflow: visible;
+    padding-right: 0;
+    box-sizing: border-box;
   }
 
   .intro-text {
-    font-size: 14px;
+    font-size: 12px;
+    max-width: calc(100% - 50px); /* Adjust this value based on your design */
   }
 }
 
