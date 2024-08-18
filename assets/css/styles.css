@@ -21,7 +21,7 @@ body {
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #508c72;
+  background-color: #506c8c;
   background-image: url("../images/backmat.jpg");
   background-size: cover;
   background-position: center;
@@ -51,7 +51,8 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 5vh; /* Additional reduction of gap */
+  margin-bottom: 8vh; /* Additional reduction of gap */
+  margin-top: 5vh;
 }
 
 .logo {
@@ -64,7 +65,7 @@ header {
   max-width: 1400px; /* Adjust this value as needed */
   height: 90vh;
   margin: 2vh auto;
-  background: linear-gradient(180deg, #90b6a4 0%, #6a9f86 100%);
+  background: linear-gradient(180deg, #95a5b3 0%, #75899c 100%);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -81,13 +82,14 @@ header {
   width: calc(100% - 20px); /* Adjusted width for even margins */
   height: 52px; /* Match the height from your JavaScript */
   margin: 10px; /* Even margins */
-  background: linear-gradient(180deg, #86c2a7 0%, #70b092 100%);
+  background: linear-gradient(180deg, #8fa5bc 0%, #7f97ad 100%);
   border-radius: 12px;
 }
 
 .screw {
   width: 20px; /* Adjust size as needed */
   height: 20px;
+  opacity: 80%;
   object-fit: contain;
 }
 
@@ -101,7 +103,7 @@ header {
 }
 
 .nav-button {
-  background-color: #50836b;
+  background-color: #5c6f80;
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -121,7 +123,7 @@ header {
   transform: translate(-50%, -50%);
   width: calc(100% + 16px); /* Adjust as needed */
   height: calc(100% + 16px); /* Adjust as needed */
-  background-color: #50836b;
+  background-color: #5c6f80;
   border-radius: 10px;
   z-index: -1;
 }
@@ -139,7 +141,7 @@ header {
 }
 
 .nav-button.active::before {
-  background-color: #3a6150; /* Darker shade for active state */
+  background-color: #5c6f80; /* Darker shade for active state */
 }
 
 .content-area {

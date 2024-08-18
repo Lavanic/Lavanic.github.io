@@ -45,11 +45,11 @@
 }
 
 .intro-text .yellow-text {
-  color: #efefb0 !important;
+  color: #ffffe0 !important;
 }
 
 .intro-text .green-text {
-  color: #baefba !important;
+  color: #90ee90 !important;
 }
 
 .image-resume-container {
@@ -70,7 +70,7 @@
 }
 
 .resume-button {
-  background-color: #50836b;
+  background-color: #5c6f80;
   color: white;
   font-family: "IBM Plex Mono", monospace;
   font-weight: bold;
@@ -97,10 +97,12 @@
   }
 
   .image-resume-container {
-    position: static;
-    width: 100%;
-    max-width: none;
-    padding: 10px 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40%;
+    max-width: 200px;
+    padding: 10px;
     box-sizing: border-box;
   }
 
@@ -118,13 +120,13 @@
 
   .text-container {
     width: 100%;
-    padding-right: 0;
+    height: 100%;
+    padding-right: calc(40% + 10px);
     box-sizing: border-box;
   }
 
   .intro-text {
     font-size: 12px;
-    max-width: calc(100% - 50px); /* Adjust this value based on your design */
   }
 }
 
