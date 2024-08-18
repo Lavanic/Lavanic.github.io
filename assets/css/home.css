@@ -1,3 +1,4 @@
+/* Base styles */
 .home-content {
   display: flex;
   height: 100%;
@@ -38,15 +39,12 @@
 .intro-text .blue-text {
   color: #add8e6 !important;
 }
-
 .intro-text .red-text {
   color: #ffb6c1 !important;
 }
-
 .intro-text .yellow-text {
   color: #ffffe0 !important;
 }
-
 .intro-text .green-text {
   color: #90ee90 !important;
 }
@@ -87,15 +85,45 @@
   background-color: #3a6150;
 }
 
+/* Responsive layout for mobile devices */
 @media (max-width: 768px) {
   .home-content {
-    flex-direction: column;
+    display: block;
+    height: 100%;
+    position: relative;
+    padding: 10px;
   }
+
   .image-resume-container {
-    order: -1;
-  }
-  .home-image {
+    float: right;
+    width: 40%;
     max-width: 200px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+
+  .home-image {
+    width: 100%;
+    max-height: none;
+    aspect-ratio: 1 / 1;
+  }
+
+  .resume-button {
+    font-size: 12px;
+    padding: 8px;
+    height: auto;
+    margin-top: 10px;
+  }
+
+  .text-container {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+    overflow: visible;
+  }
+
+  .intro-text {
+    font-size: 14px;
   }
 }
 
