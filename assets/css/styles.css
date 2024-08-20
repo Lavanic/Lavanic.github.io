@@ -162,8 +162,8 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5vh; /* Additional reduction of gap */
-    margin-top: 4vh;
+    margin-bottom: 7vh; /* Additional reduction of gap */
+    margin-top: 2vh;
   }
   .screw {
     width: 10px;
