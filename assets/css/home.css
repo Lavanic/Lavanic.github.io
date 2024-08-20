@@ -58,7 +58,8 @@
   flex-direction: column;
   gap: 20px;
   align-items: center;
-  background-color: #7caa94;
+  background: linear-gradient(180deg, #8bb3a0 0%, #7caa94 100%);
+  border-radius: 15px;
 }
 
 .home-image {
