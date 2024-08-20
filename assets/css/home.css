@@ -58,6 +58,7 @@
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  background-color: #7caa94;
 }
 
 .home-image {
