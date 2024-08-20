@@ -158,7 +158,13 @@ header {
     width: calc(100% + 8px); /* Adjust for mobile */
     height: calc(100% + 8px); /* Adjust for mobile */
   }
-
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5vh; /* Additional reduction of gap */
+    margin-top: 4vh;
+  }
   .screw {
     width: 10px;
     height: 10px;
