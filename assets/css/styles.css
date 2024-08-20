@@ -51,8 +51,8 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8vh; /* Additional reduction of gap */
-  margin-top: 5vh;
+  margin-bottom: 10vh; /* Additional reduction of gap */
+  margin-top: 4vh;
 }
 
 .logo {
