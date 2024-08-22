@@ -13,20 +13,25 @@
 
 .skill-section {
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Change to row for desktop */
+  align-items: center; /* Center items vertically */
   margin-bottom: 20px;
 }
 
 .skill-section h2 {
   color: white;
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  margin-bottom: 0; /* Remove bottom margin */
+  margin-right: 20px; /* Add right margin for spacing */
+  width: 150px; /* Set a fixed width for the title */
+  flex-shrink: 0; /* Prevent the title from shrinking */
 }
 
 .skills-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  flex-grow: 1; /* Allow the row to grow and fill available space */
 }
 
 .skill-bubble {
@@ -79,12 +84,16 @@
   }
 
   .skill-section {
+    flex-direction: column; /* Change back to column for mobile */
+    align-items: flex-start; /* Align items to the start */
     margin-bottom: 15px;
   }
 
   .skill-section h2 {
     font-size: 1.1rem;
     margin-bottom: 8px;
+    margin-right: 0; /* Remove right margin */
+    width: auto; /* Reset width */
   }
 
   .skills-row {
@@ -92,8 +101,8 @@
   }
 
   .skill-bubble {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     font-size: 0.6rem;
   }
 
