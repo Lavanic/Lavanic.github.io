@@ -1,4 +1,119 @@
+/* skills.css */
 .skills-content {
-  height: 100%;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 100%;
+  padding: 15px;
+  overflow-y: auto;
+  font-family: "Arial", sans-serif;
+  background-color: rgba(80, 131, 107, 0.8);
+  border-radius: 10px;
+}
+
+.skill-section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.skill-section h2 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-bubble {
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #50836b;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.skill-bubble:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.skill-bubble::after {
+  content: attr(title);
+  position: absolute;
+  top: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, top 0.3s ease;
+}
+
+.skill-bubble:hover::after {
+  opacity: 1;
+  top: -45px;
+}
+
+@media screen and (max-width: 768px) {
+  .skills-content {
+    padding: 10px;
+  }
+
+  .skill-section {
+    margin-bottom: 15px;
+  }
+
+  .skill-section h2 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .skills-row {
+    justify-content: flex-start;
+  }
+
+  .skill-bubble {
+    width: 50px;
+    height: 50px;
+    font-size: 0.6rem;
+  }
+
+  .skill-bubble::after {
+    font-size: 0.6rem;
+    white-space: normal;
+    max-width: 120px;
+    text-align: center;
+  }
+}
+
+/* Ensure content area is scrollable */
+.content-area {
+  height: auto !important;
+  min-height: 70% !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure skills content is visible */
+.skills-content {
+  position: relative;
+  z-index: 1;
 }
