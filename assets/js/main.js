@@ -69,6 +69,7 @@ function setActiveTab(page) {
 const text = `Hey there, I'm <span class="blue-text">Oliver Ohrt</span>, a sophomore at <span class="red-text">UW-Madison</span> pursuing a Bachelor of Science in <span class="blue-text">Computer Science</span>. With a passion for coding and a strong foundation in languages like <span class="yellow-text">Java</span>, <span class="yellow-text">Python</span>, and <span class="yellow-text">Rust</span>, I've led multiple projects that showcase my problem-solving skills and leadership abilities. I've won three hackathons, most recently for developing Badger+, an application tailored for <span class="red-text">UW Madison<span> students. My experience ranges from crafting innovative web applications to guiding students as a <span class="blue-text">Robotics Instructor</span> at <span class="green-text">iD Tech</span> Camps. I'm looking to bring my technical expertise and collaborative spirit to a dynamic internship where I can continue to grow and make an impact.`;
 
 let i = 0;
+
 function typeWriter() {
   const typedTextElement = document.getElementById("typed-text");
   if (typedTextElement && i < text.length) {
@@ -89,13 +90,14 @@ function typeWriter() {
       typedTextElement.appendChild(textNode);
       i++;
     }
-    // Scroll to the bottom of the container
-    typedTextElement.parentElement.scrollTop =
-      typedTextElement.parentElement.scrollHeight;
+    // Force reflow to ensure proper text wrapping
+    typedTextElement.style.display = "inline-block";
+    void typedTextElement.offsetHeight;
+    typedTextElement.style.display = "inline";
+
     setTimeout(typeWriter, 20);
   }
 }
-
 function loadPage(page, contentArea) {
   fetch(`assets/pages/${page}.html`)
     .then((response) => response.text())
