@@ -84,7 +84,6 @@
 .content-area {
   height: auto !important;
   min-height: 70% !important;
-  overflow-y: auto !important;
 }
 
 /* Ensure skills content is visible */
