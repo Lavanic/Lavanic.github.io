@@ -13,25 +13,25 @@
 
 .skill-section {
   display: flex;
-  flex-direction: row; /* Change to row for desktop */
-  align-items: center; /* Center items vertically */
+  flex-direction: row;
+  align-items: center;
   margin-bottom: 20px;
 }
 
 .skill-section h2 {
   color: white;
   font-size: 1.2rem;
-  margin-bottom: 0; /* Remove bottom margin */
-  margin-right: 20px; /* Add right margin for spacing */
-  width: 150px; /* Set a fixed width for the title */
-  flex-shrink: 0; /* Prevent the title from shrinking */
+  margin-bottom: 0;
+  margin-right: 20px;
+  width: 150px;
+  flex-shrink: 0;
 }
 
 .skills-row {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  flex-grow: 1; /* Allow the row to grow and fill available space */
+  flex-grow: 1;
 }
 
 .skill-bubble {
@@ -42,40 +42,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.7rem;
-  font-weight: bold;
-  color: #50836b;
   position: relative;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.skill-bubble:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.skill-bubble::after {
-  content: attr(title);
-  position: absolute;
-  top: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 0.7rem;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, top 0.3s ease;
-}
-
-.skill-bubble:hover::after {
-  opacity: 1;
-  top: -45px;
+.skill-bubble svg {
+  width: 70%;
+  height: 70%;
 }
 
 @media screen and (max-width: 768px) {
@@ -84,16 +58,16 @@
   }
 
   .skill-section {
-    flex-direction: column; /* Change back to column for mobile */
-    align-items: flex-start; /* Align items to the start */
+    flex-direction: column;
+    align-items: flex-start;
     margin-bottom: 15px;
   }
 
   .skill-section h2 {
     font-size: 1.1rem;
     margin-bottom: 8px;
-    margin-right: 0; /* Remove right margin */
-    width: auto; /* Reset width */
+    margin-right: 0;
+    width: auto;
   }
 
   .skills-row {
@@ -103,14 +77,6 @@
   .skill-bubble {
     width: 40px;
     height: 40px;
-    font-size: 0.6rem;
-  }
-
-  .skill-bubble::after {
-    font-size: 0.6rem;
-    white-space: normal;
-    max-width: 120px;
-    text-align: center;
   }
 }
 
