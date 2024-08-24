@@ -2,8 +2,7 @@
 .skills-content {
   display: flex;
   flex-direction: column;
-  height: auto;
-  min-height: 100%;
+  height: 100%;
   padding: 2vh;
   overflow-y: auto;
   font-family: "Arial", sans-serif;
@@ -95,7 +94,7 @@ codersrank-skills-chart::part(chart-container) {
   .codersrank-chart-section {
     width: 85%;
     height: 55%;
-    bottom: -30px;
+    bottom: -10vh;
     right: 10px;
   }
   .skills-content {
