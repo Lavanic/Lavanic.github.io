@@ -18,15 +18,27 @@
   background-color: rgba(80, 131, 107, 0.636);
   border-radius: 10px;
   overflow: visible; /* Changed from hidden to visible */
+  padding-left: 15px; /* Add left padding */
+}
+
+@font-face {
+  font-family: "Cyrivendell";
+  src: url("../fonts/Cyrivendell.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
 .skill-section h2 {
+  font-family: "Cyrivendell", Arial, sans-serif;
   color: white;
-  font-size: 1.2rem;
+  font-size: 0.8rem;
   margin-bottom: 0;
-  margin-right: 20px;
+  margin-right: 0px;
   width: 150px;
-  flex-shrink: 0;
+  flex-shrink: 0vh;
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
 }
 
 .skills-row {
@@ -77,7 +89,7 @@
   top: -10px; /* Adjust as needed */
   left: 50%;
   transform: translateX(-50%);
-  background-color: #2a3b33c7;
+  background-color: #2a3b33df;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
