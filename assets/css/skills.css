@@ -95,8 +95,8 @@ codersrank-skills-chart::part(chart-container) {
     --tooltip-font-size: 4px;
   }
   .codersrank-chart-section {
-    width: 70%;
-    height: 25%;
+    width: 60%;
+    height: 60%;
     bottom: 30px;
     right: 10px;
   }
