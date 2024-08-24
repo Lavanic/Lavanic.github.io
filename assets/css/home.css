@@ -74,6 +74,14 @@
   text-align: center;
   box-sizing: border-box;
 }
+
+.resume-button-image {
+  width: 100%;
+  height: auto;
+  max-height: 3vh;
+  opacity: 80%;
+  object-fit: contain;
+}
 .resume-button:hover {
   background-color: #3a6150;
 }
