@@ -91,10 +91,11 @@ codersrank-skills-chart::part(chart-container) {
 @media screen and (max-width: 768px) {
   codersrank-skills-chart {
     --label-font-size: 4px;
+    --tooltip-total-font-size: 8px;
   }
   .codersrank-chart-section {
     width: 70%;
-    height: 70%;
+    height: 25%;
     bottom: 20px;
     right: 20px;
   }
