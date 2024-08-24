@@ -7,15 +7,13 @@
   font-family: "IBM Plex Mono", monospace;
   background-color: rgba(80, 131, 107, 0.8);
   border-radius: 10px;
-  overflow-y: auto; /* Make the entire content area scrollable */
+  overflow-y: auto;
 }
-
 .recs-container {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
 .rec-item {
   display: flex;
   background-color: #2a3b33;
@@ -23,41 +21,30 @@
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .rec-image {
-  flex: 0 0 120px; /* Reduced fixed width */
-  height: auto; /* Allow height to adjust */
+  width: 60%;
+  height: auto;
 }
-
 .rec-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .rec-text {
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
 }
-
 .rec-text h2 {
   color: #ffffff;
   margin-top: -2vh;
   margin-bottom: 2px;
   font-size: 1em;
 }
-
 .rec-title {
   font-size: 0.7em;
   color: #eeeeee;
-  margin-bottom: 2px;
-}
-
-.rec-date {
-  font-size: 0.6em;
-  color: #ffffff;
   margin-bottom: 2px;
 }
 
@@ -66,17 +53,14 @@
   border-radius: 5px;
   padding: 10px;
   flex-grow: 1;
-  overflow-y: visible; /* Make the entire content area scrollable */
+  overflow-y: auto;
 }
-
 .rec-body {
-  font-size: 0.75em;
-  line-height: 1.4;
+  font-size: 0.25em;
+  line-height: 1.1;
   color: #ffffff;
   margin: 0;
-  overflow-y: visible; /* Make the entire content area scrollable */
 }
-
 .rec-body .blue-text {
   color: #add8e6 !important;
 }
@@ -89,65 +73,95 @@
 .rec-body .green-text {
   color: #a9eda9 !important;
 }
-/* Updated responsive layout for mobile devices */
+
+/* Responsive layout for mobile devices */
 @media (max-width: 768px) {
   .recs-content {
     padding: 5px;
   }
-
   .rec-item {
     flex-direction: row;
     align-items: flex-start;
     font-size: 0.8em;
     max-height: 30vh;
   }
-
   .rec-image {
     flex: 0 0 80px;
     height: 80px;
     margin-right: 10px;
   }
-
   .rec-text {
     padding: 5px;
     flex: 1;
   }
-
   .rec-text h2 {
     font-size: 0.9em;
     padding: 2px;
     margin-top: 5px;
   }
-
   .rec-title {
     font-size: 0em;
     margin-bottom: 0px;
   }
-
   .rec-date {
     font-size: 0em;
     margin-bottom: 0px;
   }
-
   .rec-body-container {
     padding: 5px;
   }
-
   .rec-body {
     font-size: 0.7em;
     line-height: 1.3;
   }
 }
 
-/* Responsive font sizing */
-@media (min-width: 769px) {
-  .recs-content {
-    font-size: calc(10px + 0.1vw);
-  }
-}
-
+/* Responsive font sizing for larger screens */
 @media (min-width: 1200px) {
   .recs-content {
     font-size: calc(12px + 0.1vw);
+  }
+  .rec-item {
+    max-height: none; /* Remove max-height constraint for larger screens */
+  }
+  .rec-image {
+    flex: 0 0 10%; /* Adjust image size for larger screens */
+    max-width: 150px;
+  }
+  .rec-text h2 {
+    font-size: 1.1em;
+  }
+  .rec-title,
+  .rec-date {
+    font-size: 0.8em;
+  }
+  .rec-body {
+    font-size: 0.85em;
+  }
+}
+
+/* Ultrawide screen adjustments */
+@media (min-width: 2000px) {
+  .recs-container {
+    max-width: 1800px;
+    margin: 0 auto;
+  }
+  .rec-item {
+    max-width: 1600px; /* Limit width on very large screens */
+    margin: 0 auto;
+  }
+  .rec-image {
+    flex: 0 0 8%; /* Further adjust image size for ultrawide screens */
+    max-width: 180px;
+  }
+  .rec-text h2 {
+    font-size: 1.2em;
+  }
+  .rec-title,
+  .rec-date {
+    font-size: 0.9em;
+  }
+  .rec-body {
+    font-size: 0.95em;
   }
 }
