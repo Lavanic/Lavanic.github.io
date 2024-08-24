@@ -45,12 +45,47 @@
   align-items: center;
   position: relative;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible */
+  transition: transform 0.3s ease; /* Add smooth transition for growth */
 }
 
 .skill-bubble svg {
   width: 70%;
   height: 70%;
+  transition: all 0.3s ease; /* Smooth transition for SVG */
+}
+
+/* Hover effect for skill bubbles */
+.skill-bubble:hover {
+  transform: scale(1.15); /* Grow by 15% on hover */
+  z-index: 10; /* Ensure it appears above other elements */
+}
+
+.skill-bubble:hover svg {
+  width: 80%;
+  height: 80%;
+}
+
+/* Style for the title that appears on hover */
+.skill-bubble::after {
+  content: attr(title);
+  position: absolute;
+  top: -30px; /* Adjust as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Prevent it from interfering with other interactions */
+}
+
+.skill-bubble:hover::after {
+  opacity: 1;
 }
 
 /* Updated styles for CodersRank chart */
@@ -108,7 +143,6 @@ codersrank-skills-chart::part(chart-container) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 15px;
-    background-color: #2a3b33;
   }
 
   .skill-section h2 {
@@ -121,7 +155,6 @@ codersrank-skills-chart::part(chart-container) {
   .skills-row {
     justify-content: flex-start;
     gap: 10px;
-    background-color: rgba(80, 131, 107, 0.8);
   }
 
   .skill-bubble {
