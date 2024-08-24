@@ -171,7 +171,7 @@ codersrank-skills-chart::part(chart-container) {
 
   .skills-row {
     justify-content: flex-start;
-    gap: 10px;
+    gap: 5px;
   }
 
   .skill-bubble {
