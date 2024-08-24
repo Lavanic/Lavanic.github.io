@@ -116,11 +116,11 @@
   .rec-text h2 {
     font-size: 0.9em;
     margin-top: 0;
-    margin-bottom: 0px;
+    margin-bottom: 10px;
   }
 
   .rec-title {
-    font-size: 0.0em;
+    font-size: 0em;
     margin-bottom: 0px;
   }
 
