@@ -95,7 +95,7 @@ function typeWriter() {
     void typedTextElement.offsetHeight;
     typedTextElement.style.display = "inline";
 
-    setTimeout(typeWriter, 10);
+    setTimeout(typeWriter, 5);
   }
 }
 function loadPage(page, contentArea) {
