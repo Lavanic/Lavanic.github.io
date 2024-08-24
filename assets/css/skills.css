@@ -70,12 +70,10 @@
 }
 
 codersrank-skills-chart {
-  --label-font-size: 8px;
+  --label-font-size: 20px;
   --tooltip-total-font-size: 20px;
-  --legend-font-size: 10px;
   --tooltip-font-size: 8px;
   --label-text-color: #ffffff;
-  --label-font-size: 8px;
   --chart-bg-color: transparent;
   --text-color: #ffffff; /* Set text color to white */
   --svg-text-color: #ffffff; /* Additional property for SVG text color */
