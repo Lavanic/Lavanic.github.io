@@ -55,8 +55,8 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 20px; /* Moved up slightly to prevent cropping */
-  right: 20px;
+  bottom: 10px; /* Moved up slightly to prevent cropping */
+  right: 10px;
   width: 60%; /* Reduced width for better fit */
   height: 60%; /* Reduced height for better fit */
   z-index: 0;
@@ -73,6 +73,7 @@ codersrank-skills-chart {
   --label-font-size: 8px;
   --legend-font-size: 10px;
   --tooltip-font-size: 8px;
+  --label-text-color: #ffffff;
   --chart-bg-color: transparent;
   --text-color: #ffffff; /* Set text color to white */
   --svg-text-color: #ffffff; /* Additional property for SVG text color */
