@@ -57,8 +57,8 @@
   position: absolute;
   bottom: 200px; /* Moved up slightly to prevent cropping */
   right: 20px;
-  width: 50%; /* Reduced width for better fit */
-  height: 35%; /* Reduced height for better fit */
+  width: 100%; /* Reduced width for better fit */
+  height: 100%; /* Reduced height for better fit */
   z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
