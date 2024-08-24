@@ -99,7 +99,7 @@
     flex-direction: row;
     align-items: flex-start;
     font-size: 0.8em;
-    max-height: 28vh;
+    max-height: 30vh;
   }
 
   .rec-image {
@@ -115,17 +115,17 @@
 
   .rec-text h2 {
     font-size: 0.9em;
-    margin-bottom: 2vh;
+    padding: 2px;
   }
 
   .rec-title {
-    font-size: none;
-    margin-bottom: none;
+    font-size: 0em;
+    margin-bottom: 0px;
   }
 
   .rec-date {
-    font-size: none;
-    margin-bottom: none;
+    font-size: 0em;
+    margin-bottom: 0px;
   }
 
   .rec-body-container {
