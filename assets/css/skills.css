@@ -54,8 +54,8 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 10px; /* Moved up slightly to prevent cropping */
-  right: 10px;
+  bottom: 1vh; /* Moved up slightly to prevent cropping */
+  right: 1vw;
   width: 60%; /* Reduced width for better fit */
   height: 60%; /* Reduced height for better fit */
   z-index: 0;
@@ -69,7 +69,8 @@
 }
 
 codersrank-skills-chart {
-  --label-font-size: 15px;
+  --label-font-size: 12px;
+  --label-font-weight: 700;
   --tooltip-total-font-size: 20px;
   --tooltip-font-size: 8px;
   --label-text-color: #ffffff;
@@ -87,7 +88,7 @@ codersrank-skills-chart::part(chart-container) {
 
 @media screen and (max-width: 768px) {
   codersrank-skills-chart {
-    --label-font-size: 7px;
+    --label-font-size: 6px;
     --tooltip-total-font-size: 4px;
     --tooltip-font-size: 4px;
   }
