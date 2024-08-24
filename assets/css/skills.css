@@ -3,12 +3,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1vh;
-  margin: 4px; /* Add margin on all sides */
+  padding: 2vh;
   overflow-y: hidden;
   font-family: "Arial", sans-serif;
   background-color: #2a3b33;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .skill-section {
