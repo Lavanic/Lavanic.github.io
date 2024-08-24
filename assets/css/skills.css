@@ -55,7 +55,7 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 20px; /* Moved up slightly to prevent cropping */
+  bottom: 200px; /* Moved up slightly to prevent cropping */
   right: 20px;
   width: 50%; /* Reduced width for better fit */
   height: 35%; /* Reduced height for better fit */
