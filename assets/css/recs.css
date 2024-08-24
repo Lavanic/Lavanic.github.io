@@ -123,10 +123,10 @@
   }
   .rec-item {
     max-height: none; /* Remove max-height constraint for larger screens */
-    min-height: 33vh;
+    min-height: 25vh;
   }
   .rec-image {
-    flex: 0 0 10%; /* Adjust image size for larger screens */
+    flex: 0 0 20%; /* Adjust image size for larger screens */
     max-width: 150px;
   }
   .rec-text h2 {
@@ -137,7 +137,7 @@
     font-size: 0.8em;
   }
   .rec-body {
-    font-size: 1.5em;
+    font-size: 0.85em;
   }
 }
 
@@ -153,7 +153,7 @@
     min-height: 33vh;
   }
   .rec-image {
-    flex: 0 0 8%; /* Further adjust image size for ultrawide screens */
+    flex: 0 0 30%; /* Further adjust image size for ultrawide screens */
     max-width: 180px;
   }
   .rec-text h2 {
