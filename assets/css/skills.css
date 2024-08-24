@@ -52,7 +52,34 @@
   height: 70%;
 }
 
+/* New styles for CodersRank chart */
+.codersrank-chart-section {
+  margin-top: 30px;
+}
+
+.codersrank-chart-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+codersrank-skills-chart {
+  --label-font-size: 8px;
+  --legend-font-size: 10px;
+  --tooltip-font-size: 8px;
+  --chart-bg-color: rgba(80, 131, 107, 0.8);
+  width: 100%;
+  height: 300px;
+}
+
 @media screen and (max-width: 768px) {
+  .codersrank-chart-container {
+    max-width: 100%;
+  }
+
+  codersrank-skills-chart {
+    height: 250px;
+  }
   .skills-content {
     padding: 10px;
   }
