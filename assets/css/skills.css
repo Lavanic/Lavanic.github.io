@@ -16,6 +16,8 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 20px;
+  background-color: rgba(80, 131, 107, 0.8);
+  border-radius: 10px;
 }
 
 .skill-section h2 {
@@ -31,7 +33,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  background-color: rgba(80, 131, 107, 0.8);
   flex-grow: 1;
 }
 
