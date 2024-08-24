@@ -99,6 +99,7 @@
     flex-direction: row;
     align-items: flex-start;
     font-size: 0.8em;
+    max-height: 25vh;
   }
 
   .rec-image {
@@ -119,7 +120,7 @@
   }
 
   .rec-title {
-    font-size: 0.45em;
+    font-size: 0.15em;
     margin-bottom: 2px;
   }
 
