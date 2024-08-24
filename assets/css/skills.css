@@ -3,7 +3,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 2vh;
+  padding: 1vh;
+  margin: 4px; /* Add margin on all sides */
   overflow-y: hidden;
   font-family: "Arial", sans-serif;
   background-color: #2a3b33;
