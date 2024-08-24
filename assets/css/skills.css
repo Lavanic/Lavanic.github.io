@@ -55,10 +55,10 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 50px; /* Moved up slightly to prevent cropping */
+  bottom: 20px; /* Moved up slightly to prevent cropping */
   right: 20px;
-  width: 50%; /* Reduced width for better fit */
-  height: 50%; /* Reduced height for better fit */
+  width: 60%; /* Reduced width for better fit */
+  height: 60%; /* Reduced height for better fit */
   z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
