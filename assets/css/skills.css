@@ -69,7 +69,7 @@
 }
 
 codersrank-skills-chart {
-  --label-font-size: 20px;
+  --label-font-size: 15px;
   --tooltip-total-font-size: 20px;
   --tooltip-font-size: 8px;
   --label-text-color: #ffffff;
@@ -87,7 +87,7 @@ codersrank-skills-chart::part(chart-container) {
 
 @media screen and (max-width: 768px) {
   codersrank-skills-chart {
-    --label-font-size: 4px;
+    --label-font-size: 10px;
     --tooltip-total-font-size: 4px;
     --tooltip-font-size: 4px;
   }
