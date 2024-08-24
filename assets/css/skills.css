@@ -34,6 +34,7 @@
   flex-wrap: wrap;
   gap: 20px;
   flex-grow: 1;
+  z-index: 3;
   overflow: visible; /* Changed from hidden to visible */
 }
 
@@ -97,7 +98,7 @@
   right: 1vw;
   width: 60%; /* Reduced width for better fit */
   height: 60%; /* Reduced height for better fit */
-  z-index: -1;
+  z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
 
