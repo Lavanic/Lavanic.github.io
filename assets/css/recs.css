@@ -123,7 +123,7 @@
   }
   .rec-item {
     max-height: none; /* Remove max-height constraint for larger screens */
-    min-height: 40vh;
+    min-height: 33vh;
   }
   .rec-image {
     flex: 0 0 10%; /* Adjust image size for larger screens */
@@ -150,7 +150,7 @@
   .rec-item {
     max-width: 1600px; /* Limit width on very large screens */
     margin: 0 auto;
-    min-height: 40vh;
+    min-height: 33vh;
   }
   .rec-image {
     flex: 0 0 8%; /* Further adjust image size for ultrawide screens */
