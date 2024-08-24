@@ -17,6 +17,7 @@
   margin-bottom: 20px;
   background-color: rgba(80, 131, 107, 0.8);
   border-radius: 10px;
+  overflow: visible; /* Changed from hidden to visible */
 }
 
 .skill-section h2 {
@@ -33,6 +34,7 @@
   flex-wrap: wrap;
   gap: 20px;
   flex-grow: 1;
+  overflow: visible; /* Changed from hidden to visible */
 }
 
 .skill-bubble {
@@ -70,10 +72,10 @@
 .skill-bubble::after {
   content: attr(title);
   position: absolute;
-  top: -30px; /* Adjust as needed */
+  top: -10px; /* Adjust as needed */
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: #2a3b33c7;
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -95,7 +97,7 @@
   right: 1vw;
   width: 60%; /* Reduced width for better fit */
   height: 60%; /* Reduced height for better fit */
-  z-index: 0;
+  z-index: -1;
   pointer-events: all; /* Allow interaction with the chart */
 }
 
