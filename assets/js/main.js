@@ -75,11 +75,11 @@ let hasReachedBreakPoint = false;
 function typeWriter() {
   const typedTextElement = document.getElementById("typed-text");
   const expandedTextElement = document.getElementById("expanded-text");
+  const isMobile = window.innerWidth <= 768;
 
-  if (typedTextElement && expandedTextElement && i < text.length) {
-    let currentElement = hasReachedBreakPoint
-      ? expandedTextElement
-      : typedTextElement;
+  if (typedTextElement && i < text.length) {
+    let currentElement =
+      isMobile && hasReachedBreakPoint ? expandedTextElement : typedTextElement;
 
     if (text.charAt(i) === "<") {
       const closingIndex = text.indexOf(">", i);
@@ -102,15 +102,15 @@ function typeWriter() {
     // Check if we've reached the break point
     if (
       !hasReachedBreakPoint &&
-      currentElement.textContent.includes(breakPoint)
+      typedTextElement.textContent.includes(breakPoint)
     ) {
       hasReachedBreakPoint = true;
-      if (window.innerWidth <= 768) {
+      if (isMobile) {
         expandedTextElement.style.display = "block";
       }
     }
 
-    setTimeout(typeWriter, 5);
+    setTimeout(typeWriter, 10);
   } else {
     // Typing is complete
     hasTypedOnce = true;
@@ -137,6 +137,7 @@ function loadPage(page, contentArea) {
         const typedTextElement = document.getElementById("typed-text");
         const expandedTextElement = document.getElementById("expanded-text");
         const cursor = document.getElementById("cursor");
+        const isMobile = window.innerWidth <= 768;
 
         if (typedTextElement && expandedTextElement) {
           if (!hasTypedOnce) {
@@ -147,11 +148,14 @@ function loadPage(page, contentArea) {
             if (cursor) cursor.style.display = "inline-block";
             setTimeout(typeWriter, 100);
           } else {
-            const [firstPart, secondPart] = text.split(breakPoint);
-            typedTextElement.innerHTML = firstPart + breakPoint;
-            expandedTextElement.innerHTML = secondPart;
-            if (window.innerWidth <= 768) {
+            if (isMobile) {
+              const [firstPart, secondPart] = text.split(breakPoint);
+              typedTextElement.innerHTML = firstPart + breakPoint;
+              expandedTextElement.innerHTML = secondPart;
               expandedTextElement.style.display = "block";
+            } else {
+              typedTextElement.innerHTML = text;
+              expandedTextElement.style.display = "none";
             }
             if (cursor) cursor.style.display = "none";
           }
