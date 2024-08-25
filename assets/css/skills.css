@@ -114,7 +114,7 @@
   bottom: 0vh; /* Moved up slightly to prevent cropping */
   right: 1vw;
   width: 35vw; /* Reduced width for better fit */
-  height: 35vw; /* Reduced height for better fit */
+  height: 25vw; /* Reduced height for better fit */
   z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
