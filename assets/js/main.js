@@ -1,5 +1,5 @@
 // main.js
-
+let hasTypedOnce = false;
 function handleResponsiveness() {
   const logo = document.querySelector(".logo");
   const mainContainer = document.querySelector(".main-container");
@@ -96,8 +96,21 @@ function typeWriter() {
     typedTextElement.style.display = "inline";
 
     setTimeout(typeWriter, 5);
+  } else {
+    // Typing is complete
+    hasTypedOnce = true;
+    // Hide the cursor when typing is complete
+    const cursor = document.getElementById("cursor");
+    if (cursor) {
+      cursor.style.display = "none";
+    }
   }
 }
+// Add this function to reset the typing effect
+function resetTypingEffect() {
+  hasTypedOnce = false;
+}
+
 function loadPage(page, contentArea) {
   fetch(`assets/pages/${page}.html`)
     .then((response) => response.text())
@@ -106,11 +119,20 @@ function loadPage(page, contentArea) {
       loadPageStyles(page);
       setActiveTab(page);
       if (page === "home") {
-        i = 0; // Reset the counter
         const typedTextElement = document.getElementById("typed-text");
+        const cursor = document.getElementById("cursor");
         if (typedTextElement) {
-          typedTextElement.innerHTML = ""; // Clear existing text
-          setTimeout(typeWriter, 100); // Start typing effect after a short delay
+          if (!hasTypedOnce) {
+            // Only type if it hasn't been typed before
+            i = 0; // Reset the counter
+            typedTextElement.innerHTML = ""; // Clear existing text
+            if (cursor) cursor.style.display = "inline-block"; // Show cursor
+            setTimeout(typeWriter, 100); // Start typing effect after a short delay
+          } else {
+            // If it has been typed before, just display the full text
+            typedTextElement.innerHTML = text;
+            if (cursor) cursor.style.display = "none"; // Hide cursor
+          }
         }
       }
     })
@@ -131,21 +153,8 @@ function loadPageStyles(page) {
 
 window.addEventListener("load", function () {
   handleResponsiveness();
-  lockOrientation();
   initTabSwitching();
-});
-
-function lockOrientation() {
-  if (screen.orientation && screen.orientation.lock) {
-    screen.orientation.lock("portrait").catch(function (error) {
-      console.log("Orientation lock failed: ", error);
-    });
-  }
-}
-
-window.addEventListener("load", function () {
-  handleResponsiveness();
-  lockOrientation();
+  hasTypedOnce = false; // Reset the typing effect on page load
 });
 
 window.addEventListener("resize", handleResponsiveness);
