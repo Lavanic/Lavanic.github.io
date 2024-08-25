@@ -66,46 +66,61 @@ function setActiveTab(page) {
   });
 }
 
-const text = `Hey there, I'm <span class="blue-text">Oliver Ohrt</span>, a sophomore at <span class="red-text">UW-Madison</span> pursuing a Bachelor of Science in <span class="blue-text">Computer Science</span>. With a passion for coding and a strong foundation in languages like <span class="yellow-text">Java</span>, <span class="yellow-text">Python</span>, and <span class="yellow-text">Rust</span>, I've led multiple projects that showcase my problem-solving skills and leadership abilities. I've won three hackathons, most recently for developing Badger+, an application tailored for <span class="red-text">UW Madison<span> students. My experience ranges from crafting innovative web applications to guiding students as a <span class="blue-text">Robotics Instructor</span> at <span class="green-text">iD Tech</span> Camps. I'm looking to bring my technical expertise and collaborative spirit to a dynamic internship where I can continue to grow and make an impact.`;
+const text = `Hey there, I'm <span class="blue-text">Oliver Ohrt</span>, a sophomore at <span class="red-text">UW-Madison</span> pursuing a Bachelor of Science in <span class="blue-text">Computer Science</span>. With a passion for coding and a strong foundation in languages like <span class="yellow-text">Java</span>, <span class="yellow-text">Python</span>, and <span class="yellow-text">Rust</span>, I've led multiple projects that showcase my problem-solving skills and leadership abilities. I've won three hackathons, most recently for developing Badger+, an application tailored for <span class="red-text">UW Madison</span> students. My experience ranges from crafting innovative web applications to guiding students as a <span class="blue-text">Robotics Instructor</span> at <span class="green-text">iD Tech</span> Camps. I'm looking to bring my technical expertise and collaborative spirit to a dynamic internship where I can continue to grow and make an impact.`;
 
 let i = 0;
+const breakPoint = "tailored for UW Madison students.";
+let hasReachedBreakPoint = false;
 
 function typeWriter() {
   const typedTextElement = document.getElementById("typed-text");
-  if (typedTextElement && i < text.length) {
+  const expandedTextElement = document.getElementById("expanded-text");
+
+  if (typedTextElement && expandedTextElement && i < text.length) {
+    let currentElement = hasReachedBreakPoint
+      ? expandedTextElement
+      : typedTextElement;
+
     if (text.charAt(i) === "<") {
       const closingIndex = text.indexOf(">", i);
       const spanElement = document.createElement("span");
       spanElement.className = text.substring(i + 1, closingIndex).split('"')[1];
-      typedTextElement.appendChild(spanElement);
+      currentElement.appendChild(spanElement);
       i = closingIndex + 1;
     } else if (
-      typedTextElement.lastElementChild &&
-      typedTextElement.lastElementChild.tagName === "SPAN"
+      currentElement.lastElementChild &&
+      currentElement.lastElementChild.tagName === "SPAN"
     ) {
-      typedTextElement.lastElementChild.textContent += text.charAt(i);
+      currentElement.lastElementChild.textContent += text.charAt(i);
       i++;
     } else {
       const textNode = document.createTextNode(text.charAt(i));
-      typedTextElement.appendChild(textNode);
+      currentElement.appendChild(textNode);
       i++;
     }
-    // Force reflow to ensure proper text wrapping
-    typedTextElement.style.display = "inline-block";
-    void typedTextElement.offsetHeight;
-    typedTextElement.style.display = "inline";
+
+    // Check if we've reached the break point
+    if (
+      !hasReachedBreakPoint &&
+      currentElement.textContent.includes(breakPoint)
+    ) {
+      hasReachedBreakPoint = true;
+      if (window.innerWidth <= 768) {
+        expandedTextElement.style.display = "block";
+      }
+    }
 
     setTimeout(typeWriter, 5);
   } else {
     // Typing is complete
     hasTypedOnce = true;
-    // Hide the cursor when typing is complete
     const cursor = document.getElementById("cursor");
     if (cursor) {
       cursor.style.display = "none";
     }
   }
 }
+
 // Add this function to reset the typing effect
 function resetTypingEffect() {
   hasTypedOnce = false;
@@ -120,18 +135,25 @@ function loadPage(page, contentArea) {
       setActiveTab(page);
       if (page === "home") {
         const typedTextElement = document.getElementById("typed-text");
+        const expandedTextElement = document.getElementById("expanded-text");
         const cursor = document.getElementById("cursor");
-        if (typedTextElement) {
+
+        if (typedTextElement && expandedTextElement) {
           if (!hasTypedOnce) {
-            // Only type if it hasn't been typed before
-            i = 0; // Reset the counter
-            typedTextElement.innerHTML = ""; // Clear existing text
-            if (cursor) cursor.style.display = "inline-block"; // Show cursor
-            setTimeout(typeWriter, 100); // Start typing effect after a short delay
+            i = 0;
+            hasReachedBreakPoint = false;
+            typedTextElement.innerHTML = "";
+            expandedTextElement.innerHTML = "";
+            if (cursor) cursor.style.display = "inline-block";
+            setTimeout(typeWriter, 100);
           } else {
-            // If it has been typed before, just display the full text
-            typedTextElement.innerHTML = text;
-            if (cursor) cursor.style.display = "none"; // Hide cursor
+            const [firstPart, secondPart] = text.split(breakPoint);
+            typedTextElement.innerHTML = firstPart + breakPoint;
+            expandedTextElement.innerHTML = secondPart;
+            if (window.innerWidth <= 768) {
+              expandedTextElement.style.display = "block";
+            }
+            if (cursor) cursor.style.display = "none";
           }
         }
       }

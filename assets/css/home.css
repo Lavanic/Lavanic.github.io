@@ -85,6 +85,11 @@
 .resume-button:hover {
   background-color: #3a6150;
 }
+
+#expanded-text {
+  display: none;
+}
+
 /* Responsive layout for mobile devices */
 @media (max-width: 768px) {
   .home-content {
@@ -119,8 +124,14 @@
     float: left;
   }
   .intro-text {
-    font-size: 8px;
+    font-size: 10px;
     max-width: 55%;
+  }
+
+  #expanded-text {
+    font-size: 10px;
+    max-width: 95%;
+    margin-top: 0px; /* Add some space between the two text parts */
   }
 }
 /* Responsive font sizing */
