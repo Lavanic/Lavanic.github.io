@@ -92,6 +92,10 @@ header {
   height: 20px;
   opacity: 80%;
   object-fit: contain;
+  cursor: pointer;
+  --rotation: 0deg;
+  transform: rotate(var(--rotation));
+  transition: transform 0.5s ease;
 }
 
 .nav-buttons {
@@ -168,8 +172,8 @@ header {
     margin-top: 2vh;
   }
   .screw {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
     opacity: 85%;
   }
   .nav-buttons {

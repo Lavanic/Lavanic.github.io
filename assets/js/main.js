@@ -177,9 +177,21 @@ function loadPageStyles(page) {
   head.appendChild(link);
 }
 
+function initScrewSpin() {
+  const screws = document.querySelectorAll(".screw");
+  screws.forEach((screw) => {
+    let rotation = 0;
+    screw.addEventListener("click", function () {
+      rotation += 360;
+      this.style.setProperty("--rotation", `${rotation}deg`);
+    });
+  });
+}
+
 window.addEventListener("load", function () {
   handleResponsiveness();
   initTabSwitching();
+  initScrewSpin(); // Add this line
   hasTypedOnce = false; // Reset the typing effect on page load
 });
 
