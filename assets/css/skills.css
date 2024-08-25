@@ -113,8 +113,8 @@
   position: absolute;
   bottom: 1vh; /* Moved up slightly to prevent cropping */
   right: 1vw;
-  width: 60%; /* Reduced width for better fit */
-  height: 60%; /* Reduced height for better fit */
+  width: 60vw; /* Reduced width for better fit */
+  height: 60vh; /* Reduced height for better fit */
   z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
