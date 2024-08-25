@@ -111,7 +111,7 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 4vh; /* Moved up slightly to prevent cropping */
+  bottom: 0vh; /* Moved up slightly to prevent cropping */
   right: 1vw;
   width: 35vw; /* Reduced width for better fit */
   height: 35vw; /* Reduced height for better fit */
