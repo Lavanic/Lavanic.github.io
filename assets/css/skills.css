@@ -2,12 +2,13 @@
 .skills-content {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 98%;
   padding: 2vh;
+  margin-top: 1vh;
   overflow-y: hidden;
   font-family: "Arial", sans-serif;
   background-color: #2a3b33;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .skill-section {
@@ -17,7 +18,7 @@
   margin-bottom: 20px;
   background-color: rgba(80, 131, 107, 0.636);
   border-radius: 10px;
-  overflow: visible; /* Changed from hidden to visible */
+  overflow: hidden; /* Changed from hidden to visible */
   padding-left: 15px; /* Add left padding */
 }
 
