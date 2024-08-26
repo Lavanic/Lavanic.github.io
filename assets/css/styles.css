@@ -82,6 +82,7 @@ header {
   padding: 0 10px; /* Adjust padding for screws */
   width: calc(100% - 20px); /* Adjusted width for even margins */
   height: 52px; /* Match the height from your JavaScript */
+  min-height: 52px; /* Ensure minimum height */
   margin: 10px; /* Even margins */
   background: linear-gradient(180deg, #86c2a7 0%, #70b092 100%);
   border-radius: 12px;

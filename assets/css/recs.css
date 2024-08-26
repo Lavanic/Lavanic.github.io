@@ -4,6 +4,7 @@
   flex-direction: column;
   height: 100%;
   padding: 1vh;
+  margin-top: 1vh;
   font-family: "IBM Plex Mono", monospace;
   background-color: rgba(80, 131, 107, 0.8);
   border-radius: 10px;
