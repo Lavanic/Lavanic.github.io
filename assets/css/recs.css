@@ -150,6 +150,7 @@
   }
 
   .rec-body {
-    font-size: 0.25em;
+    font-size: 0.2em;
+    padding-top: 10px;
   }
 }
