@@ -51,6 +51,12 @@ function initializeProjects() {
     switch (projectName) {
       case "foodshares":
         return "FoodShares - HackPNW Winner";
+      case "attentionbutton":
+        return "Attention Button - Hardware";
+      case "reciperoom":
+        return "RecipeRoom - HackPNW Winner";
+      case "thefarm":
+        return "The Farm - Ongoing";
       case "badgerplus":
         return "Badger+ - Campus App";
       case "coilgun":
