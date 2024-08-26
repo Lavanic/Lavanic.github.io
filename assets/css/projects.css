@@ -272,7 +272,7 @@
   }
 
   .project-description {
-    font-size: 0.4em;
+    font-size: 0.3em;
     margin-bottom: 4px;
   }
 
@@ -283,9 +283,9 @@
   }
 
   .tech-item {
-    font-size: 0.2em;
+    font-size: 0.15em;
     padding: 3px 3px;
-    margin-right: 1px;
-    margin-bottom: 2px;
+    margin-right: 0px;
+    margin-bottom: 0px;
   }
 }
