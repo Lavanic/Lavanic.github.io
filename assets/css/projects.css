@@ -230,7 +230,7 @@
 
   .project-container {
     flex-direction: column;
-    gap: 10px;
+    gap: 2px;
     height: calc(100% - 35px); /* Adjust for thinner header */
     overflow: hidden;
   }
@@ -272,7 +272,7 @@
   }
 
   .project-description {
-    font-size: 0.45em;
+    font-size: 0.4em;
     margin-bottom: 4px;
   }
 
@@ -283,7 +283,7 @@
   }
 
   .tech-item {
-    font-size: 0.3em;
+    font-size: 0.2em;
     padding: 3px 3px;
     margin-right: 1px;
     margin-bottom: 2px;
