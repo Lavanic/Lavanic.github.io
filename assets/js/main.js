@@ -26,9 +26,11 @@ function handleResponsiveness() {
   if (viewportWidth < 768) {
     mainContainer.style.height = "65vh";
     topBar.style.height = "38px";
+    topBar.style.minHeight = "38px";
   } else {
     mainContainer.style.height = "80vh";
     topBar.style.height = "52px";
+    topBar.style.minHeight = "52px";
   }
 
   // Adjust screw size based on screen width

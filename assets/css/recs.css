@@ -125,18 +125,18 @@
     flex-direction: row; /* Changed back to row for mobile */
     align-items: flex-start; /* Align items to the top */
     -ms-overflow-style: auto;
-    min-height: 27vh;
+    min-height: 26vh;
   }
 
   .rec-image {
     width: 80px; /* Fixed width for mobile */
     height: 250px;
-    max-height: 27vh;
-    margin-right: 10px; /* Add some space between image and text */
+    max-height: 26vh;
+    margin-right: 4px; /* Add some space between image and text */
   }
 
   .rec-text {
-    padding: 5px;
+    padding: 2px;
   }
 
   .rec-text h2 {
@@ -144,33 +144,10 @@
   }
 
   .rec-title {
-    font-size: 0.35em;
+    font-size: 0.15em;
   }
 
   .rec-body {
-    font-size: 0.5em;
+    font-size: 0.4em;
   }
-}
-
-/* Scrollbar styling */
-.recs-container::-webkit-scrollbar,
-.rec-body-container::-webkit-scrollbar {
-  width: 8px;
-}
-
-.recs-container::-webkit-scrollbar-track,
-.rec-body-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
-}
-
-.recs-container::-webkit-scrollbar-thumb,
-.rec-body-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.731);
-  border-radius: 4px;
-}
-
-.recs-container::-webkit-scrollbar-thumb:hover,
-.rec-body-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.764);
 }
