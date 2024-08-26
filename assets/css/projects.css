@@ -219,6 +219,7 @@
 
   .project-title {
     font-size: 0.8em;
+    margin-left: 10px;
     text-shadow: none;
   }
 
@@ -245,7 +246,7 @@
     padding-bottom: 56.25%; /* 16:9 aspect ratio */
     height: 0;
     position: relative;
-    margin-bottom: 10px;
+    margin-bottom: 3px;
     overflow-y: hidden;
   }
 
@@ -271,8 +272,8 @@
   }
 
   .project-description {
-    font-size: 0.5em;
-    margin-bottom: 10px;
+    font-size: 0.45em;
+    margin-bottom: 4px;
   }
 
   .tech-stack {
@@ -282,9 +283,9 @@
   }
 
   .tech-item {
-    font-size: 0.4em;
+    font-size: 0.3em;
     padding: 3px 3px;
-    margin-right: 2px;
+    margin-right: 1px;
     margin-bottom: 2px;
   }
 }
