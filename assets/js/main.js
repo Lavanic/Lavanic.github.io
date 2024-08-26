@@ -135,6 +135,10 @@ function loadPage(page, contentArea) {
       contentArea.innerHTML = html;
       loadPageStyles(page);
       setActiveTab(page);
+      // Add these lines
+      if (page === "projects" && window.initializeProjects) {
+        window.initializeProjects();
+      }
       if (page === "home") {
         const typedTextElement = document.getElementById("typed-text");
         const expandedTextElement = document.getElementById("expanded-text");

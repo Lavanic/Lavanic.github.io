@@ -16,16 +16,22 @@ function initializeProjects() {
   }
 
   projectItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      const projectName = this.getAttribute("data-project");
-      loadProjectContent(projectName);
-      projectDetails.style.display = "flex";
-    });
+    item.addEventListener("click", handleProjectClick);
   });
 
-  closeButton.addEventListener("click", function () {
+  if (closeButton) {
+    closeButton.addEventListener("click", handleCloseClick);
+  }
+
+  function handleProjectClick() {
+    const projectName = this.getAttribute("data-project");
+    loadProjectContent(projectName);
+    projectDetails.style.display = "flex";
+  }
+
+  function handleCloseClick() {
     projectDetails.style.display = "none";
-  });
+  }
 
   function loadProjectContent(projectName) {
     fetch(`assets/project-details/${projectName}.html`)
@@ -40,6 +46,7 @@ function initializeProjects() {
           "<p>Error loading project details. Please try again.</p>";
       });
   }
+
   function getProjectTitle(projectName) {
     switch (projectName) {
       case "foodshares":
@@ -61,5 +68,8 @@ function checkAndInitializeProjects() {
     setTimeout(checkAndInitializeProjects, 100);
   }
 }
+
+// Export the function so it can be called from main.js
+window.initializeProjects = initializeProjects;
 
 document.addEventListener("DOMContentLoaded", checkAndInitializeProjects);
