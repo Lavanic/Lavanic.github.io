@@ -209,9 +209,6 @@
 
   .project-details {
     padding: 10px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
   }
 
   .project-header {
@@ -222,6 +219,7 @@
 
   .project-title {
     font-size: 0.8em;
+    text-shadow: none;
   }
 
   .close-button {
@@ -273,7 +271,7 @@
   }
 
   .project-description {
-    font-size: 0.9em;
+    font-size: 0.5em;
     margin-bottom: 10px;
   }
 
@@ -284,9 +282,9 @@
   }
 
   .tech-item {
-    font-size: 0.7em;
-    padding: 3px 6px;
-    margin-right: 5px;
-    margin-bottom: 5px;
+    font-size: 0.4em;
+    padding: 3px 3px;
+    margin-right: 2px;
+    margin-bottom: 2px;
   }
 }
