@@ -131,7 +131,7 @@
 
   .rec-image {
     width: 80px; /* Fixed width for mobile */
-    height: 130px;
+    height: 250px;
     border-radius: 5px;
     max-height: 26vh;
     margin-right: 4px; /* Add some space between image and text */
