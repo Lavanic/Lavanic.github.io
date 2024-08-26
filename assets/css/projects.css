@@ -98,7 +98,7 @@
 
 .project-content {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: hidden;
   color: white; /* Add this to ensure text is visible */
 }
 
@@ -111,7 +111,7 @@
 }
 
 .project-info {
-  overflow-y: auto; /* Allow scrolling only in the info section if needed */
+  overflow-y: hidden; /* Allow scrolling only in the info section if needed */
   padding-right: 10px; /* Add some padding for the scrollbar */
   background-color: #0000006a; /* Black background for the explanation text */
   border-radius: 10px;
@@ -199,7 +199,7 @@
 .green-text {
   color: #a9eda9;
 }
-/* Responsive layout for mobile devices */
+
 /* Responsive layout for mobile devices */
 @media (max-width: 768px) {
   .projects-grid {
@@ -209,66 +209,84 @@
 
   .project-details {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .project-header {
-    padding: 5px;
+    padding: 0px;
     margin-bottom: 5px;
+    height: 25px; /* Thinner header */
   }
 
   .project-title {
-    font-size: 0.4em;
+    font-size: 0.8em;
   }
 
   .close-button {
-    font-size: 1em;
+    font-size: 0.8em;
     padding: 0 3px;
   }
 
   .project-container {
     flex-direction: column;
     gap: 10px;
-    height: calc(100% - 30px);
+    height: calc(100% - 35px); /* Adjust for thinner header */
+    overflow: hidden;
   }
 
-  .project-info,
   .project-media {
+    order: 1;
     width: 100%;
+    flex-shrink: 0;
+    overflow-y: hidden;
+  }
+
+  .video-container {
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    position: relative;
+    margin-bottom: 10px;
+    overflow-y: hidden;
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .image-container {
+    display: none; /* Hide additional images on mobile */
   }
 
   .project-info {
-    order: 1;
-    margin-bottom: 10px;
-    max-height: 40vh;
+    order: 2;
+    width: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 10px;
+    margin-bottom: 0;
   }
 
   .project-description {
-    font-size: 1.2vh;
+    font-size: 0.9em;
     margin-bottom: 10px;
   }
 
   .tech-stack {
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 10px;
   }
 
   .tech-item {
-    font-size: 0.4em;
-    padding: 5px;
-  }
-
-  .project-media {
-    order: 2;
-  }
-
-  .video-container {
-    margin-bottom: 10px;
-  }
-
-  .image-container {
-    flex-direction: row;
-  }
-
-  .image-container img {
-    width: calc(50% - 5px);
+    font-size: 0.7em;
+    padding: 3px 6px;
+    margin-right: 5px;
+    margin-bottom: 5px;
   }
 }
