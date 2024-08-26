@@ -101,7 +101,8 @@
 }
 
 .rec-body {
-  font-size: 0.6em;
+  /* font-size: 0.6em; */
+  font-size: 0.66vw;
   line-height: 1.4;
   color: #ffffff;
   margin: 0;
@@ -144,7 +145,8 @@
   }
 
   .rec-title {
-    font-size: 0.1em;
+    font-size: 0em;
+    margin-bottom: 0px;
   }
 
   .rec-body {
