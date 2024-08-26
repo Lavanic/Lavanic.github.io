@@ -96,7 +96,6 @@
 }
 
 .rec-body-container {
-  overflow-y: auto;
   flex-grow: 1;
 }
 
@@ -128,7 +127,7 @@
 
   .rec-image {
     width: 80px; /* Fixed width for mobile */
-    height: 80px; /* Fixed height for mobile */
+    height: 200px; /* Fixed height for mobile */
     margin-right: 10px; /* Add some space between image and text */
   }
 
@@ -137,15 +136,15 @@
   }
 
   .rec-text h2 {
-    font-size: 0.9em;
+    font-size: 0.5em;
   }
 
   .rec-title {
-    font-size: 0.7em;
+    font-size: 0.3em;
   }
 
   .rec-body {
-    font-size: 0.7em;
+    font-size: 0.5em;
   }
 }
 

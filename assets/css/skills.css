@@ -151,8 +151,8 @@ codersrank-skills-chart::part(chart-container) {
   }
   .codersrank-chart-section {
     width: 85%;
-    height: 55%;
-    bottom: -11vh;
+    height: 65%;
+    bottom: -10vh;
     right: 10px;
   }
   .skills-content {
