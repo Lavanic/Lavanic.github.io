@@ -142,6 +142,7 @@
 
   .rec-text h2 {
     font-size: 0.6em;
+    height: 100%;
   }
 
   .rec-title {
@@ -150,7 +151,7 @@
   }
 
   .rec-body {
-    font-size: 0.2em;
+    font-size: 4px;
     padding-top: 10px;
   }
 }
