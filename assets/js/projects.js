@@ -53,6 +53,8 @@ function initializeProjects() {
         return "FoodShares - HackPNW Winner";
       case "badgerplus":
         return "Badger+ - Campus App";
+      case "coilgun":
+        return "CoilGun - Final Project";
       // Add cases for other projects
       default:
         return projectName.charAt(0).toUpperCase() + projectName.slice(1);
