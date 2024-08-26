@@ -150,9 +150,9 @@ codersrank-skills-chart::part(chart-container) {
     --tooltip-font-size: 10px;
   }
   .codersrank-chart-section {
-    width: 85%;
+    width: 95%;
     height: 65%;
-    bottom: -10vh;
+    bottom: -20vh;
     right: 10px;
   }
   .skills-content {

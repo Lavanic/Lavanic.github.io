@@ -8,7 +8,7 @@
   font-family: "IBM Plex Mono", monospace;
   background-color: rgba(80, 131, 107, 0.8);
   border-radius: 10px;
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 .recs-container {
@@ -96,6 +96,7 @@
 }
 
 .rec-body-container {
+  overflow-y: auto;
   flex-grow: 1;
 }
 
@@ -123,24 +124,27 @@
   .rec-item {
     flex-direction: row; /* Changed back to row for mobile */
     align-items: flex-start; /* Align items to the top */
+    -ms-overflow-style: auto;
+    min-height: 27vh;
   }
 
   .rec-image {
     width: 80px; /* Fixed width for mobile */
-    height: 200px; /* Fixed height for mobile */
+    height: 250px;
+    max-height: 27vh;
     margin-right: 10px; /* Add some space between image and text */
   }
 
   .rec-text {
-    padding: 10px;
+    padding: 5px;
   }
 
   .rec-text h2 {
-    font-size: 0.5em;
+    font-size: 0.6em;
   }
 
   .rec-title {
-    font-size: 0.3em;
+    font-size: 0.35em;
   }
 
   .rec-body {
