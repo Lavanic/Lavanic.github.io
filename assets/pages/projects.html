@@ -1,14 +1,11 @@
 <!-- projects.html -->
 <div class="projects-content">
   <div class="projects-grid">
-    <div class="project-item" data-project="attentionbutton">
-      <img src="assets/thumbnails/attentionbutton.jpg" alt="Attention Button" />
-    </div>
     <div class="project-item" data-project="badgerplus">
       <img src="assets/thumbnails/badgerplus.jpg" alt="Badger Plus" />
     </div>
-    <div class="project-item" data-project="coilgun">
-      <img src="assets/thumbnails/coilgun.jpg" alt="Coil Gun" />
+    <div class="project-item" data-project="thefarm">
+      <img src="assets/thumbnails/thefarm.jpg" alt="The Farm" />
     </div>
     <div class="project-item" data-project="foodshares">
       <img src="assets/thumbnails/foodshares.jpg" alt="Food Shares" />
@@ -16,46 +13,20 @@
     <div class="project-item" data-project="reciperoom">
       <img src="assets/thumbnails/reciperoom.jpg" alt="Recipe Room" />
     </div>
-    <div class="project-item" data-project="thefarm">
-      <img src="assets/thumbnails/thefarm.jpg" alt="The Farm" />
+    <div class="project-item" data-project="attentionbutton">
+      <img src="assets/thumbnails/attentionbutton.jpg" alt="Attention Button" />
+    </div>
+    <div class="project-item" data-project="coilgun">
+      <img src="assets/thumbnails/coilgun.jpg" alt="Coil Gun" />
     </div>
   </div>
   <div class="project-details" id="projectDetails">
-    <div class="close-button">&times;</div>
-    <div class="project-content"></div>
+    <div class="project-header">
+      <h1 class="project-title"></h1>
+      <button class="close-button">X</button>
+    </div>
+    <div class="project-container">
+      <!-- Project content will be loaded here -->
+    </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const projectItems = document.querySelectorAll(".project-item");
-    const projectDetails = document.getElementById("projectDetails");
-    const closeButton = document.querySelector(".close-button");
-    const projectContent = document.querySelector(".project-content");
-
-    projectItems.forEach((item) => {
-      item.addEventListener("click", function () {
-        const projectName = this.getAttribute("data-project");
-        loadProjectContent(projectName);
-        projectDetails.style.display = "flex";
-      });
-    });
-
-    closeButton.addEventListener("click", function () {
-      projectDetails.style.display = "none";
-    });
-
-    function loadProjectContent(projectName) {
-      fetch(`assets/project-details/${projectName}.html`)
-        .then((response) => response.text())
-        .then((data) => {
-          projectContent.innerHTML = data;
-        })
-        .catch((error) => {
-          console.error("Error loading project details:", error);
-          projectContent.innerHTML =
-            "<p>Error loading project details. Please try again.</p>";
-        });
-    }
-  });
-</script>
