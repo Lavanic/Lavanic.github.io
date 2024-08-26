@@ -190,6 +190,33 @@ function initScrewSpin() {
   });
 }
 
+// Add this to your main.js file or create a new projects.js file
+
+document.addEventListener("DOMContentLoaded", function () {
+  const projectItems = document.querySelectorAll(".project-item");
+  const projectDetails = document.getElementById("projectDetails");
+  const closeButton = document.querySelector(".close-button");
+  const projectContent = document.querySelector(".project-content");
+
+  projectItems.forEach((item) => {
+    item.addEventListener("click", function () {
+      const projectName = this.getAttribute("data-project");
+      loadProjectContent(projectName);
+      projectDetails.style.display = "flex";
+    });
+  });
+
+  closeButton.addEventListener("click", function () {
+    projectDetails.style.display = "none";
+  });
+
+  function loadProjectContent(projectName) {
+    // In the future, you can load content from separate HTML files
+    // For now, we'll just display the project name
+    projectContent.innerHTML = `<h2>${projectName}</h2><p>Project details coming soon...</p>`;
+  }
+});
+
 window.addEventListener("load", function () {
   handleResponsiveness();
   initTabSwitching();
