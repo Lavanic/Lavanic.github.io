@@ -112,7 +112,7 @@ function typeWriter() {
       }
     }
 
-    setTimeout(typeWriter, 10);
+    setTimeout(typeWriter, 7);
   } else {
     // Typing is complete
     hasTypedOnce = true;
