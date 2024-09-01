@@ -196,4 +196,3 @@ window.addEventListener("load", function () {
 });
 
 window.addEventListener("resize", handleResponsiveness);
-window.addEventListener("orientationchange", lockOrientation);
