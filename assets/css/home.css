@@ -126,15 +126,13 @@
     float: left;
   }
   .intro-text {
-    font-size: 9.4px;
-    overflow-y: auto;
+    font-size: 9px;
     max-width: 55%;
   }
 
   #expanded-text {
-    font-size: 9.4px;
+    font-size: 9px;
     max-width: 95%;
-    overflow-y: auto;
     margin-top: 0px; /* Add some space between the two text parts */
   }
 }
