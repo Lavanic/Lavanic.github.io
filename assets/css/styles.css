@@ -207,3 +207,28 @@ header {
     padding: 0 1px;
   }
 }
+
+@media screen and (max-width: 768px) and (max-height: 700px) {
+  .main-container {
+    height: auto;
+    min-height: 85vh;
+    max-height: none;
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .content-area {
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+  }
+
+  body {
+    position: static;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .logo-container {
+    margin-bottom: 2vh;
+  }
+}
