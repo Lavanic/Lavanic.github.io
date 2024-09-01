@@ -1,4 +1,4 @@
-/* projects.css */
+/* Oliver Ohrt 2024 */
 
 @font-face {
   font-family: "Cyrivendell";
@@ -99,7 +99,7 @@
 .project-content {
   flex-grow: 1;
   overflow-y: hidden;
-  color: white; /* Add this to ensure text is visible */
+  color: white; 
 }
 
 .project-container {
@@ -112,7 +112,7 @@
 
 .project-info {
   overflow-y: hidden; /* Allow scrolling only in the info section if needed */
-  padding-right: 10px; /* Add some padding for the scrollbar */
+  padding-right: 10px; 
   background-color: #0000006a; /* Black background for the explanation text */
   border-radius: 10px;
   padding: 15px;
@@ -129,7 +129,7 @@
   font-size: 1.7vh;
   line-height: 1.6;
   margin-bottom: 20px;
-  color: #ffffff; /* Ensure text is white on black background */
+  color: #ffffff; 
 }
 
 .tech-stack {
@@ -250,7 +250,7 @@
   .project-container {
     flex-direction: column;
     gap: 2px;
-    height: calc(100% - 35px); /* Adjust for thinner header */
+    height: calc(100% - 35px); 
     overflow: hidden;
   }
 

@@ -1,3 +1,4 @@
+/* Oliver Ohrt 2024 */
 .contact-content {
   display: flex;
   flex-direction: column;
@@ -83,7 +84,7 @@
 .form-group textarea:focus {
   outline: none;
 }
-/* Responsive styles */
+
 @media (max-width: 768px) {
   .contact-content {
     padding: 10px;

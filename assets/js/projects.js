@@ -1,3 +1,4 @@
+/* Oliver Ohrt 2024 */
 function initializeProjects() {
   const projectItems = document.querySelectorAll(".project-item");
   const projectDetails = document.getElementById("projectDetails");

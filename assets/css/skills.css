@@ -1,4 +1,4 @@
-/* skills.css */
+/* Oliver Ohrt 2024 */
 .skills-content {
   display: flex;
   flex-direction: column;
@@ -18,8 +18,8 @@
   margin-bottom: 20px;
   background-color: rgba(80, 131, 107, 0.636);
   border-radius: 10px;
-  overflow: visible; /* Changed from hidden to visible */
-  padding-left: 15px; /* Add left padding */
+  overflow: visible;
+  padding-left: 15px;
 }
 
 @font-face {
@@ -39,7 +39,7 @@
   flex-shrink: 0vh;
   white-space: nowrap; /* Prevent wrapping */
   overflow: visible; /* Hide overflow */
-  text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  text-overflow: ellipsis; 
 }
 
 .skills-row {
@@ -49,7 +49,7 @@
   flex-grow: 1;
   z-index: 3;
 
-  overflow: visible; /* Changed from hidden to visible */
+  overflow: visible; 
 }
 
 .skill-bubble {
@@ -64,8 +64,8 @@
   align-items: center;
   position: relative;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  overflow: visible; /* Changed from hidden to visible */
-  transition: transform 0.3s ease; /* Add smooth transition for growth */
+  overflow: visible; 
+  transition: transform 0.3s ease; 
 }
 
 .skill-bubble svg {
@@ -76,8 +76,8 @@
 
 /* Hover effect for skill bubbles */
 .skill-bubble:hover {
-  transform: scale(1.15); /* Grow by 15% on hover */
-  z-index: 10; /* Ensure it appears above other elements */
+  transform: scale(1.15); 
+  z-index: 10; 
 }
 
 .skill-bubble:hover svg {
@@ -89,7 +89,7 @@
 .skill-bubble::after {
   content: attr(title);
   position: absolute;
-  top: 15px; /* Adjust as needed */
+  top: 15px; 
   left: 50%;
   transform: translateX(-50%);
   background-color: #fdfdfddf;
@@ -101,7 +101,7 @@
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.3s ease;
-  pointer-events: none; /* Prevent it from interfering with other interactions */
+  pointer-events: none; 
 }
 
 .skill-bubble:hover::after {
@@ -111,10 +111,10 @@
 /* Updated styles for CodersRank chart */
 .codersrank-chart-section {
   position: absolute;
-  bottom: 0vh; /* Moved up slightly to prevent cropping */
+  bottom: 0vh; 
   right: 1vw;
-  width: 35vw; /* Reduced width for better fit */
-  height: 19vw; /* Reduced height for better fit */
+  width: 35vw; 
+  height: 19vw; 
   z-index: 0;
   pointer-events: all; /* Allow interaction with the chart */
 }
@@ -132,8 +132,8 @@ codersrank-skills-chart {
   --tooltip-font-size: 8px;
   --label-text-color: #ffffff;
   --chart-bg-color: transparent;
-  --text-color: #ffffff; /* Set text color to white */
-  --svg-text-color: #ffffff; /* Additional property for SVG text color */
+  --text-color: #ffffff; 
+  --svg-text-color: #ffffff; 
   width: 100%;
   height: 100%;
 }
@@ -163,7 +163,7 @@ codersrank-skills-chart::part(chart-container) {
     flex-direction: column;
     align-items: flex-start;
     margin-bottom: 15px;
-    padding-left: 5px; /* Add left padding */
+    padding-left: 5px; 
   }
 
   .skill-section h2 {

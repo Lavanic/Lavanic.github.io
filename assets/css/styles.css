@@ -1,4 +1,4 @@
-/* Reset default styles */
+/* Oliver Ohrt 2024 */
 * {
   margin: 0;
   padding: 0;
@@ -36,7 +36,6 @@ body {
   height: 100%;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -44,14 +43,14 @@ body {
 header {
   padding: 0px;
   width: 100%;
-  margin-bottom: 1vh; /* Reduce the gap between logo and main container */
+  margin-bottom: 1vh;
 }
 
 .logo-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10vh; /* Additional reduction of gap */
+  margin-bottom: 10vh;
   margin-top: 4vh;
 }
 
@@ -62,7 +61,7 @@ header {
 
 .main-container {
   width: 52%;
-  max-width: 1400px; /* Adjust this value as needed */
+  max-width: 1400px;
   height: 90vh;
   margin: 2vh auto;
   background: linear-gradient(180deg, #90b6a4 0%, #6a9f86 100%);
@@ -70,7 +69,7 @@ header {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  overflow-y: hidden; /* Prevent scrolling on the main container */
+  overflow-y: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin-bottom: 5vh;
 }
@@ -79,17 +78,17 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px; /* Adjust padding for screws */
-  width: calc(100% - 20px); /* Adjusted width for even margins */
-  height: 52px; /* Match the height from your JavaScript */
-  min-height: 52px; /* Ensure minimum height */
-  margin: 10px; /* Even margins */
+  padding: 0 10px;
+  width: calc(100% - 20px);
+  height: 52px;
+  min-height: 52px;
+  margin: 10px;
   background: linear-gradient(180deg, #86c2a7 0%, #70b092 100%);
   border-radius: 12px;
 }
 
 .screw {
-  width: 20px; /* Adjust size as needed */
+  width: 20px;
   height: 20px;
   opacity: 80%;
   object-fit: contain;
@@ -104,7 +103,7 @@ header {
   justify-content: space-between;
   align-items: center;
   flex-grow: 1;
-  margin: 0 1vw; /* Space between screws and buttons */
+  margin: 0 1vw;
   height: 100%;
 }
 
@@ -127,8 +126,8 @@ header {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: calc(100% + 16px); /* Adjust as needed */
-  height: calc(100% + 16px); /* Adjust as needed */
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
   background-color: #50836b;
   border-radius: 10px;
   z-index: -1;
@@ -147,7 +146,7 @@ header {
 }
 
 .nav-button.active::before {
-  background-color: #50836b; /* Darker shade for active state */
+  background-color: #50836b;
 }
 
 .content-area {
@@ -158,18 +157,16 @@ header {
   overflow-y: hidden;
 }
 
-/* Media query for mobile devices */
 @media screen and (max-width: 768px) {
-  /* ... (keep the existing mobile styles) ... */
   .nav-button::before {
-    width: calc(100% + 8px); /* Adjust for mobile */
-    height: calc(100% + 8px); /* Adjust for mobile */
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
   }
   .logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 7vh; /* Additional reduction of gap */
+    margin-bottom: 7vh;
     margin-top: 2vh;
   }
   .screw {

@@ -1,4 +1,4 @@
-// main.js
+/* Oliver Ohrt 2024 */
 let hasTypedOnce = false;
 function handleResponsiveness() {
   const logo = document.querySelector(".logo");
@@ -33,16 +33,14 @@ function handleResponsiveness() {
     topBar.style.minHeight = "52px";
   }
 
-  // Adjust screw size based on screen width
   const screws = document.querySelectorAll(".screw");
-  const screwSize = viewportWidth < 768 ? "20px" : "25px"; // Adjust these values as needed
+  const screwSize = viewportWidth < 768 ? "20px" : "25px";
   screws.forEach((screw) => {
     screw.style.width = screwSize;
     screw.style.height = screwSize;
   });
 }
 
-// Modify the initTabSwitching function
 function initTabSwitching() {
   const navButtons = document.querySelectorAll(".nav-button");
   const contentArea = document.querySelector(".content-area");
@@ -56,7 +54,6 @@ function initTabSwitching() {
   loadPage("home", contentArea);
 }
 
-// Add this function to handle active state
 function setActiveTab(page) {
   const navButtons = document.querySelectorAll(".nav-button");
   navButtons.forEach((button) => {
@@ -100,8 +97,6 @@ function typeWriter() {
       currentElement.appendChild(textNode);
       i++;
     }
-
-    // Check if we've reached the break point
     if (
       !hasReachedBreakPoint &&
       typedTextElement.textContent.includes(breakPoint)
@@ -123,7 +118,7 @@ function typeWriter() {
   }
 }
 
-// Add this function to reset the typing effect
+//Reset the typing effect
 function resetTypingEffect() {
   hasTypedOnce = false;
 }
@@ -135,7 +130,6 @@ function loadPage(page, contentArea) {
       contentArea.innerHTML = html;
       loadPageStyles(page);
       setActiveTab(page);
-      // Add these lines
       if (page === "projects" && window.initializeProjects) {
         window.initializeProjects();
       }
@@ -197,7 +191,7 @@ function initScrewSpin() {
 window.addEventListener("load", function () {
   handleResponsiveness();
   initTabSwitching();
-  initScrewSpin(); // Add this line
+  initScrewSpin();
   hasTypedOnce = false; // Reset the typing effect on page load
 });
 
