@@ -125,12 +125,12 @@
     float: left;
   }
   .intro-text {
-    font-size: 10px;
+    font-size: 9px;
     max-width: 55%;
   }
 
   #expanded-text {
-    font-size: 10px;
+    font-size: 9px;
     max-width: 95%;
     margin-top: 0px; /* Add some space between the two text parts */
   }
