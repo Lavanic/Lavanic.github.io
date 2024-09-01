@@ -120,18 +120,21 @@
   }
   .text-container {
     width: 100%;
+    overflow-y: auto;
     padding-right: 10px;
     box-sizing: border-box;
     float: left;
   }
   .intro-text {
-    font-size: 9px;
+    font-size: 10px;
+    overflow-y: auto;
     max-width: 55%;
   }
 
   #expanded-text {
-    font-size: 9px;
+    font-size: 10px;
     max-width: 95%;
+    overflow-y: auto;
     margin-top: 0px; /* Add some space between the two text parts */
   }
 }
