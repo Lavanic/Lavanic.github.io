@@ -1,4 +1,3 @@
-<!-- Create a new file called surprise.html in your root directory -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,14 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valentine's Surprise 💖</title>
     <style>
-        /* Romantic theme styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: #ff6b6b;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            top: 30px;
+        }
+
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            background: linear-gradient(45deg, #a46bff, #c58effd1);
             font-family: 'Arial Rounded MT Bold', sans-serif;
             overflow: hidden;
         }
@@ -47,7 +65,7 @@
             padding: 20px 40px;
             font-size: 24px;
             background: #fff;
-            color: #ff6b6b;
+            color: #c96bff;
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -96,6 +114,8 @@
         </button>
     </div>
 
+    <div class="notification" id="notification"></div>
+
     <script>
         // Create floating hearts
         function createHearts() {
@@ -112,23 +132,61 @@
             }
         }
 
-        // Trigger light change through IFTTT
+        async function triggerLightEffect(color, brightness, duration) {
+            const response = await fetch('https://maker.ifttt.com/trigger/Erica_Press/with/key/h7nNNXT3a13yAoK851k6y', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    value1: color,
+                    value2: brightness.toString(),
+                    value3: duration.toString()
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+        }
+
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.color = isError ? '#ff4444' : '#ff6b6b';
+            notification.classList.add('show');
+            setTimeout(() => notification.classList.remove('show'), 2000);
+        }
+
         async function triggerLightChange() {
+            const button = document.querySelector('.surprise-button');
+            const notification = document.getElementById('notification');
+            
             try {
-                const response = await fetch('https://maker.ifttt.com/trigger/Erica_Press/with/key/h7nNNXT3a13yAoK851k6y');
+                button.disabled = true;
                 
-                // Add visual feedback
-                const button = document.querySelector('.surprise-button');
-                button.textContent = 'Love is in the Air! 🌈';
+                // Light sequence
+                await triggerLightEffect('#800080', 100, 500);
+                showNotification('Purple Pulse Activated! 💜');
+                
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await triggerLightEffect('#AD40AF', 100, 300);
+                
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await triggerLightEffect('#FFFFFF', 100, 500);
+
+                showNotification('Light Magic Complete! ✨');
                 button.style.backgroundColor = '#ffcccc';
                 
                 setTimeout(() => {
-                    button.textContent = 'Wake Oliver Up! 🌟';
                     button.style.backgroundColor = '#fff';
                 }, 2000);
-                
+
             } catch (error) {
-                alert('Something went wrong - but my love for you never will! 💕');
+                showNotification('Error: But my love still shines! 💖', true);
+                console.error('API Error:', error);
+            } finally {
+                button.disabled = false;
             }
         }
 
