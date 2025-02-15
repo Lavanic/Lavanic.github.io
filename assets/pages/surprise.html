@@ -1,0 +1,139 @@
+<!-- Create a new file called surprise.html in your root directory -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Surprise 💖</title>
+    <style>
+        /* Romantic theme styles */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            font-family: 'Arial Rounded MT Bold', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hearts-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .heart {
+            position: absolute;
+            opacity: 0;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .surprise-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background: #fff;
+            color: #ff6b6b;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .surprise-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 20px rgba(0,0,0,0.2);
+            background: #ffe8e8;
+        }
+
+        .surprise-button:active {
+            transform: scale(0.95);
+        }
+
+        .surprise-button::after {
+            content: '💖';
+            position: absolute;
+            right: -30px;
+            transition: all 0.3s ease;
+        }
+
+        .surprise-button:hover::after {
+            right: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts-container" id="hearts"></div>
+    
+    <div class="container">
+        <h1>For My Valentine 💝</h1>
+        <button class="surprise-button" onclick="triggerLightChange()">
+            Illuminate Our Love! 🌟
+        </button>
+    </div>
+
+    <script>
+        // Create floating hearts
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const emojis = ['💖', '💕', '💞', '💓', '💗'];
+            
+            for(let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        // Trigger light change through IFTTT
+        async function triggerLightChange() {
+            try {
+                const response = await fetch('https://maker.ifttt.com/trigger/Erica_Press/with/key/h7nNNXT3a13yAoK851k6y');
+                
+                // Add visual feedback
+                const button = document.querySelector('.surprise-button');
+                button.textContent = 'Love is in the Air! 🌈';
+                button.style.backgroundColor = '#ffcccc';
+                
+                setTimeout(() => {
+                    button.textContent = 'Illuminate Our Love! 🌟';
+                    button.style.backgroundColor = '#fff';
+                }, 2000);
+                
+            } catch (error) {
+                alert('Something went wrong - but my love for you never will! 💕');
+            }
+        }
+
+        // Initialize floating hearts
+        createHearts();
+    </script>
+</body>
+</html>
