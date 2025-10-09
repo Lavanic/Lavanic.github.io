@@ -1,0 +1,117 @@
+---
+---
+
+<canvas id="grid"></canvas>
+
+<style>
+    body {
+        margin: 0;
+        background: linear-gradient(135deg, #5a9d8a 0%, #6fb3a0 100%);
+        min-height: 300vh;
+    }
+
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: -1;
+    }
+
+    .spacer {
+        height: 100vh;
+    }
+</style>
+
+<script>
+    const canvas = document.getElementById('grid');
+    const ctx = canvas.getContext('2d');
+    let dpr = window.devicePixelRatio || 1;
+    let scrollOffset = 0;
+
+    function resize() {
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        ctx.scale(dpr, dpr);
+        draw();
+    }
+
+    function getCurveDepth(worldY, centerY, w, h) {
+        const maxDepth = h * (window.innerWidth < 700 ? 0.15 : 0.55);
+        const transitionDistance = h * 0.6;
+        const distanceFromCenter = worldY - centerY;
+        let curveIntensity = Math.abs(distanceFromCenter) / transitionDistance;
+        curveIntensity = Math.min(curveIntensity, 1);
+        const depth = maxDepth * curveIntensity;
+        const direction = distanceFromCenter > 0 ? 1 : -1;
+        return { depth, direction };
+    }
+
+    function draw() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const cx = w / 2;
+        const cy = h / 2;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cylinderWidth = w * (window.innerWidth < 700 ? 0.80 : 0.75);
+        const horizontalLineSpacing = window.innerWidth < 700 ? 40 : 60;
+        const verticalLineSpacing = window.innerWidth < 700 ? 30 : 40;
+        const gridCols = Math.floor((w * 0.75) / verticalLineSpacing);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 2;
+        const worldCenterY = cy;
+        const firstLineWorld = Math.floor((scrollOffset) / horizontalLineSpacing) * horizontalLineSpacing;
+        const numLines = Math.ceil(h / horizontalLineSpacing) + 3;
+
+        for (let i = -20; i < numLines; i++) {
+            const worldY = firstLineWorld + i * horizontalLineSpacing;
+            const screenY = worldY - scrollOffset;
+            const { depth, direction } = getCurveDepth(worldY, worldCenterY, w, h);
+            ctx.beginPath();
+            const steps = 100;
+            for (let j = 0; j <= steps; j++) {
+                const angle = (j / steps - 0.5) * Math.PI;
+                const x = cx + Math.sin(angle) * (cylinderWidth / 2);
+                const yOffset = Math.cos(angle) * depth * direction;
+                if (j === 0) {
+                    ctx.moveTo(x, screenY + yOffset);
+                } else {
+                    ctx.lineTo(x, screenY + yOffset);
+                }
+            }
+            ctx.stroke();
+        }
+
+        for (let col = 0; col <= gridCols; col++) {
+            const t = col / gridCols;
+            const angle = (t - 0.5) * Math.PI * 0.95;
+            if (Math.cos(angle) < 0.1) continue;
+            ctx.beginPath();
+            const x = cx + Math.sin(angle) * (cylinderWidth / 2);
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, h);
+            ctx.stroke();
+        }
+
+        const gradient = ctx.createRadialGradient(
+            cx, cy, 0,
+            cx, cy, Math.max(w, h) * 0.55
+        );
+        gradient.addColorStop(0, 'rgba(90, 157, 138, 0)');
+        gradient.addColorStop(0.6, 'rgba(90, 157, 138, 0)');
+        gradient.addColorStop(1, 'rgba(90, 157, 138, 0.85)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, w, h);
+    }
+
+    window.addEventListener('scroll', () => {
+        scrollOffset = window.scrollY;
+        draw();
+    });
+
+    window.addEventListener('resize', resize);
+    resize();
+</script>
