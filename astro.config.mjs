@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://lavanic.github.io",
+  site: "https://oliverohrt.com",
   base: "/",
   outDir: "dist"
 });
