@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faustian Exchange Terminal</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- OGL WebGL library for background effect -->
-    <script src="https://cdn.jsdelivr.net/npm/ogl@1/dist/ogl.umd.js"></script>
 </head>
 <body>
     <!-- Animated background -->
-    <div id="balatroBg" class="balatro-background"></div>
+    <div id="animatedBg" class="animated-background"></div>
     <div class="game-container">
         <!-- Overhead light effect -->
         <div class="light-overlay"></div>
@@ -54,8 +52,34 @@
     </div>
 
     <!-- Scripts -->
-    <script src="background.js"></script>
     <script src="data.js"></script>
     <script src="game.js"></script>
+    <!-- Balatro background (ES module) -->
+    <script type="module">
+        import { initBalatro } from './balatro.js';
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.balatroBg = initBalatro({
+                    color1: '#A51D2D',
+                    color2: '#241F31',
+                    color3: '#000000',
+                    isRotate: false,
+                    mouseInteraction: true,
+                    pixelFilter: 700
+                });
+            });
+        } else {
+            window.balatroBg = initBalatro({
+                color1: '#A51D2D',
+                color2: '#241F31',
+                color3: '#000000',
+                isRotate: false,
+                mouseInteraction: true,
+                pixelFilter: 700
+            });
+        }
+    </script>
 </body>
 </html>

@@ -566,38 +566,14 @@ function render() {
 // BACKGROUND CONTROL
 // ============================================================================
 
-let background = null;
-
-function initBackground() {
-    try {
-        // Initialize Balatro background
-        if (typeof BalatroBg !== 'undefined') {
-            background = new BalatroBg('balatroBg', {
-                color1: '#A51D2D',
-                color2: '#241F31',
-                color3: '#000000',
-                isRotate: false,
-                mouseInteraction: true,
-                pixelFilter: 700
-            });
-            // Start hidden (shown after welcome screen)
-            background.hide();
-            console.log('Background initialized successfully');
-        } else {
-            console.warn('BalatroBg not available, skipping background');
-        }
-    } catch (error) {
-        console.error('Error initializing background:', error);
-        // Continue without background if it fails
-    }
-}
-
 function showBackground() {
-    if (background) background.show();
+    const bg = document.getElementById('animatedBg');
+    if (bg) bg.style.display = 'block';
 }
 
 function hideBackground() {
-    if (background) background.hide();
+    const bg = document.getElementById('animatedBg');
+    if (bg) bg.style.display = 'none';
 }
 
 // ============================================================================
@@ -616,9 +592,6 @@ function init() {
     DOM.brokerAscii = document.getElementById('brokerAscii');
     DOM.roundCounter = document.getElementById('roundCounter');
     DOM.roundNumber = document.getElementById('roundNumber');
-
-    // Initialize background
-    initBackground();
 
     // Start game
     render();
