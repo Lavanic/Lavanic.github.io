@@ -1,0 +1,428 @@
+/* Faustian Exchange Terminal - Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #0a0a0a;
+    color: #00ff00;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Balatro background */
+.balatro-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: none; /* Hidden by default, shown by game.js */
+}
+
+.balatro-background canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 1200px;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+/* Overhead light effect */
+.light-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+        ellipse at 50% 0%,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(0, 0, 0, 0.9) 40%,
+        rgba(0, 0, 0, 1) 70%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Broker area - Top half */
+.broker-area {
+    text-align: center;
+    flex: 0 0 40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    position: relative;
+}
+
+.broker-ascii {
+    font-size: 3rem;
+    line-height: 1.2;
+    color: #00ff00;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    transition: all 0.5s ease;
+}
+
+.broker-ascii.stage-1 { color: #00ff00; }
+.broker-ascii.stage-2 { color: #88ff00; }
+.broker-ascii.stage-3 { color: #ffff00; }
+.broker-ascii.stage-4 { color: #ff8800; }
+.broker-ascii.stage-5 { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
+
+.broker-label {
+    font-size: 0.9rem;
+    letter-spacing: 0.3rem;
+    margin-top: 0.5rem;
+    color: #00ff00;
+    opacity: 0.7;
+}
+
+/* Content area - Bottom half */
+.content-area {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 2;
+    position: relative;
+    min-height: 0;
+}
+
+/* Terminal */
+.terminal {
+    width: 100%;
+    max-width: 100%;
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    position: relative;
+    overflow-y: auto;
+}
+
+.terminal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 255, 0, 0.03),
+        rgba(0, 255, 0, 0.03) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+}
+
+.terminal-content {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #00ff00;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.terminal-content h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 0.2rem;
+}
+
+.terminal-content p {
+    margin-bottom: 1rem;
+}
+
+.terminal-content .highlight {
+    color: #ff0000;
+    font-weight: bold;
+}
+
+/* Soul box container */
+.soul-box-container {
+    margin-bottom: 1.5rem;
+}
+
+.soul-box {
+    width: 400px;
+    height: 400px;
+    background-color: #000;
+    border: 3px solid #fff;
+    position: relative;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+.soul-heart {
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
+    z-index: 10;
+}
+
+.soul-heart::before,
+.soul-heart::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    position: absolute;
+}
+
+.soul-heart::before {
+    top: -10px;
+    left: 0;
+}
+
+.soul-heart::after {
+    top: 0;
+    left: -10px;
+}
+
+.hits-counter {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    color: #ff0000;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}
+
+/* Attack elements */
+.attack {
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.attack.chain {
+    width: 30px;
+    height: 10px;
+    background-color: #666;
+}
+
+.attack.shadow {
+    width: 40px;
+    height: 40px;
+    background-color: #222;
+    border-radius: 50%;
+}
+
+.attack.sigil {
+    width: 25px;
+    height: 25px;
+    background-color: #ff00ff;
+    transform: rotate(45deg);
+}
+
+.attack.note {
+    width: 20px;
+    height: 30px;
+    background-color: #ffaa00;
+    border-radius: 50% 50% 0 0;
+}
+
+/* Button container */
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.game-button {
+    padding: 1rem 2rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    background-color: #000;
+    color: #00ff00;
+    border: 2px solid #00ff00;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    min-width: 200px;
+}
+
+.game-button:hover {
+    background-color: #00ff00;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+}
+
+.game-button.danger {
+    border-color: #ff0000;
+    color: #ff0000;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.game-button.danger:hover {
+    background-color: #ff0000;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+}
+
+.game-button.primary {
+    border-color: #ffff00;
+    color: #ffff00;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+}
+
+.game-button.primary:hover {
+    background-color: #ffff00;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
+}
+
+/* Desire/Market cards */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    padding: 1rem;
+}
+
+.card {
+    padding: 1.5rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ff00;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.card:hover {
+    border-color: #ffff00;
+    background-color: rgba(0, 50, 0, 0.8);
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #00ff00;
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: #88ff88;
+    line-height: 1.4;
+}
+
+/* Round counter */
+.round-counter {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1rem;
+    color: #00ff00;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem 1rem;
+    border: 2px solid #00ff00;
+    z-index: 10;
+}
+
+/* Offer display */
+.offer-display {
+    background-color: rgba(0, 50, 0, 0.3);
+    border: 2px solid #ffff00;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.offer-display h2 {
+    color: #ffff00;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.offer-gain {
+    color: #00ff00;
+    margin-bottom: 0.5rem;
+}
+
+.offer-cost {
+    color: #ff0000;
+    margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.terminal-content {
+    animation: flicker 0.15s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.broker-ascii.stage-5 {
+    animation: pulse 1s infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .soul-box {
+        width: 300px;
+        height: 300px;
+    }
+
+    .game-container {
+        padding: 1rem;
+    }
+
+    .terminal {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .broker-ascii {
+        font-size: 2rem;
+    }
+
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+}

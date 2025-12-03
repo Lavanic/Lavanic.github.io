@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faustian Exchange Terminal</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- OGL WebGL library for background effect -->
+    <script src="https://unpkg.com/ogl@1.0.6/dist/ogl.js"></script>
+</head>
+<body>
+    <!-- Animated background -->
+    <div id="balatroBg" class="balatro-background"></div>
+    <div class="game-container">
+        <!-- Overhead light effect -->
+        <div class="light-overlay"></div>
+
+        <!-- Broker/Dealer area -->
+        <div class="broker-area">
+            <pre class="broker-ascii" id="brokerAscii">
+    :)
+            </pre>
+            <div class="broker-label">THE BROKER</div>
+        </div>
+
+        <!-- Main content area (terminal + soul box) -->
+        <div class="content-area">
+            <!-- Text terminal for narration/offers -->
+            <div class="terminal" id="terminal">
+                <div class="terminal-content" id="terminalContent">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Soul box (minigame container) -->
+            <div class="soul-box-container" id="soulBoxContainer" style="display: none;">
+                <div class="soul-box" id="soulBox">
+                    <div class="soul-heart" id="soulHeart"></div>
+                    <!-- Attack elements will be spawned here -->
+                </div>
+                <div class="hits-counter" id="hitsCounter">HITS: 0</div>
+            </div>
+
+            <!-- Button container -->
+            <div class="button-container" id="buttonContainer">
+                <!-- Dynamic buttons will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Round counter -->
+        <div class="round-counter" id="roundCounter" style="display: none;">
+            ROUND: <span id="roundNumber">1</span> / 5
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="background.js"></script>
+    <script src="data.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
