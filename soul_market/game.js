@@ -117,6 +117,7 @@ function hideRoundCounter() {
 // ============================================================================
 
 function renderWelcome() {
+    console.log('Rendering welcome screen...');
     clearTerminal();
     clearButtons();
     hideRoundCounter();
@@ -134,7 +135,9 @@ function renderWelcome() {
         <p style="text-align: center; color: #ff0000;">But beware: greed compounds interest.</p>
     `);
 
+    console.log('Creating BEGIN SESSION button...');
     createButton('BEGIN SESSION', () => transitionTo(STATES.DESIRE_SELECT), 'primary');
+    console.log('Welcome screen rendered');
 }
 
 function renderDesireSelect() {
@@ -566,17 +569,27 @@ function render() {
 let background = null;
 
 function initBackground() {
-    // Initialize Balatro background
-    background = new BalatroBg('balatroBg', {
-        color1: '#A51D2D',
-        color2: '#241F31',
-        color3: '#000000',
-        isRotate: false,
-        mouseInteraction: true,
-        pixelFilter: 700
-    });
-    // Start hidden (shown after welcome screen)
-    background.hide();
+    try {
+        // Initialize Balatro background
+        if (typeof BalatroBg !== 'undefined') {
+            background = new BalatroBg('balatroBg', {
+                color1: '#A51D2D',
+                color2: '#241F31',
+                color3: '#000000',
+                isRotate: false,
+                mouseInteraction: true,
+                pixelFilter: 700
+            });
+            // Start hidden (shown after welcome screen)
+            background.hide();
+            console.log('Background initialized successfully');
+        } else {
+            console.warn('BalatroBg not available, skipping background');
+        }
+    } catch (error) {
+        console.error('Error initializing background:', error);
+        // Continue without background if it fails
+    }
 }
 
 function showBackground() {
