@@ -121,29 +121,65 @@ function renderWelcome() {
     clearTerminal();
     clearButtons();
     hideRoundCounter();
-    hideBackground(); // No background on welcome screen
+    showBackground(); // Show background ONLY on welcome screen
+
+    // Show logos, hide broker
+    document.getElementById('welcomeLogos').style.display = 'flex';
+    document.getElementById('brokerArea').style.display = 'none';
 
     writeTerminal(`
-        <h1>╔═══════════════════════════════════════╗</h1>
-        <h1>║  FAUSTIAN EXCHANGE TERMINAL  ║</h1>
-        <h1>╚═══════════════════════════════════════╝</h1>
-        <br>
-        <p style="text-align: center;">Welcome to the Soul Market.</p>
-        <p style="text-align: center;">Here, desires are commodities.</p>
-        <p style="text-align: center;">And prices... are negotiable.</p>
-        <br>
-        <p style="text-align: center; color: #ff0000;">But beware: greed compounds interest.</p>
+        <p style="text-align: center; line-height: 1.8;">
+            This game is my final project for GERMAN 280: Faust and the Faustian in German Culture.
+            You'll explore five different versions of the Faust legend—from Marlowe's damnation to Goethe's redemption,
+            from Murnau's visual darkness to DC's Felix Faust and "The Devil Went Down to Georgia."
+            Each deal reflects how different eras priced ambition, knowledge, and salvation.
+        </p>
     `);
 
-    console.log('Creating BEGIN SESSION button...');
-    createButton('BEGIN SESSION', () => transitionTo(STATES.DESIRE_SELECT), 'primary');
+    // Add password section
+    const passwordSection = document.createElement('div');
+    passwordSection.className = 'password-section';
+    passwordSection.innerHTML = `
+        <input type="password" class="password-input" id="gamePassword" placeholder="ENTER ACCESS CODE">
+        <div class="password-error" id="passwordError"></div>
+    `;
+    DOM.buttonContainer.appendChild(passwordSection);
+
+    console.log('Creating BEGIN GAME button...');
+    createButton('BEGIN GAME!', attemptGameStart, 'white');
     console.log('Welcome screen rendered');
+}
+
+function attemptGameStart() {
+    const passwordInput = document.getElementById('gamePassword');
+    const errorDiv = document.getElementById('passwordError');
+    const password = passwordInput.value.trim();
+
+    if (password === '') {
+        errorDiv.textContent = 'ACCESS CODE REQUIRED';
+        passwordInput.style.borderColor = '#ff0000';
+        setTimeout(() => {
+            passwordInput.style.borderColor = '#cccccc';
+        }, 500);
+    } else {
+        errorDiv.textContent = 'ACCESS DENIED - INVALID CODE';
+        passwordInput.style.borderColor = '#ff0000';
+        passwordInput.value = '';
+        setTimeout(() => {
+            passwordInput.style.borderColor = '#cccccc';
+            errorDiv.textContent = '';
+        }, 2000);
+    }
 }
 
 function renderDesireSelect() {
     clearTerminal();
     clearButtons();
-    showBackground(); // Show background from this point on
+    hideBackground(); // Hide background after welcome screen
+
+    // Hide logos, show broker
+    document.getElementById('welcomeLogos').style.display = 'none';
+    document.getElementById('brokerArea').style.display = 'flex';
 
     writeTerminal(`
         <h1>SELECT YOUR DESIRE</h1>

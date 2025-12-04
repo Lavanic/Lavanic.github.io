@@ -57,18 +57,44 @@ body {
     height: 100%;
     background: radial-gradient(
         ellipse at 50% 0%,
-        rgba(255, 255, 255, 0.05) 0%,
-        rgba(0, 0, 0, 0.9) 40%,
-        rgba(0, 0, 0, 1) 70%
+        rgba(255, 255, 255, 0.02) 0%,
+        rgba(0, 0, 0, 0.5) 50%,
+        rgba(0, 0, 0, 0.8) 90%
     );
     pointer-events: none;
     z-index: 1;
 }
 
+/* Welcome logos (for start screen) */
+.welcome-logos {
+    text-align: center;
+    flex: 0 0 35vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+    position: relative;
+}
+
+.main-logo {
+    width: 90%;
+    max-width: 2500px;
+    height: auto;
+    margin-top: 20vh;
+}
+
+.sub-logo {
+    width: 40%;
+    max-width: 30550px;
+    height: auto;
+}
+
 /* Broker area - Top half */
 .broker-area {
     text-align: center;
-    flex: 0 0 40vh;
+    flex: 0 0 35vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -80,13 +106,13 @@ body {
 .broker-ascii {
     font-size: 3rem;
     line-height: 1.2;
-    color: #00ff00;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    color: #e0e0e0;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     transition: all 0.5s ease;
 }
 
-.broker-ascii.stage-1 { color: #00ff00; }
-.broker-ascii.stage-2 { color: #88ff00; }
+.broker-ascii.stage-1 { color: #e0e0e0; }
+.broker-ascii.stage-2 { color: #d0d0d0; }
 .broker-ascii.stage-3 { color: #ffff00; }
 .broker-ascii.stage-4 { color: #ff8800; }
 .broker-ascii.stage-5 { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
@@ -95,7 +121,7 @@ body {
     font-size: 0.9rem;
     letter-spacing: 0.3rem;
     margin-top: 0.5rem;
-    color: #00ff00;
+    color: #cccccc;
     opacity: 0.7;
 }
 
@@ -106,24 +132,26 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    padding-bottom: 2rem;
     z-index: 2;
     position: relative;
     min-height: 0;
 }
 
-/* Terminal */
+/* Terminal - Fixed size, even wider and shorter */
 .terminal {
-    width: 100%;
-    max-width: 100%;
-    flex: 1;
-    background-color: rgba(0, 0, 0, 0.8);
-    border: 2px solid #00ff00;
+    width: 110%;
+    max-width: 9900px;
+    height: 45vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    border: 2px solid #cccccc;
     padding: 2rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
     position: relative;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .terminal::before {
@@ -135,8 +163,8 @@ body {
     height: 100%;
     background: repeating-linear-gradient(
         0deg,
-        rgba(0, 255, 0, 0.03),
-        rgba(0, 255, 0, 0.03) 1px,
+        rgba(200, 200, 200, 0.03),
+        rgba(200, 200, 200, 0.03) 1px,
         transparent 1px,
         transparent 2px
     );
@@ -146,8 +174,11 @@ body {
 .terminal-content {
     font-size: 1rem;
     line-height: 1.6;
-    color: #00ff00;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    color: #e0e0e0;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
 }
 
 .terminal-content h1 {
@@ -254,7 +285,7 @@ body {
     border-radius: 50% 50% 0 0;
 }
 
-/* Button container */
+/* Button container (inside terminal) */
 .button-container {
     display: flex;
     flex-wrap: wrap;
@@ -262,7 +293,51 @@ body {
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 0 1rem;
+    padding: 1rem 0 0 0;
+    border-top: 1px solid rgba(200, 200, 200, 0.2);
+    margin-top: auto;
+}
+
+/* Password input section */
+.password-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.password-input {
+    padding: 0.75rem 1.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    background-color: #000;
+    color: #e0e0e0;
+    border: 2px solid #cccccc;
+    text-align: center;
+    letter-spacing: 0.1rem;
+    min-width: 250px;
+    transition: all 0.3s ease;
+}
+
+.password-input:focus {
+    outline: none;
+    border-color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.password-input::placeholder {
+    color: #666;
+    letter-spacing: 0.05rem;
+}
+
+.password-error {
+    color: #ff0000;
+    font-size: 0.9rem;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    min-height: 1.2rem;
+    text-align: center;
 }
 
 .game-button {
@@ -270,20 +345,20 @@ body {
     font-family: 'Courier New', monospace;
     font-size: 1rem;
     background-color: #000;
-    color: #00ff00;
-    border: 2px solid #00ff00;
+    color: #e0e0e0;
+    border: 2px solid #cccccc;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.3);
     min-width: 200px;
 }
 
 .game-button:hover {
-    background-color: #00ff00;
+    background-color: #e0e0e0;
     color: #000;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
 }
 
 .game-button.danger {
@@ -310,40 +385,54 @@ body {
     box-shadow: 0 0 20px rgba(255, 255, 0, 0.6);
 }
 
-/* Desire/Market cards */
+.game-button.white {
+    border-color: #ffffff;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+}
+
+.game-button.white:hover {
+    background-color: #ffffff;
+    color: #000;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+}
+
+/* Desire/Market cards (inside button container) */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
     width: 100%;
-    padding: 1rem;
+    max-height: 100%;
+    overflow-y: auto;
 }
 
 .card {
     padding: 1.5rem;
     background-color: rgba(0, 0, 0, 0.8);
-    border: 2px solid #00ff00;
+    border: 2px solid #cccccc;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
 }
 
 .card:hover {
-    border-color: #ffff00;
-    background-color: rgba(0, 50, 0, 0.8);
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    border-color: #ffffff;
+    background-color: rgba(50, 50, 50, 0.8);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     transform: translateY(-5px);
 }
 
 .card-title {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
-    color: #00ff00;
+    color: #e0e0e0;
 }
 
 .card-description {
     font-size: 0.9rem;
-    color: #88ff88;
+    color: #b0b0b0;
     line-height: 1.4;
 }
 
@@ -353,10 +442,10 @@ body {
     top: 1rem;
     right: 1rem;
     font-size: 1rem;
-    color: #00ff00;
+    color: #e0e0e0;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 0.5rem 1rem;
-    border: 2px solid #00ff00;
+    border: 2px solid #cccccc;
     z-index: 10;
 }
 
@@ -375,7 +464,7 @@ body {
 }
 
 .offer-gain {
-    color: #00ff00;
+    color: #cccccc;
     margin-bottom: 0.5rem;
 }
 
@@ -411,10 +500,12 @@ body {
     }
 
     .game-container {
-        padding: 1rem;
+        padding: 0.5rem;
     }
 
     .terminal {
+        width: 95%;
+        height: 50vh;
         padding: 1rem;
         font-size: 0.9rem;
     }
@@ -423,7 +514,28 @@ body {
         font-size: 2rem;
     }
 
+    .broker-area {
+        flex: 0 0 25vh;
+    }
+
+    .welcome-logos {
+        flex: 0 0 25vh;
+    }
+
+    .main-logo {
+        width: 80%;
+    }
+
+    .sub-logo {
+        width: 40%;
+    }
+
     .card-grid {
         grid-template-columns: 1fr;
+    }
+
+    .game-button {
+        min-width: 150px;
+        padding: 0.8rem 1.5rem;
     }
 }
