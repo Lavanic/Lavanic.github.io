@@ -51,22 +51,38 @@ const DOM = {
 // ============================================================================
 
 const BROKER_STAGES = {
-    1: `
-    :)
-    `,
-    2: `
-    :}
-    `,
-    3: `
-   :]>
-    `,
-    4: `
-  }:->
-    `,
-    5: `
- ψ(｀∇´)ψ
-    `
+    1: null, // Will be loaded from file
+    2: null,
+    3: null,
+    4: null,
+    5: null
 };
+
+// Load broker ASCII art from files
+const brokerFiles = [
+    'assets/images/broker1.txt',
+    'assets/images/broker2.txt',
+    'assets/images/broker3.txt',
+    'assets/images/broker4.txt'
+];
+
+// Load each broker stage
+Promise.all(brokerFiles.map((file, index) =>
+    fetch(file)
+        .then(response => response.text())
+        .then(text => {
+            BROKER_STAGES[index + 1] = text;
+        })
+        .catch(error => {
+            console.error(`Failed to load ${file}:`, error);
+            // Fallback to simple text
+            const fallbacks = [':)', ':}', ':]>', '}:->'];
+            BROKER_STAGES[index + 1] = fallbacks[index] || ':)';
+        })
+)).then(() => {
+    // Use broker4 for stage 5 as well
+    BROKER_STAGES[5] = BROKER_STAGES[4];
+});
 
 // ============================================================================
 // HELPER FUNCTIONS
@@ -98,8 +114,18 @@ function createButton(text, onClick, className = '') {
 }
 
 function updateBroker() {
-    const stage = Math.min(gameState.currentRound + 1, 5);
-    DOM.brokerAscii.textContent = BROKER_STAGES[stage];
+    const stage = Math.min(Math.max(gameState.currentRound + 1, 1), 5);
+    // Wait for broker ASCII to load if not yet available
+    if (BROKER_STAGES[stage]) {
+        DOM.brokerAscii.textContent = BROKER_STAGES[stage];
+    } else {
+        // Retry after a short delay if not loaded yet
+        setTimeout(() => {
+            if (BROKER_STAGES[stage]) {
+                DOM.brokerAscii.textContent = BROKER_STAGES[stage];
+            }
+        }, 100);
+    }
     DOM.brokerAscii.className = `broker-ascii stage-${stage}`;
 }
 
@@ -121,14 +147,14 @@ function renderWelcome() {
     clearTerminal();
     clearButtons();
     hideRoundCounter();
-    showBackground(); // Show background ONLY on welcome screen
+    showBackground(false); // Show RED background on welcome screen
 
     // Show logos, hide broker
     document.getElementById('welcomeLogos').style.display = 'flex';
     document.getElementById('brokerArea').style.display = 'none';
 
     writeTerminal(`
-        <p style="text-align: center; line-height: 1.8;">
+        <p style="text-align: center; line-height: 2; font-size: 1.2rem;">
             This game is my final project for GERMAN 280: Faust and the Faustian in German Culture.
             You'll explore five different versions of the Faust legend—from Marlowe's damnation to Goethe's redemption,
             from Murnau's visual darkness to DC's Felix Faust and "The Devil Went Down to Georgia."
@@ -136,68 +162,48 @@ function renderWelcome() {
         </p>
     `);
 
-    // Add password section
-    const passwordSection = document.createElement('div');
-    passwordSection.className = 'password-section';
-    passwordSection.innerHTML = `
-        <input type="password" class="password-input" id="gamePassword" placeholder="ENTER ACCESS CODE">
-        <div class="password-error" id="passwordError"></div>
-    `;
-    DOM.buttonContainer.appendChild(passwordSection);
-
     console.log('Creating BEGIN GAME button...');
-    createButton('BEGIN GAME!', attemptGameStart, 'white');
+    createButton('BEGIN GAME!', () => transitionTo(STATES.DESIRE_SELECT), 'white');
     console.log('Welcome screen rendered');
-}
-
-function attemptGameStart() {
-    const passwordInput = document.getElementById('gamePassword');
-    const errorDiv = document.getElementById('passwordError');
-    const password = passwordInput.value.trim();
-
-    if (password === '') {
-        errorDiv.textContent = 'ACCESS CODE REQUIRED';
-        passwordInput.style.borderColor = '#ff0000';
-        setTimeout(() => {
-            passwordInput.style.borderColor = '#cccccc';
-        }, 500);
-    } else {
-        errorDiv.textContent = 'ACCESS DENIED - INVALID CODE';
-        passwordInput.style.borderColor = '#ff0000';
-        passwordInput.value = '';
-        setTimeout(() => {
-            passwordInput.style.borderColor = '#cccccc';
-            errorDiv.textContent = '';
-        }, 2000);
-    }
 }
 
 function renderDesireSelect() {
     clearTerminal();
     clearButtons();
-    hideBackground(); // Hide background after welcome screen
+    showBackground(); // Show background after welcome screen
 
     // Hide logos, show broker
     document.getElementById('welcomeLogos').style.display = 'none';
     document.getElementById('brokerArea').style.display = 'flex';
+    updateBroker(); // Update to show broker1 ASCII art
 
     writeTerminal(`
         <h1>SELECT YOUR DESIRE</h1>
         <p>What do you seek? Choose wisely—this cannot be changed.</p>
     `);
 
-    // Create desire cards
+    // Create desire cards with flip animation
     const cardGrid = document.createElement('div');
     cardGrid.className = 'card-grid';
 
-    DESIRES.forEach(desire => {
+    DESIRES.forEach((desire, index) => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <div class="card-title">${desire.label}</div>
+            <div class="card-inner">
+                <div class="card-face card-back"></div>
+                <div class="card-face card-front">
+                    <div class="card-title">${desire.label}</div>
+                </div>
+            </div>
         `;
         card.addEventListener('click', () => selectDesire(desire));
         cardGrid.appendChild(card);
+
+        // Trigger flip animation with staggered delay (left to right)
+        setTimeout(() => {
+            card.classList.add('flipped');
+        }, 300 + (index * 200));
     });
 
     DOM.buttonContainer.appendChild(cardGrid);
@@ -206,6 +212,7 @@ function renderDesireSelect() {
 function renderMarketSelect() {
     clearTerminal();
     clearButtons();
+    showBackground();
 
     const desireText = gameState.selectedDesire.label;
 
@@ -216,20 +223,45 @@ function renderMarketSelect() {
         <p style="color: #ffff00;">Choose carefully—you may only deal with one.</p>
     `);
 
-    // Create market cards
+    // Create market cards with flip animation
     const cardGrid = document.createElement('div');
     cardGrid.className = 'card-grid';
 
-    Object.keys(MARKETS).forEach(marketId => {
+    Object.keys(MARKETS).forEach((marketId, index) => {
         const market = MARKETS[marketId];
         const card = document.createElement('div');
         card.className = 'card';
+
+        // Generate dynamic description based on selected desire
+        let description = market.description;
+        if (marketId === 'goethe') {
+            description = `You get ${desireText.toLowerCase()} in exchange for 1 loved one quietly paying the price.`;
+        } else if (marketId === 'murnau') {
+            description = `You get ${desireText.toLowerCase()} in exchange for 1,000 strangers falling into sickness and despair.`;
+        } else if (marketId === 'felix') {
+            description = `You get ${desireText.toLowerCase()} through dark magic in exchange for your body beginning to rot.`;
+        } else if (marketId === 'marlowe') {
+            description = `You get ${desireText.toLowerCase()} for 24 years in exchange for your soul being damned to hell for eternity.`;
+        } else if (marketId === 'georgia') {
+            description = `You get ${desireText.toLowerCase()} and keep your soul if you win. Lose and forfeit everything.`;
+        }
+
         card.innerHTML = `
-            <div class="card-title">${market.name}</div>
-            <div class="card-description">${market.description}</div>
+            <div class="card-inner">
+                <div class="card-face card-back"></div>
+                <div class="card-face card-front">
+                    <div class="card-title">${market.name}</div>
+                    <div class="card-description">${description}</div>
+                </div>
+            </div>
         `;
         card.addEventListener('click', () => selectMarket(marketId));
         cardGrid.appendChild(card);
+
+        // Trigger flip animation with staggered delay (left to right)
+        setTimeout(() => {
+            card.classList.add('flipped');
+        }, 300 + (index * 200));
     });
 
     DOM.buttonContainer.appendChild(cardGrid);
@@ -239,6 +271,7 @@ function renderOfferDecision() {
     clearTerminal();
     clearButtons();
     showRoundCounter();
+    showBackground();
 
     const offer = gameState.currentOffer;
     const performance = getPerformanceGrade(gameState.hitsThisRound);
@@ -271,6 +304,7 @@ function renderFinalOutcome() {
     clearTerminal();
     clearButtons();
     hideRoundCounter();
+    showBackground();
 
     const market = MARKETS[gameState.selectedMarket];
     const vignette = market.generateVignette(gameState.selectedDesire, gameState.currentOffer);
@@ -281,9 +315,6 @@ function renderFinalOutcome() {
         <div style="background: rgba(50, 0, 0, 0.3); padding: 1rem; border: 2px solid #ff0000;">
             ${vignette}
         </div>
-        <br>
-        <p style="text-align: center; color: #888;">The Broker smiles.</p>
-        <p style="text-align: center; color: #888;">Another soul accounted for.</p>
     `);
 
     createButton('CLOSE SESSION', () => location.reload(), '');
@@ -328,12 +359,14 @@ function settle() {
 
 let minigame = {
     active: false,
-    duration: 12000, // 12 seconds
+    duration: 15000, // 15 seconds
     startTime: 0,
     attacks: [],
+    warnings: [],
     heartPos: { x: 190, y: 190 },
     keys: {},
-    animationFrame: null
+    animationFrame: null,
+    patternCounter: 0
 };
 
 function startMinigame() {
@@ -344,15 +377,18 @@ function startMinigame() {
     DOM.hitsCounter.textContent = 'HITS: 0';
 
     showRoundCounter();
+    showBackground();
 
     minigame.active = true;
     minigame.startTime = Date.now();
     minigame.attacks = [];
+    minigame.warnings = [];
     minigame.heartPos = { x: 190, y: 190 };
     minigame.keys = {};
+    minigame.patternCounter = 0;
 
-    // Clear previous attacks
-    const oldAttacks = DOM.soulBox.querySelectorAll('.attack');
+    // Clear previous attacks and warnings
+    const oldAttacks = DOM.soulBox.querySelectorAll('.attack, .warning');
     oldAttacks.forEach(a => a.remove());
 
     // Position heart
@@ -389,23 +425,47 @@ function updateHeartPosition() {
 
 function spawnAttacks() {
     const market = MARKETS[gameState.selectedMarket];
+    const marketId = gameState.selectedMarket;
     const difficulty = getDifficulty(gameState.currentRound);
 
+    // Spawn attacks based on market type
     for (let i = 0; i < difficulty.count; i++) {
         setTimeout(() => {
             if (!minigame.active) return;
-            createAttack(market.minigameTheme, difficulty.speed);
+
+            // Mix of attack types based on difficulty
+            const rand = Math.random();
+            if (rand < difficulty.homingChance) {
+                createHomingAttack(market.minigameTheme, difficulty.speed);
+            } else if (rand < difficulty.homingChance + 0.15 && marketId === 'georgia') {
+                createRhythmPattern(market.minigameTheme, difficulty.speed);
+            } else if (rand < difficulty.homingChance + 0.2 && marketId === 'felix') {
+                createSpiralAttack(market.minigameTheme, difficulty.speed);
+            } else if (rand < difficulty.homingChance + 0.25 && marketId === 'murnau') {
+                createSpreadPattern(market.minigameTheme, difficulty.speed);
+            } else {
+                createAttack(market.minigameTheme, difficulty.speed);
+            }
         }, i * difficulty.spawnDelay);
+    }
+
+    // Add timed pattern attacks
+    if (difficulty.patterns) {
+        setTimeout(() => {
+            if (!minigame.active) return;
+            if (marketId === 'marlowe') createCrossPattern(market.minigameTheme, difficulty.speed);
+            else if (marketId === 'goethe') createWavePattern(market.minigameTheme, difficulty.speed);
+        }, 5000);
     }
 }
 
 function getDifficulty(round) {
     const difficulties = [
-        { count: 5, speed: 2, spawnDelay: 2000 },   // Round 1
-        { count: 8, speed: 3, spawnDelay: 1500 },   // Round 2
-        { count: 12, speed: 4, spawnDelay: 1200 },  // Round 3
-        { count: 15, speed: 5, spawnDelay: 1000 },  // Round 4
-        { count: 20, speed: 6, spawnDelay: 800 }    // Round 5
+        { count: 8, speed: 2.5, spawnDelay: 1500, homingChance: 0.2, patterns: false },   // Round 1
+        { count: 12, speed: 3, spawnDelay: 1200, homingChance: 0.35, patterns: true },    // Round 2
+        { count: 16, speed: 3.5, spawnDelay: 1000, homingChance: 0.5, patterns: true },   // Round 3
+        { count: 20, speed: 4, spawnDelay: 800, homingChance: 0.65, patterns: true },     // Round 4
+        { count: 25, speed: 4.5, spawnDelay: 600, homingChance: 0.8, patterns: true }     // Round 5
     ];
     return difficulties[round] || difficulties[0];
 }
@@ -447,7 +507,12 @@ function createAttack(theme, speed) {
 
     attack.style.left = startX + 'px';
     attack.style.top = startY + 'px';
-    attack.style.backgroundColor = theme.color;
+    attack.textContent = theme.emoji;
+    attack.style.fontSize = '28px';
+    attack.style.display = 'flex';
+    attack.style.alignItems = 'center';
+    attack.style.justifyContent = 'center';
+    attack.style.filter = `drop-shadow(0 0 8px ${theme.color})`;
 
     attack.dataset.x = startX;
     attack.dataset.y = startY;
@@ -455,7 +520,209 @@ function createAttack(theme, speed) {
     attack.dataset.vy = velocityY;
 
     DOM.soulBox.appendChild(attack);
-    minigame.attacks.push(attack);
+    minigame.attacks.push({ element: attack, type: 'straight' });
+}
+
+// HOMING ATTACK - Tracks player position
+function createHomingAttack(theme, speed) {
+    // Show warning first
+    const warningDuration = 800;
+    const warning = document.createElement('div');
+    warning.className = 'warning';
+    warning.style.position = 'absolute';
+    warning.style.left = minigame.heartPos.x + 'px';
+    warning.style.top = minigame.heartPos.y + 'px';
+    warning.style.width = '40px';
+    warning.style.height = '40px';
+    warning.style.border = '2px solid red';
+    warning.style.borderRadius = '50%';
+    warning.style.opacity = '0.5';
+    warning.style.animation = 'pulse 0.3s infinite';
+    DOM.soulBox.appendChild(warning);
+    minigame.warnings.push(warning);
+
+    setTimeout(() => {
+        if (!minigame.active) return;
+        warning.remove();
+
+        const attack = document.createElement('div');
+        attack.className = `attack ${theme.attackClass}`;
+
+        // Spawn from random edge
+        const side = Math.floor(Math.random() * 4);
+        let startX, startY;
+        switch (side) {
+            case 0: startX = Math.random() * 370; startY = 0; break;
+            case 1: startX = 370; startY = Math.random() * 370; break;
+            case 2: startX = Math.random() * 370; startY = 370; break;
+            case 3: startX = 0; startY = Math.random() * 370; break;
+        }
+
+        attack.style.left = startX + 'px';
+        attack.style.top = startY + 'px';
+        attack.textContent = theme.emoji;
+        attack.style.fontSize = '32px';
+        attack.style.display = 'flex';
+        attack.style.alignItems = 'center';
+        attack.style.justifyContent = 'center';
+        attack.style.filter = `drop-shadow(0 0 15px ${theme.color})`;
+
+        attack.dataset.x = startX;
+        attack.dataset.y = startY;
+
+        DOM.soulBox.appendChild(attack);
+        minigame.attacks.push({ element: attack, type: 'homing', speed: speed * 0.8 });
+    }, warningDuration);
+}
+
+// SPIRAL ATTACK - Moves in spiral pattern
+function createSpiralAttack(theme, speed) {
+    const attack = document.createElement('div');
+    attack.className = `attack ${theme.attackClass}`;
+
+    const centerX = 185;
+    const centerY = 185;
+    const startAngle = Math.random() * Math.PI * 2;
+
+    attack.textContent = theme.emoji;
+    attack.style.fontSize = '28px';
+    attack.style.display = 'flex';
+    attack.style.alignItems = 'center';
+    attack.style.justifyContent = 'center';
+    attack.style.filter = `drop-shadow(0 0 10px ${theme.color})`;
+
+    attack.dataset.x = centerX;
+    attack.dataset.y = centerY;
+    attack.dataset.angle = startAngle;
+    attack.dataset.radius = 50;
+
+    DOM.soulBox.appendChild(attack);
+    minigame.attacks.push({ element: attack, type: 'spiral', speed: speed });
+}
+
+// RHYTHM PATTERN - Musical notes in rhythm (Georgia)
+function createRhythmPattern(theme, speed) {
+    const beatInterval = 400;
+    for (let i = 0; i < 4; i++) {
+        setTimeout(() => {
+            if (!minigame.active) return;
+            const attack = document.createElement('div');
+            attack.className = `attack ${theme.attackClass}`;
+
+            const startX = 185;
+            const startY = 0;
+            const angle = (Math.PI / 6) * (i - 1.5); // Spread pattern
+
+            attack.style.left = startX + 'px';
+            attack.style.top = startY + 'px';
+            attack.textContent = theme.emoji;
+            attack.style.fontSize = '28px';
+            attack.style.display = 'flex';
+            attack.style.alignItems = 'center';
+            attack.style.justifyContent = 'center';
+            attack.style.filter = `drop-shadow(0 0 8px ${theme.color})`;
+
+            attack.dataset.x = startX;
+            attack.dataset.y = startY;
+            attack.dataset.vx = Math.sin(angle) * speed * 1.5;
+            attack.dataset.vy = Math.cos(angle) * speed * 1.5;
+
+            DOM.soulBox.appendChild(attack);
+            minigame.attacks.push({ element: attack, type: 'straight' });
+        }, i * beatInterval);
+    }
+}
+
+// SPREAD PATTERN - Plague spreading (Murnau)
+function createSpreadPattern(theme, speed) {
+    const centerX = Math.random() * 300 + 35;
+    const centerY = Math.random() * 300 + 35;
+
+    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+        const attack = document.createElement('div');
+        attack.className = `attack ${theme.attackClass}`;
+
+        attack.style.left = centerX + 'px';
+        attack.style.top = centerY + 'px';
+        attack.textContent = theme.emoji;
+        attack.style.fontSize = '28px';
+        attack.style.display = 'flex';
+        attack.style.alignItems = 'center';
+        attack.style.justifyContent = 'center';
+        attack.style.filter = `drop-shadow(0 0 10px ${theme.color})`;
+        attack.style.opacity = '0.9';
+
+        attack.dataset.x = centerX;
+        attack.dataset.y = centerY;
+        attack.dataset.vx = Math.cos(angle) * speed;
+        attack.dataset.vy = Math.sin(angle) * speed;
+
+        DOM.soulBox.appendChild(attack);
+        minigame.attacks.push({ element: attack, type: 'straight' });
+    }
+}
+
+// CROSS PATTERN - Four directions (Marlowe)
+function createCrossPattern(theme, speed) {
+    const directions = [
+        { x: 0, y: 185, vx: 1, vy: 0 },
+        { x: 370, y: 185, vx: -1, vy: 0 },
+        { x: 185, y: 0, vx: 0, vy: 1 },
+        { x: 185, y: 370, vx: 0, vy: -1 }
+    ];
+
+    directions.forEach(dir => {
+        const attack = document.createElement('div');
+        attack.className = `attack ${theme.attackClass}`;
+
+        attack.style.left = dir.x + 'px';
+        attack.style.top = dir.y + 'px';
+        attack.textContent = theme.emoji;
+        attack.style.fontSize = '32px';
+        attack.style.display = 'flex';
+        attack.style.alignItems = 'center';
+        attack.style.justifyContent = 'center';
+        attack.style.filter = `drop-shadow(0 0 12px ${theme.color})`;
+
+        attack.dataset.x = dir.x;
+        attack.dataset.y = dir.y;
+        attack.dataset.vx = dir.vx * speed * 1.2;
+        attack.dataset.vy = dir.vy * speed * 1.2;
+
+        DOM.soulBox.appendChild(attack);
+        minigame.attacks.push({ element: attack, type: 'straight' });
+    });
+}
+
+// WAVE PATTERN - Sine wave (Goethe)
+function createWavePattern(theme, speed) {
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            if (!minigame.active) return;
+            const attack = document.createElement('div');
+            attack.className = `attack ${theme.attackClass}`;
+
+            const side = Math.random() < 0.5 ? 0 : 370;
+            const startY = (i / 5) * 370;
+
+            attack.style.left = side + 'px';
+            attack.style.top = startY + 'px';
+            attack.textContent = theme.emoji;
+            attack.style.fontSize = '28px';
+            attack.style.display = 'flex';
+            attack.style.alignItems = 'center';
+            attack.style.justifyContent = 'center';
+            attack.style.filter = `drop-shadow(0 0 8px ${theme.color})`;
+
+            attack.dataset.x = side;
+            attack.dataset.y = startY;
+            attack.dataset.waveOffset = i * 50;
+            attack.dataset.direction = side === 0 ? 1 : -1;
+
+            DOM.soulBox.appendChild(attack);
+            minigame.attacks.push({ element: attack, type: 'wave', speed: speed });
+        }, i * 200);
+    }
 }
 
 function minigameLoop() {
@@ -486,15 +753,57 @@ function minigameLoop() {
 
     updateHeartPosition();
 
-    // Update attacks
-    minigame.attacks.forEach(attack => {
+    // Update attacks based on type
+    minigame.attacks = minigame.attacks.filter(attackObj => {
+        const attack = attackObj.element;
         let x = parseFloat(attack.dataset.x);
         let y = parseFloat(attack.dataset.y);
-        const vx = parseFloat(attack.dataset.vx);
-        const vy = parseFloat(attack.dataset.vy);
 
-        x += vx;
-        y += vy;
+        // Skip if already hit (for homing attacks)
+        if (attack.dataset.hit === 'true' && attackObj.type === 'homing') {
+            attack.remove();
+            return false;
+        }
+
+        if (attackObj.type === 'straight') {
+            // Original straight-line movement
+            const vx = parseFloat(attack.dataset.vx);
+            const vy = parseFloat(attack.dataset.vy);
+            x += vx;
+            y += vy;
+        } else if (attackObj.type === 'homing') {
+            // Track toward player position only if not hit
+            if (attack.dataset.hit !== 'true') {
+                const dx = minigame.heartPos.x - x;
+                const dy = minigame.heartPos.y - y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > 0 && dist > 5) { // Stop tracking if very close
+                    const speed = attackObj.speed || 2;
+                    x += (dx / dist) * speed;
+                    y += (dy / dist) * speed;
+                }
+            }
+        } else if (attackObj.type === 'spiral') {
+            // Spiral outward
+            let angle = parseFloat(attack.dataset.angle);
+            let radius = parseFloat(attack.dataset.radius);
+
+            angle += 0.08;
+            radius += attackObj.speed * 0.5;
+
+            x = 185 + Math.cos(angle) * radius;
+            y = 185 + Math.sin(angle) * radius;
+
+            attack.dataset.angle = angle;
+            attack.dataset.radius = radius;
+        } else if (attackObj.type === 'wave') {
+            // Sine wave movement
+            const direction = parseFloat(attack.dataset.direction);
+            const waveOffset = parseFloat(attack.dataset.waveOffset);
+
+            x += direction * attackObj.speed;
+            y = parseFloat(attack.dataset.y) + Math.sin((x + waveOffset) / 30) * 50;
+        }
 
         attack.dataset.x = x;
         attack.dataset.y = y;
@@ -502,18 +811,35 @@ function minigameLoop() {
         attack.style.top = y + 'px';
 
         // Check collision with heart
-        if (checkCollision(minigame.heartPos, { x, y, width: 30, height: 30 })) {
+        const attackSize = attackObj.type === 'homing' ? 35 : 30;
+        if (checkCollision(minigame.heartPos, { x, y, width: attackSize, height: attackSize })) {
             if (!attack.dataset.hit) {
                 attack.dataset.hit = 'true';
                 gameState.hitsThisRound++;
                 DOM.hitsCounter.textContent = `HITS: ${gameState.hitsThisRound}`;
-                // Visual feedback
+                // Enhanced visual feedback
                 DOM.soulHeart.style.filter = 'brightness(2)';
+                DOM.soulHeart.style.transform = 'translate(-50%, -50%) rotate(45deg) scale(1.3)';
                 setTimeout(() => {
                     DOM.soulHeart.style.filter = '';
-                }, 100);
+                    DOM.soulHeart.style.transform = 'translate(-50%, -50%) rotate(45deg)';
+                }, 150);
+
+                // Remove homing attacks immediately after hit
+                if (attackObj.type === 'homing') {
+                    attack.remove();
+                    return false; // Remove from array immediately
+                }
             }
         }
+
+        // Remove attacks that go off screen
+        if (x < -50 || x > 420 || y < -50 || y > 420) {
+            attack.remove();
+            return false;
+        }
+
+        return true;
     });
 
     minigame.animationFrame = requestAnimationFrame(minigameLoop);
@@ -536,9 +862,11 @@ function endMinigame() {
     document.removeEventListener('keydown', handleKeyDown);
     document.removeEventListener('keyup', handleKeyUp);
 
-    // Clear attacks
-    minigame.attacks.forEach(a => a.remove());
+    // Clear attacks and warnings
+    minigame.attacks.forEach(a => a.element.remove());
     minigame.attacks = [];
+    minigame.warnings.forEach(w => w.remove());
+    minigame.warnings = [];
 
     // Hide soul box
     DOM.soulBoxContainer.style.display = 'none';
@@ -602,9 +930,34 @@ function render() {
 // BACKGROUND CONTROL
 // ============================================================================
 
-function showBackground() {
+function showBackground(isPurple = true) {
     const bg = document.getElementById('animatedBg');
-    if (bg) bg.style.display = 'block';
+    if (bg) {
+        // Change to purple for non-welcome screens
+        if (isPurple && !window.balatroPurpleInitialized) {
+            import('./balatro.js').then(module => {
+                // Clear the old canvas
+                const canvas = bg.querySelector('canvas');
+                if (canvas) canvas.remove();
+
+                // Reinitialize with purple
+                window.balatroBg = module.initBalatro({
+                    color1: '#613583',
+                    color2: '#241F31',
+                    color3: '#000000',
+                    isRotate: false,
+                    mouseInteraction: true,
+                    pixelFilter: 700
+                });
+                window.balatroPurpleInitialized = true;
+            });
+        }
+        bg.style.display = 'block';
+        // Trigger resize to ensure proper rendering
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 50);
+    }
 }
 
 function hideBackground() {

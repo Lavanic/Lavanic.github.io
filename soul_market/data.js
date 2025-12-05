@@ -6,7 +6,7 @@
 
 const DESIRES = [
     { id: 'gpa', label: '4.0 GPA next semester', archetype: 'KNOWLEDGE' },
-    { id: 'internship', label: 'Internship at Google/NVIDIA', archetype: 'POWER' },
+    { id: 'internship', label: 'Internship at Google', archetype: 'POWER' },
     { id: 'followers', label: '100k followers on TikTok', archetype: 'FAME' },
     { id: 'love', label: 'True love', archetype: 'LOVE' }
 ];
@@ -21,12 +21,13 @@ const MARKETS = {
     // Classical 24-year contract. Fixed damnation. No escape.
     // ========================================================================
     marlowe: {
-        name: "Marlowe's Bargain",
+        name: "Marlowe's Offer",
         description: "Classic 24-year deal. Fixed damnation, no escape.",
 
         minigameTheme: {
             attackClass: 'chain',
-            color: '#8B0000'
+            color: '#8B0000',
+            emoji: '⛓️'
         },
 
         generateBaseOffer: function(desire) {
@@ -75,21 +76,21 @@ const MARKETS = {
     // Endless striving. Moral ambiguity. Collateral damage. Redemption possible.
     // ========================================================================
     goethe: {
-        name: "Goethe's Striving",
-        description: "Long-term moral ambiguity. Collateral damage, but redemption possible.",
+        name: "Goethe's Offer",
+        description: "Get your desire, but 1 loved one quietly pays the price.",
 
         minigameTheme: {
             attackClass: 'shadow',
-            color: '#444444'
+            color: '#444444',
+            emoji: '💔'
         },
 
         generateBaseOffer: function(desire) {
             return {
-                gain: `Endless pursuit of ${desire.label.toLowerCase()}`,
-                cost: 'Those closest to you will suffer. Your soul hangs in balance.',
-                duration: 'indefinite',
-                severity: 7,
-                collateral: 'high'
+                gain: desire.label,
+                lovedOnesHurt: 1,
+                cost: '1 loved one quietly pays the price.',
+                redemptionPossible: true
             };
         },
 
@@ -98,25 +99,29 @@ const MARKETS = {
 
             if (hits === 0) {
                 // EXCELLENT: Reduce collateral damage
-                newOffer.cost = 'Minor inconvenience to others. Your soul may yet be saved through striving.';
-                newOffer.severity = Math.max(4, offer.severity - 1);
+                newOffer.lovedOnesHurt = Math.max(0, offer.lovedOnesHurt - 1);
+                if (newOffer.lovedOnesHurt === 0) {
+                    newOffer.cost = 'Minor inconvenience to others. Your soul may yet be saved through striving.';
+                } else {
+                    newOffer.cost = `${newOffer.lovedOnesHurt} loved one suffers quietly for your ambition.`;
+                }
             } else if (hits <= 2) {
-                // GOOD: Moderate damage
-                newOffer.cost = 'Some harm to loved ones. Redemption remains possible if you never stop striving.';
-                newOffer.severity = Math.max(5, offer.severity - 0.5);
+                // GOOD: Keep current level
+                newOffer.cost = `${newOffer.lovedOnesHurt} loved one pays the cost for your desire.`;
             } else if (hits > 4) {
-                // POOR: Catastrophic collateral
-                newOffer.cost = 'Innocents destroyed in your wake. Redemption grows distant but not impossible.';
-                newOffer.severity = Math.min(9, offer.severity + 1);
+                // POOR: Increase collateral
+                newOffer.lovedOnesHurt = offer.lovedOnesHurt + 2;
+                const plural = newOffer.lovedOnesHurt > 1 ? 'loved ones are' : 'loved one is';
+                newOffer.cost = `${newOffer.lovedOnesHurt} ${plural} destroyed in your wake.`;
             }
 
             return newOffer;
         },
 
         generateVignette: function(desire, offer) {
-            const severity = offer.severity;
+            const lovedOnesHurt = offer.lovedOnesHurt;
 
-            if (severity <= 5) {
+            if (lovedOnesHurt === 0) {
                 return `
                     <p>You achieve ${desire.label.toLowerCase()}, but the price is subtle.</p>
                     <p>Friends drift away. Opportunities close for others. You barely notice.</p>
@@ -125,9 +130,10 @@ const MARKETS = {
                         Your soul is not yet lost. Redemption waits for those who never cease their striving.
                     </p>
                 `;
-            } else if (severity <= 7) {
+            } else if (lovedOnesHurt <= 2) {
+                const plural = lovedOnesHurt > 1 ? 'people you love pay' : 'person you love pays';
                 return `
-                    <p>You gain ${desire.label.toLowerCase()}, but someone you love pays the cost.</p>
+                    <p>You gain ${desire.label.toLowerCase()}, but ${lovedOnesHurt} ${plural} the cost.</p>
                     <p>A friend's dream is crushed. A family member suffers. You tell yourself it's worth it.</p>
                     <p>You continue to strive, hoping that action alone will redeem you.</p>
                     <p style="color: #ffff00; text-align: center; margin-top: 1rem;">
@@ -136,7 +142,7 @@ const MARKETS = {
                 `;
             } else {
                 return `
-                    <p>You obtain ${desire.label.toLowerCase()}, but innocents are destroyed.</p>
+                    <p>You obtain ${desire.label.toLowerCase()}, but ${lovedOnesHurt} loved ones are destroyed.</p>
                     <p>Those who trusted you are ruined. Those who loved you are broken.</p>
                     <p>Yet you press onward, believing that ceaseless striving might still bring salvation.</p>
                     <p style="color: #ff8800; text-align: center; margin-top: 1rem;">
@@ -149,24 +155,23 @@ const MARKETS = {
 
     // ========================================================================
     // MURNAU'S FAUST (1926)
-    // Immediate relief from plague/suffering. World literally darkens. Shadow deepens.
+    // Immediate relief from plague/suffering. Strangers suffer instead.
     // ========================================================================
     murnau: {
-        name: "Murnau's Shadow",
-        description: "Immediate relief from suffering, but the world darkens with each deal.",
+        name: "Murnau's Offer",
+        description: "Get your desire, but 1,000 strangers fall into sickness and despair.",
 
         minigameTheme: {
             attackClass: 'shadow',
-            color: '#222222'
+            color: '#222222',
+            emoji: '☠️'
         },
 
         generateBaseOffer: function(desire) {
             return {
-                gain: `Instant achievement of ${desire.label.toLowerCase()}`,
-                cost: 'The world darkens. Light fades from your life. Plague spreads in your wake.',
-                duration: 'immediate',
-                severity: 8,
-                darkness: 'moderate'
+                gain: desire.label,
+                livesLost: 1000,
+                cost: '1,000 lives are darkened by plague and misfortune.'
             };
         },
 
@@ -174,49 +179,46 @@ const MARKETS = {
             const newOffer = { ...offer };
 
             if (hits === 0) {
-                // EXCELLENT: Less darkness
-                newOffer.cost = 'The world dims slightly. A tolerable shadow falls over your days.';
-                newOffer.darkness = 'minor';
-            } else if (hits <= 2) {
-                // GOOD: Moderate darkness
-                newOffer.cost = 'Shadows lengthen. Joy becomes harder to find.';
+                // EXCELLENT: Decrease lives lost
+                newOffer.livesLost = Math.max(100, offer.livesLost - 300);
             } else if (hits > 4) {
-                // POOR: Oppressive darkness
-                newOffer.cost = 'Darkness engulfs you. Everything you touch withers. Others flee your presence.';
-                newOffer.darkness = 'total';
+                // POOR: Increase lives lost
+                newOffer.livesLost = offer.livesLost + 1000;
             }
+
+            newOffer.cost = `${newOffer.livesLost.toLocaleString()} strangers suffer so your wish can stand.`;
 
             return newOffer;
         },
 
         generateVignette: function(desire, offer) {
-            const darkness = offer.darkness;
+            const livesLost = offer.livesLost;
 
-            if (darkness === 'minor') {
+            if (livesLost <= 200) {
                 return `
                     <p>You receive ${desire.label.toLowerCase()} instantly. The relief is immediate.</p>
-                    <p>But the world seems a bit grayer now. Colors are less vibrant. Laughter sounds hollow.</p>
-                    <p>You live under a thin veil of shadow, tolerable but ever-present.</p>
+                    <p>Far away, ${livesLost.toLocaleString()} strangers fall ill. You'll never see them, never know their names.</p>
+                    <p>Your world stays bright while theirs darkens. The plague has been transferred.</p>
                     <p style="color: #888888; text-align: center; margin-top: 1rem;">
-                        The plague has passed, but the light never fully returns.
+                        Out of sight, out of mind. They suffer so you don't have to.
                     </p>
                 `;
-            } else if (darkness === 'moderate') {
+            } else if (livesLost <= 1500) {
                 return `
-                    <p>${desire.label} is yours, granted in an instant. The suffering ends.</p>
-                    <p>But shadows creep into every corner of your life. The sun seems dimmer. Nights stretch longer.</p>
-                    <p>You walk through a world that grows darker with each passing day.</p>
+                    <p>${desire.label} is yours, granted in an instant. Your suffering ends.</p>
+                    <p>But ${livesLost.toLocaleString()} distant strangers collapse into sickness and despair.</p>
+                    <p>You walk through sunlight while their world grows darker with plague.</p>
                     <p style="color: #666666; text-align: center; margin-top: 1rem;">
-                        The plague is gone, but darkness has taken its place.
+                        The suffering was redistributed. You are saved. They are not.
                     </p>
                 `;
             } else {
                 return `
-                    <p>You gain ${desire.label.toLowerCase()} immediately, but at catastrophic cost.</p>
-                    <p>Darkness engulfs everything. Light dies wherever you walk. Others sicken in your presence.</p>
-                    <p>You are a walking plague, a shadow that devours joy.</p>
+                    <p>You gain ${desire.label.toLowerCase()} immediately, but at catastrophic human cost.</p>
+                    <p>${livesLost.toLocaleString()} people—entire neighborhoods, whole towns—fall into plague and misery.</p>
+                    <p>Your world remains pristine while thousands suffer unseen in the distance.</p>
                     <p style="color: #000000; background: #330000; padding: 0.5rem; text-align: center; margin-top: 1rem;">
-                        You have become the very plague you sought to escape.
+                        You have become the plague itself, spreading misery to spare yourself.
                     </p>
                 `;
             }
@@ -225,24 +227,23 @@ const MARKETS = {
 
     // ========================================================================
     // FELIX FAUST (DC Comics)
-    // Magical power. Reality glitches. Unintended collateral. Addiction to next spell.
+    // Dark magic power. Your body begins to rot.
     // ========================================================================
     felix: {
-        name: "Felix's Gambit",
-        description: "Supernatural success, but reality destabilizes. Magic has consequences.",
+        name: "Felix's Offer",
+        description: "Get your desire through dark magic, but your body begins to rot.",
 
         minigameTheme: {
             attackClass: 'sigil',
-            color: '#ff00ff'
+            color: '#ff00ff',
+            emoji: '✨'
         },
 
         generateBaseOffer: function(desire) {
             return {
-                gain: `Supernatural aid to achieve ${desire.label.toLowerCase()}`,
-                cost: 'Reality glitches around you. Magic warps probability. Unintended consequences cascade.',
-                duration: 'until achieved',
-                severity: 6,
-                chaos: 'moderate'
+                gain: `${desire.label} powered by forbidden magic`,
+                rotLevel: 1,
+                cost: 'Your skin goes pale and your teeth begin to rot.'
             };
         },
 
@@ -250,49 +251,75 @@ const MARKETS = {
             const newOffer = { ...offer };
 
             if (hits === 0) {
-                // EXCELLENT: Controlled magic
-                newOffer.cost = 'Minor reality fluctuations. Controllable side effects.';
-                newOffer.chaos = 'low';
-            } else if (hits <= 2) {
-                // GOOD: Manageable chaos
-                newOffer.cost = 'Probability bends. Small glitches in reality. Mostly containable.';
+                // EXCELLENT: Reduce rot
+                newOffer.rotLevel = Math.max(0, offer.rotLevel - 1);
             } else if (hits > 4) {
-                // POOR: Reality breakdown
-                newOffer.cost = 'Reality fractures. Cities glitch. Friends erased from existence. Chaos spreads exponentially.';
-                newOffer.chaos = 'catastrophic';
+                // POOR: Increase rot
+                newOffer.rotLevel = offer.rotLevel + 1;
+            } else {
+                newOffer.rotLevel = offer.rotLevel;
             }
+
+            // Map rotLevel to description
+            const rotDescriptions = {
+                0: 'You look almost normal, but something feels wrong under the skin.',
+                1: 'Your face grows gaunt. Your teeth yellow and chip.',
+                2: 'Your skin loses all color. Dark circles sink around your eyes.',
+                3: 'Patches of skin crack and flake. You look half-dead.',
+                4: 'Your body is ghoulish and emaciated. You resemble a walking corpse.'
+            };
+
+            newOffer.cost = rotDescriptions[Math.min(newOffer.rotLevel, 4)] || rotDescriptions[4];
 
             return newOffer;
         },
 
         generateVignette: function(desire, offer) {
-            const chaos = offer.chaos;
+            const rotLevel = offer.rotLevel;
 
-            if (chaos === 'low') {
+            if (rotLevel === 0) {
                 return `
-                    <p>Magic grants you ${desire.label.toLowerCase()}. The spell is nearly perfect.</p>
-                    <p>Occasionally, small things go wrong: a stranger forgets your name, a text message never sends.</p>
-                    <p>These are acceptable prices for supernatural success.</p>
+                    <p>Dark magic grants you ${desire.label.toLowerCase()}. The spell is nearly clean.</p>
+                    <p>You look almost normal in the mirror, though something feels wrong beneath your skin.</p>
+                    <p>The price was paid, but barely visible. You got away with it. Almost.</p>
                     <p style="color: #ff88ff; text-align: center; margin-top: 1rem;">
-                        You've controlled the magic. For now.
+                        The rot is minimal. You can still pass for human.
                     </p>
                 `;
-            } else if (chaos === 'moderate') {
+            } else if (rotLevel === 1) {
                 return `
-                    <p>Supernatural forces deliver ${desire.label.toLowerCase()}. Reality bends to accommodate.</p>
-                    <p>But probability warps around you. Coincidences pile up. People remember things that never happened.</p>
-                    <p>You're addicted to the magic now. You'll need it again. And again.</p>
-                    <p style="color: #ff00ff; text-align: center; margin-top: 1rem;">
-                        Felix Faust warns: every spell has a price, and the bill compounds.
+                    <p>Forbidden magic delivers ${desire.label.toLowerCase()}. The power courses through you.</p>
+                    <p>But your face grows gaunt. Your teeth yellow and chip when you smile.</p>
+                    <p>People notice. They step back when you enter a room.</p>
+                    <p style="color: #cc88ff; text-align: center; margin-top: 1rem;">
+                        The magic is rotting you from within. Slowly, but undeniably.
+                    </p>
+                `;
+            } else if (rotLevel === 2) {
+                return `
+                    <p>Dark sorcery grants ${desire.label.toLowerCase()}, but the cost is written on your flesh.</p>
+                    <p>Your skin loses all color. Dark circles sink around your eyes like bruises.</p>
+                    <p>Children stare. Adults look away. You are becoming something else.</p>
+                    <p style="color: #aa66ff; text-align: center; margin-top: 1rem;">
+                        The rot spreads. You look like death wearing a human face.
+                    </p>
+                `;
+            } else if (rotLevel === 3) {
+                return `
+                    <p>Magic grants ${desire.label.toLowerCase()}, but you are decaying visibly.</p>
+                    <p>Patches of skin crack and flake away. You look half-dead, a corpse in motion.</p>
+                    <p>People flee your presence. Mirrors become unbearable.</p>
+                    <p style="color: #8844ff; text-align: center; margin-top: 1rem;">
+                        You are rotting alive. The magic is consuming you.
                     </p>
                 `;
             } else {
                 return `
-                    <p>Magic grants ${desire.label.toLowerCase()}, but reality collapses in your wake.</p>
-                    <p>Friends cease to exist. Buildings flicker between dimensions. Entire city blocks glitch out of reality.</p>
-                    <p>You've become a walking paradox, a source of chaos that spreads exponentially.</p>
+                    <p>Dark magic delivers ${desire.label.toLowerCase()}, but you are barely human anymore.</p>
+                    <p>Your body is ghoulish and emaciated. You resemble a walking corpse, animated by forbidden power.</p>
+                    <p>You have your desire, but you've become a monster to obtain it.</p>
                     <p style="color: #ff0000; text-align: center; margin-top: 1rem;">
-                        The multiverse itself recoils from your presence. You've broken too many laws.
+                        Felix Faust's bargain complete: power granted, humanity forfeit.
                     </p>
                 `;
             }
@@ -304,12 +331,13 @@ const MARKETS = {
     // Pure skill contest. Win = keep soul + prize. Lose = forfeit everything.
     // ========================================================================
     georgia: {
-        name: "Georgia's Wager",
+        name: "Georgia's Offer",
         description: "A pure test of skill. Win, keep your soul and prize. Lose, forfeit everything.",
 
         minigameTheme: {
             attackClass: 'note',
-            color: '#ffaa00'
+            color: '#ffaa00',
+            emoji: '🎵'
         },
 
         generateBaseOffer: function(desire) {
@@ -317,54 +345,47 @@ const MARKETS = {
                 gain: `${desire.label} + your soul intact`,
                 cost: 'Nothing—IF you win the trial. Everything—if you lose.',
                 duration: 'one contest',
-                severity: 0, // Starts at 0 risk if you're skilled
+                totalHits: 0,
+                lost: false,
                 skillBased: true
             };
         },
 
         modifyOffer: function(offer, hits, round) {
             const newOffer = { ...offer };
+            newOffer.totalHits = (offer.totalHits || 0) + hits;
 
-            if (hits === 0) {
-                // EXCELLENT: You're clearly outperforming
-                newOffer.gain = `${newOffer.gain} + bragging rights + the Devil's grudging respect`;
-                newOffer.cost = 'Nothing. You\'re too skilled to lose.';
-            } else if (hits <= 2) {
-                // GOOD: Competitive
-                newOffer.cost = 'Your pride if you lose, but you\'re holding your own.';
-            } else if (hits > 4) {
-                // POOR: You're losing
-                newOffer.cost = 'Your soul, your goal, and your dignity. The Devil is winning.';
-                newOffer.severity = 10;
+            // If hit even once, you lose immediately
+            if (hits > 0) {
+                newOffer.lost = true;
+                newOffer.cost = 'Your soul is forfeit. The Devil has won.';
+                newOffer.gain = 'Nothing. You lost the wager.';
+            } else {
+                // Still perfect - enhance the gain
+                newOffer.cost = 'Nothing. You\'re outplaying the Devil.';
+                if (!newOffer.gain.includes('bragging rights')) {
+                    newOffer.gain = `${newOffer.gain} + bragging rights`;
+                }
             }
 
             return newOffer;
         },
 
         generateVignette: function(desire, offer) {
-            const severity = offer.severity;
+            const lost = offer.lost;
 
-            if (severity === 0) {
+            if (!lost) {
                 return `
-                    <p>You face the Devil in a contest of skill. The trial is fierce, but you prevail.</p>
+                    <p>You face the Devil in a contest of skill. The trial is fierce, but you never falter.</p>
                     <p>You gain ${desire.label.toLowerCase()} through your own merit. No soul surrendered.</p>
                     <p>The Devil scowls but honors the wager. You've earned his grudging respect.</p>
                     <p style="color: #ffaa00; text-align: center; margin-top: 1rem;">
                         "Boy, you're good, but you ain't better than me." — But today, you were.
                     </p>
                 `;
-            } else if (severity <= 5) {
-                return `
-                    <p>The contest is close. You give it everything, but it's not quite enough.</p>
-                    <p>The Devil grins. "${desire.label}? Not today, friend."</p>
-                    <p>You walk away with your soul intact but your pride bruised. The goal remains out of reach.</p>
-                    <p style="color: #ff8800; text-align: center; margin-top: 1rem;">
-                        At least you didn't sign anything. Try again when you're better.
-                    </p>
-                `;
             } else {
                 return `
-                    <p>You face the Devil and lose spectacularly. There's no contest.</p>
+                    <p>You face the Devil in a contest of skill, but you stumble. Just once. That's all it takes.</p>
                     <p>He takes ${desire.label.toLowerCase()} and your soul. You wagered everything and lost.</p>
                     <p>The Devil's fiddle screams in triumph as you're dragged below.</p>
                     <p style="color: #ff0000; text-align: center; margin-top: 1rem;">

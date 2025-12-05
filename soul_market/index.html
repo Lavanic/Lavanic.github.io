@@ -24,7 +24,6 @@
             <pre class="broker-ascii" id="brokerAscii">
     :)
             </pre>
-            <div class="broker-label">THE BROKER</div>
         </div>
 
         <!-- Main content area (terminal + soul box) -->
@@ -66,6 +65,7 @@
 
         // Initialize when DOM is ready
         function init() {
+            // Start with RED background for welcome screen
             window.balatroBg = initBalatro({
                 color1: '#A51D2D',
                 color2: '#241F31',
@@ -75,7 +75,7 @@
                 pixelFilter: 700
             });
 
-            // Show background on welcome screen
+            // Show background immediately for welcome screen
             const bg = document.getElementById('animatedBg');
             if (bg) {
                 bg.style.display = 'block';
