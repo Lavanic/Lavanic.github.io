@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS639 Final Project - Oliver Ohrt</title>
+    <link rel="stylesheet" href="assets/css/cs639_final.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>A Robot Walks Into a Bar</h1>
+            <p class="subtitle">Autonomous Mixed Drink Preparation with Failure Mode Analysis</p>
+            <p class="subtitle">Oliver Ohrt | CS639 Fall 2024</p>
+        </header>
+
+        <main class="content">
+            <!-- Overview / Abstract -->
+            <section class="section">
+                <h2>Abstract</h2>
+                <p>For this project, I built a robot bartender in Webots that can pick up bottles, pour them into a glass, and make mixed drinks—all autonomously. The robot uses a UR5e arm with a Robotiq gripper to grab bottles from different positions on a bar. I programmed it to follow smooth trajectories using cubic time scaling (which we learned in class), and I added a physics simulation for the liquid pouring that actually looks pretty realistic.</p>
+
+                <p>The main goal was to see how reliable manipulation tasks can be when things can go wrong—like bottles slipping, missing the glass, or even shattering if dropped. The system can successfully grab and pour from four different bottle positions, and I ran experiments testing how speed affects success rate and accuracy. I also added a physics engine that spawns liquid drops when the bottle tilts and can detect when bottles break from impact.</p>
+
+                <div class="asset-grid">
+                    <img src="cs639/assets/environment_bar.png" alt="Bar environment setup" class="project-image small">
+                    <img src="cs639/assets/environment_bottles.png" alt="Bottle positions" class="project-image small">
+                </div>
+                <p class="image-caption">Figure 1: The simulated bar environment with four colored bottles</p>
+            </section>
+
+            <!-- Technical Approach -->
+            <section class="section">
+                <h2>Technical Approach</h2>
+                <p>The bartender system uses several concepts we covered in class—forward kinematics, trajectory planning, state machines, and physics simulation. Here's how each piece works:</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">1. Forward Kinematics & Robot Model</h3>
+                <p>The UR5e's kinematics are implemented using Denavit-Hartenberg parameters that define how each joint connects to the next. I encoded these as transformation matrices T₀₁ through T₅₆ in <code>kinematic_helpers.py</code>. Each matrix represents the position and orientation between two adjacent joints. Here's what the first transformation looks like:</p>
+
+<pre><code>def T01(q):
+    c1, s1 = np.cos(q), np.sin(q)
+    return np.array([
+        [ c1,  0.0, -s1,  0.0],
+        [ s1,  0.0,  c1,  0.0],
+        [ 0.0, -1.0, 0.0, 0.1625],
+        [ 0.0,  0.0, 0.0,  1.0]
+    ])</code></pre>
+
+                <p>These matrices use the UR5e's actual link lengths: shoulder offset is 0.1625m, upper arm is 0.425m, forearm is 0.3922m, and the three wrist offsets are 0.1333m, 0.0997m, and 0.0996m. Right now I'm using manually-defined waypoints in joint space instead of solving inverse kinematics, but having the forward kinematics set up means I could add IK later if I wanted to specify end-effector positions directly.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">2. Trajectory Planning with Cubic Time Scaling</h3>
+                <p>To make the robot move smoothly between waypoints, I used a cubic polynomial time-scaling function (based on the homework assignments). This makes sure the robot has zero velocity at the start and end of each movement, which prevents jerky motions:</p>
+
+<pre><code>def cubic_time_scaling(t, T):
+    if t >= T: return 1.0
+    if t <= 0: return 0.0
+    s = (3 * t**2) / (T**2) - (2 * t**3) / (T**3)
+    return s</code></pre>
+
+                <p>The function gives you a scaling value <em>s</em> that goes from 0 to 1, with the velocity being zero at both ends (s'(0) = s'(T) = 0). Then I interpolate the joint angles using: <strong>θ(t) = θ<sub>start</sub> + s(t) × (θ<sub>end</sub> - θ<sub>start</sub>)</strong>.</p>
+
+                <p>The duration T for each movement is calculated based on how far the joints need to move and a maximum velocity parameter I can adjust:</p>
+
+<pre><code>def calculate_T(theta_start, theta_end, max_vel):
+    max_delta = max(abs(theta_end[i] - theta_start[i]) for i in range(6))
+    T = (3.0 * max_delta) / (2.0 * max_vel)
+    return max(T, 0.5)  # At least 0.5 seconds per segment</code></pre>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">3. State Machine Control</h3>
+                <p>The bartender uses a 13-state finite state machine to sequence everything. Each state handles one part of the task:</p>
+
+                <ul>
+                    <li><strong>WAITING</strong> → User presses 1-4 to select which bottle (red, blue, yellow, or green)</li>
+                    <li><strong>MOVE_OVER_HIGH</strong> → Move arm to position above the selected bottle</li>
+                    <li><strong>DESCEND</strong> → Lower arm toward the bottle</li>
+                    <li><strong>APPROACH_TO_GRAB</strong> → Final precise approach to grasp position</li>
+                    <li><strong>GRIPPING</strong> → Close gripper and wait 1.0 second to make sure it's secure</li>
+                    <li><strong>LIFT1 / LIFT2</strong> → Two-stage lift to avoid hitting the bar</li>
+                    <li><strong>ROTATE_TO_POUR</strong> → Rotate wrist to tilt bottle upside down</li>
+                    <li><strong>POURING</strong> → Hold position for 3 seconds while liquid pours</li>
+                    <li><strong>ROTATE_UPRIGHT</strong> → Rotate bottle back to normal orientation</li>
+                    <li><strong>MOVE_AWAY</strong> → Pull bottle away from glass</li>
+                    <li><strong>RETURNING</strong> → Move back to original position</li>
+                    <li><strong>RELEASING</strong> → Open gripper (1.0 second delay)</li>
+                    <li><strong>DONE</strong> → Task complete, ready for next drink</li>
+                </ul>
+
+                <p>Each of the four bottles has its own set of waypoints stored in dictionaries because they're positioned in different spots along the bar. The state machine tracks cumulative time to know when to transition between states.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">4. Physics-Based Liquid Simulation</h3>
+                <p>I wrote a separate supervisor controller (<code>liquid_controller.py</code>) that handles the liquid physics in parallel with the arm control. It monitors all four bottles simultaneously and spawns liquid drops when they're tilted:</p>
+
+                <img src="cs639/assets/bottle_break.gif" alt="Bottle breaking physics" class="project-image">
+                <p class="image-caption">Figure 2: Bottle shattering physics when dropped</p>
+
+                <p><strong>Pouring Detection:</strong> The controller checks if the bottle's neck (local +Y axis) is pointing downward. When the cosine of the angle between the neck and world -Y is greater than 0.7, it starts spawning drops at the bottle opening (~16-17 drops per second).</p>
+
+                <p><strong>Drop Physics:</strong> Each drop is a tiny sphere (0.01m radius) with water density (1000 kg/m³). They're created dynamically using Webots' <code>importMFNodeFromString()</code> API.</p>
+
+                <p><strong>Bottle Breaking:</strong> Impact detection uses velocity changes—if the bottle was moving faster than 1.0 m/s and suddenly slows to less than half that speed, it "shatters" into 25 randomized shards that scatter everywhere.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">5. Gripper Friction Settings</h3>
+                <p>Getting the bottles to stay in the gripper was tricky because they're so light (only 0.01 kg in simulation). I had to set custom contact properties in the world file to increase the friction:</p>
+
+<pre><code>ContactProperties {
+    material1 "ROBOTIQ gripper pad"
+    material2 "glass"
+    coulombFriction [5]
+    bounce 0
+}</code></pre>
+
+                <p>The high friction coefficient (μ = 5) makes sure the gripper can hold bottles securely even during wrist rotation for pouring. The zero bounce value prevents the bottles from bouncing around when they contact surfaces.</p>
+            </section>
+
+            <!-- Implementation Details -->
+            <section class="section">
+                <h2>Implementation Details</h2>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">System Architecture</h3>
+                <p>The project consists of three main Python controllers:</p>
+                <ul>
+                    <li><code>ur5e_controller.py</code> – Main controller that handles keyboard input, motor commands, and gripper. Runs at 8ms timestep (125 Hz)</li>
+                    <li><code>your_code_here.py</code> – Contains all the trajectory planning, state machine logic, and waypoint definitions. Exports a <code>getRobotCommand()</code> function that gets called every timestep</li>
+                    <li><code>liquid_controller.py</code> – Supervisor-based physics simulation that runs in parallel, monitoring bottles and spawning drops</li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Environment Setup</h3>
+                <p>I'm using Webots R2025a with the following setup:</p>
+                <ul>
+                    <li><strong>Robot:</strong> UR5e with Robotiq 2F-85 gripper (official Webots PROTO)</li>
+                    <li><strong>Workspace:</strong> Custom low-poly bar model (imported OBJ mesh)</li>
+                    <li><strong>Objects:</strong>
+                        <ul>
+                            <li>4 bottles (custom mesh, colored red/blue/yellow/green)</li>
+                            <li>1 glass (custom mesh with 50% transparency)</li>
+                            <li>Collision boxes for the bar counter and floor</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Key Design Decisions</h3>
+                <p><strong>Waypoint-Based Planning:</strong> I chose to use joint-space waypoints instead of solving inverse kinematics for every position. This avoids the complexity of IK and makes sure the paths are collision-free (since I manually checked them). The downside is it's less flexible—if I add a new bottle position, I have to manually tune new waypoints.</p>
+
+                <p><strong>Two-Stage Lifting:</strong> The LIFT1 → LIFT2 sequence prevents the bottle from hitting the bar surface when pulling it out from the shelf. I found this was necessary through trial and error.</p>
+
+                <p><strong>Wait Times:</strong> The 1.0-second delays during gripping and releasing ensure the bottle is fully secured before moving. I tested shorter times but got slip failures, so 1 second seems to be the sweet spot.</p>
+
+                <p><strong>Supervisor-Based Spawning:</strong> Using the supervisor API to create drops dynamically (instead of pre-spawning them all) keeps the simulation running smoothly. The downside is if you spawn too many drops at once (>100), Webots can freeze.</p>
+
+                <p><strong>Separate Controllers:</strong> Keeping the liquid physics separate from the arm control prevents interference between them and lets me tune each independently.</p>
+            </section>
+
+            <!-- Experimental Design -->
+            <section class="section">
+                <h2>Experimental Design</h2>
+                <p>I designed two experiments to test how different parameters affect the system's performance.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Experiment 1: Speed vs. Success Rate</h3>
+                <p><strong>Hypothesis:</strong> Higher arm speeds will cause more failures because the gripper doesn't have enough time to secure the bottle, and faster movements create bigger impact forces when placing the bottle back down.</p>
+
+                <p><strong>Variables:</strong></p>
+                <ul>
+                    <li><strong>Independent:</strong> SPEED parameter (0.1, 0.3, 0.5, 0.7, 0.9 rad/s)</li>
+                    <li><strong>Dependent:</strong> Success rate (%), number of drops that land in the glass, bottle breakage events</li>
+                    <li><strong>Control:</strong> Same bottle (red), same start position, 10 trials per speed setting</li>
+                </ul>
+
+                <p><strong>Metrics:</strong></p>
+                <ul>
+                    <li><em>Binary Success:</em> Did the bottle return to its position without breaking? (Yes/No)</li>
+                    <li><em>Pour Accuracy:</em> Number of drops landing in glass vs. total drops spawned</li>
+                    <li><em>Impact Velocity:</em> Peak bottle velocity during the placement phase</li>
+                </ul>
+
+                <p><strong>Procedure:</strong> Modify the SPEED value in <code>your_code_here.py</code>, run 10 repetitions for each setting, record outcomes in a CSV file. Reset the world between each trial.</p>
+
+                <p><strong>Expected Outcome:</strong> Success rate should drop above 0.5 rad/s as the gripper can't maintain a stable grasp and impact velocities exceed the 1.0 m/s breakage threshold.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Experiment 2: Grip Friction vs. Bottle Security</h3>
+                <p><strong>Hypothesis:</strong> Lower friction coefficients will cause the bottle to slip during lifting and wrist rotation, especially when the robot tilts the bottle to pour.</p>
+
+                <p><strong>Variables:</strong></p>
+                <ul>
+                    <li><strong>Independent:</strong> Coulomb friction coefficient (1.0, 2.5, 5.0, 7.5, 10.0)</li>
+                    <li><strong>Dependent:</strong> Slip detection (bottle movement in gripper), pour accuracy</li>
+                    <li><strong>Control:</strong> Fixed SPEED=0.3, same bottle, 5 trials per friction value</li>
+                </ul>
+
+                <p><strong>Metrics:</strong></p>
+                <ul>
+                    <li><em>Slip Detection:</em> Monitor bottle position relative to gripper. Flag if displacement exceeds 5mm during LIFT2 or ROTATE_TO_POUR states</li>
+                    <li><em>Final Position Error:</em> Distance between bottle's final position and expected return waypoint</li>
+                    <li><em>Pour Success:</em> Binary yes/no—did the bottle maintain upside-down orientation during POURING?</li>
+                </ul>
+
+                <p><strong>Procedure:</strong> Modify <code>coulombFriction</code> in the world file, restart simulation, execute red bottle sequence 5 times per setting.</p>
+
+                <p><strong>Expected Outcome:</strong> Friction below μ = 3.0 should cause visible slippage during wrist rotation. Friction above μ = 5.0 probably won't improve things much since the grip is already secure.</p>
+            </section>
+
+            <!-- Results and Discussion -->
+            <section class="section">
+                <h2>Results and Discussion</h2>
+
+                <video controls class="project-video">
+                    <source src="cs639/assets/video_demo1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p class="image-caption">Video 1: Demonstration of the robot preparing a red and blue mixed drink</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">What Worked Well</h3>
+                <ul>
+                    <li>All four bottle positions (red, blue, yellow, green) can be successfully grabbed and poured at SPEED=0.3 rad/s</li>
+                    <li>The liquid simulation looks pretty realistic—about 80 drops per bottle over ~5 seconds of pouring</li>
+                    <li>Cubic time scaling made the movements way smoother compared to linear interpolation (which I tried first and looked terrible)</li>
+                    <li>The two-stage lift worked perfectly—zero collisions with the bar in all my tests</li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Failure Modes I Observed</h3>
+                <ul>
+                    <li><strong>Bottle Slippage:</strong> At SPEED=0.7 rad/s, about 30% of trials had visible bottle rotation inside the gripper during wrist movement, which sometimes caused the pour to miss the glass</li>
+                    <li><strong>Simulation Crashes:</strong> Spawning more than 100 drops at once (like when a bottle shatters) froze Webots in 3 out of 10 trials</li>
+                    <li><strong>Missed Pours:</strong> The blue bottle's waypoints weren't quite right—around 20% of the drops landed outside the glass because the pouring height/angle was slightly off</li>
+                    <li><strong>Gripper Collisions:</strong> Yellow and green bottles are closer together, and sometimes the gripper fingers would bump adjacent bottles if the approach angle was off by more than 15°</li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Experiment Results</h3>
+                <p>I didn't have time to run the full formal experiments with all the repetitions, but I did some informal testing that gives a pretty good idea of how the parameters affect performance:</p>
+
+                <img src="cs639/assets/experiment1.png" alt="Speed vs breakage results" class="project-image">
+                <p class="image-caption">Figure 3: Speed vs. bottle breakage rate</p>
+
+                <img src="cs639/assets/experiment2.png" alt="Speed vs accuracy results" class="project-image">
+                <p class="image-caption">Figure 4: Speed vs. pour accuracy</p>
+
+                <ul>
+                    <li><strong>Speed=0.3:</strong> ~95% success rate over about 20 trials (1 bottle broke, no slips)</li>
+                    <li><strong>Speed=0.7:</strong> ~70% success rate over 10 trials (2 bottles broke, 1 got dropped during lift)</li>
+                    <li><strong>Friction=5.0:</strong> Zero observable slippage during wrist rotation across 15 trials</li>
+                    <li><strong>Break threshold=1.0 m/s:</strong> This velocity cutoff worked well—bottles don't break from normal movement but do shatter if dropped from more than ~30cm</li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">What This Means</h3>
+                <p>The state machine approach works really well for sequencing complex tasks, but it has a big weakness—there's no error recovery. If something goes wrong (slip, miss, whatever), the robot just keeps going through the remaining states like nothing happened. The liquid simulation validates that the pouring detection works correctly (tilting the bottle triggers drops), but there's no feedback about how full the glass is or whether the drops are actually landing in it.</p>
+
+                <p>The high friction requirement (μ = 5) is kind of unrealistic because real glass bottles weigh more like 200g instead of 0.01 kg. With realistic weights, you'd probably need lower friction but more sophisticated force control to avoid crushing the bottle.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Limitations</h3>
+                <ul>
+                    <li><strong>No Closed-Loop Control:</strong> Everything runs open-loop—no force feedback, no vision verification, no way to detect if something went wrong</li>
+                    <li><strong>Manual Waypoint Tuning:</strong> Each bottle took 30-60 minutes of trial-and-error to get the waypoints right</li>
+                    <li><strong>Physics Quirks:</strong> Webots' ODE physics solver sometimes lets bottles clip through the bar surface at shallow contact angles</li>
+                    <li><strong>No Automated Logging:</strong> I evaluated success/failure by watching, not by collecting data automatically</li>
+                </ul>
+            </section>
+
+            <!-- Reflection and Future Work -->
+            <section class="section">
+                <h2>Reflection and Future Work</h2>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">What I'd Add Next</h3>
+
+                <p><strong>Closed-Loop Grasp Verification:</strong> Add force sensor monitoring during the GRIPPING state to detect if the contact force is too low. If it is, retry the grasp with an adjusted position before lifting.</p>
+
+                <p><strong>Vision-Based Pour Feedback:</strong> Use the wrist camera (which is already in the model) to detect the glass position and monitor liquid level. This would let the robot adjust how long to pour so the glass doesn't overflow.</p>
+
+                <p><strong>Inverse Kinematics Integration:</strong> Replace the manual joint-space waypoints with Cartesian task-space goals and a numerical IK solver. This would make it way easier to add new bottle positions—just specify where the bottle is in 3D space instead of tuning six joint angles.</p>
+
+                <p><strong>Slip Detection & Recovery:</strong> Monitor the bottle pose throughout the trajectory using the supervisor. If the position deviates by more than 10mm from where it should be, trigger a re-grasp sequence.</p>
+
+                <p><strong>Automated Data Collection:</strong> Write code to log all the metrics (joint angles, gripper force, bottle velocity, drop count) to CSV files automatically. This would make running the full experiments way easier.</p>
+
+                <p><strong>Multi-Bottle Mixing:</strong> Extend the state machine to sequence multiple bottles for complex recipes (like 40% red + 60% blue). This would require either estimating fill level or timing the pours carefully.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Real Robot Deployment</h3>
+                <p>If I were to port this to a physical UR5e, I'd need:</p>
+                <ul>
+                    <li>AprilTags on each bottle for localization</li>
+                    <li>ATI force/torque sensor for grasp verification</li>
+                    <li>Camera-based liquid level detection (OpenCV contour tracking would probably work)</li>
+                    <li>Better collision avoidance since real bottles aren't perfectly positioned</li>
+                </ul>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Bigger Picture Ideas</h3>
+                <p><strong>Learning-Based Approaches:</strong> Instead of manually tuning waypoints, use reinforcement learning to optimize pouring trajectories that maximize drops-in-glass while minimizing splash. Sim-to-real transfer could make this work on actual hardware.</p>
+
+                <p><strong>Human-Robot Interaction:</strong> Add a voice interface ("Hey robot, make me a rum and coke") with natural language recipe parsing.</p>
+
+                <p><strong>Safety Features:</strong> Implement emergency stop detection—if a human hand enters the workspace, the robot should freeze immediately.</p>
+
+                <h3 style="color: #90b6a4; margin-top: 30px; margin-bottom: 15px;">Final Thoughts</h3>
+                <p>This project was a great way to see how the concepts we learned in class (kinematics, trajectory planning, state machines) come together in a real task. The bartender works reliably under normal conditions (SPEED=0.3, friction=5.0), but it really highlights how important closed-loop control is for manipulation tasks. When you can't sense what's happening, you can't recover from errors.</p>
+
+                <p>Building the physics simulation for liquid pouring was probably the coolest part—watching drops spawn and fall into the glass actually looks pretty realistic. The bottle breaking effect is just for fun, but it helped me think about impact detection and failure modes.</p>
+
+                <p>Overall, I think the system achieves what I set out to do: demonstrate reliable multi-bottle pouring while showing where open-loop control breaks down. The experimental framework I built could be used to systematically test different parameters, even though I didn't have time to collect all that data. Most importantly, this project made me appreciate how much harder manipulation is than it looks—getting a robot to reliably grab and pour a bottle involves way more edge cases than you'd expect.</p>
+
+                <video controls class="project-video">
+                    <source src="cs639/assets/video_demo2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <p class="image-caption">Video 2: Final demonstration of a single pour sequence</p>
+
+                <div class="thank-you">
+                    <p>Thanks for a great semester! 🤖🍹</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>CS639 - Introduction to Robotics | University of Wisconsin-Madison</p>
+        </footer>
+    </div>
+</body>
+</html>
