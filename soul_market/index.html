@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ohrt Final Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div id="animatedBg" class="animated-background"></div>
+    <div class="game-container">
+        <!-- Overhead light effect -->
+        <div class="light-overlay"></div>
+
+        <!-- Welcome logos (only shown on welcome screen) -->
+        <div class="welcome-logos" id="welcomeLogos" style="display: none;">
+            <img src="assets/images/main_logo.png" alt="Main Logo" class="main-logo">
+            <img src="assets/images/sub_logo.png" alt="Sub Logo" class="sub-logo">
+        </div>
+
+        <!-- Broker/Dealer area (hidden on welcome screen) -->
+        <div class="broker-area" id="brokerArea">
+            <pre class="broker-ascii" id="brokerAscii">
+    :)
+            </pre>
+        </div>
+
+        <!-- Main content area (terminal + soul box) -->
+        <div class="content-area">
+            <!-- Text terminal for narration/offers -->
+            <div class="terminal" id="terminal">
+                <div class="terminal-content" id="terminalContent">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+
+                <!-- Button container (inside terminal) -->
+                <div class="button-container" id="buttonContainer">
+                    <!-- Dynamic buttons will be inserted here -->
+                </div>
+            </div>
+
+            <!-- Soul box (minigame container) -->
+            <div class="soul-box-container" id="soulBoxContainer" style="display: none;">
+                <div class="soul-box" id="soulBox">
+                    <div class="soul-heart" id="soulHeart"></div>
+                    <!-- Attack elements will be spawned here -->
+                </div>
+                <div class="hits-counter" id="hitsCounter">HITS: 0</div>
+            </div>
+        </div>
+
+        <!-- Round counter -->
+        <div class="round-counter" id="roundCounter" style="display: none;">
+            ROUND: <span id="roundNumber">1</span> / 5
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="game.js"></script>
+    <!-- Balatro background (ES module) -->
+    <script type="module">
+        import { initBalatro } from './balatro.js';
+
+        // Initialize when DOM is ready
+        function init() {
+            // Start with RED background for welcome screen
+            window.balatroBg = initBalatro({
+                color1: '#A51D2D',
+                color2: '#241F31',
+                color3: '#000000',
+                isRotate: false,
+                mouseInteraction: true,
+                pixelFilter: 700
+            });
+
+            // Show background immediately for welcome screen
+            const bg = document.getElementById('animatedBg');
+            if (bg) {
+                bg.style.display = 'block';
+                // Trigger a resize to ensure proper rendering
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
