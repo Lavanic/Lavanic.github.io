@@ -45,6 +45,9 @@
 .intro-text .green-text {
   color: #a9eda9 !important;
 }
+.intro-text .orange-text {
+  color: #ffa07a !important;
+}
 .image-resume-container {
   flex: 1;
   display: flex;
