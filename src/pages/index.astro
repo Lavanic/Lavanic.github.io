@@ -8,7 +8,8 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Infinite Grid | Lavanic</title>
+    <meta name="description" content="Oliver Ohrt — developer portfolio and personal site." />
+    <title>Oliver Ohrt</title>
     <style>
       body {
         margin: 0;
@@ -47,6 +48,12 @@
 
       .spacer {
         height: 100vh;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body {
+          min-height: 100vh;
+        }
       }
     </style>
   </head>
