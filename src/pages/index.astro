@@ -132,7 +132,7 @@
         height: 24px;
         border-radius: 6px;
         border: 2px solid rgba(255, 255, 255, 0.3);
-        background: #508C72;
+        background: hsl(154, 35%, 65%);
         flex-shrink: 0;
       }
 
@@ -144,13 +144,13 @@
         border-radius: 4px;
         outline: none;
         background: linear-gradient(to right,
-          hsl(0, 27%, 43%),
-          hsl(60, 27%, 43%),
-          hsl(120, 27%, 43%),
-          hsl(180, 27%, 43%),
-          hsl(240, 27%, 43%),
-          hsl(300, 27%, 43%),
-          hsl(360, 27%, 43%)
+          hsl(0, 35%, 65%),
+          hsl(60, 35%, 65%),
+          hsl(120, 35%, 65%),
+          hsl(180, 35%, 65%),
+          hsl(240, 35%, 65%),
+          hsl(300, 35%, 65%),
+          hsl(360, 35%, 65%)
         );
       }
 
@@ -240,14 +240,19 @@
       // Base hue of #508C72 is ~154°
       const BASE_HUE = 154;
 
+      // Apply pastel filter on load
+      container.style.filter = "saturate(0.8) brightness(1.15)";
+
       range.addEventListener("input", () => {
         const val = parseInt(range.value);
-        container.style.filter = val === 0 ? "" : `hue-rotate(${val}deg)`;
+        container.style.filter = val === 0
+          ? "saturate(0.8) brightness(1.15)"
+          : `hue-rotate(${val}deg) saturate(0.8) brightness(1.15)`;
         degrees.textContent = `${val}°`;
 
         // Update swatch to show the shifted base color
         const newHue = (BASE_HUE + val) % 360;
-        swatch.style.background = `hsl(${newHue}, 27%, 43%)`;
+        swatch.style.background = `hsl(${newHue}, 35%, 65%)`;
       });
 
       toggle.addEventListener("click", () => {
