@@ -16,16 +16,22 @@
     <meta name="theme-color" content="#5a9d8a" />
     <title>Oliver Ohrt</title>
     <style>
-      html {
-        background: #82AD99;
-        overscroll-behavior: none;
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
       }
 
       body {
-        margin: 0;
         color: white;
         font-family: system-ui, sans-serif;
-        background: #508C72;
+      }
+
+      .scroll-container {
+        height: 100vh;
+        overflow-y: auto;
+        overscroll-behavior: none;
       }
 
       .bg-frame {
@@ -54,6 +60,7 @@
         background-size: 100% auto;
         background-repeat: repeat-y;
         background-position: center top;
+        min-height: 200vh;
       }
 
       main {
@@ -76,7 +83,9 @@
   </head>
 
   <body>
-    <div class="bg-frame bg-frame-1"></div>
-    <div class="bg-frame bg-frame-2"></div>
+    <div class="scroll-container">
+      <div class="bg-frame bg-frame-1"></div>
+      <div class="bg-frame bg-frame-2"></div>
+    </div>
   </body>
 </html>
