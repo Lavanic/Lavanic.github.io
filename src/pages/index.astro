@@ -1,113 +1,148 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content="Oliver Ohrt — developer portfolio and personal site." />
-    <meta property="og:title" content="Oliver Ohrt" />
-    <meta property="og:description" content="Developer portfolio and personal site." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://oliverohrt.com" />
-    <meta name="theme-color" content="#429E76" />
-    <title>Oliver Ohrt</title>
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-      }
+// Auto-discovers every file in public/stamps/ at build time.
+const stampModules = import.meta.glob('/public/stamps/*');
+const stamps = Object.keys(stampModules).map(path => path.replace('/public', ''));
 
-      body {
-        color: white;
-        font-family: system-ui, sans-serif;
-      }
+// The seamless loop works by animating translateX(-50%) across a set rendered twice.
+// That only works if one set is wider than the visible bar (~1300px).
+// So we pad the array up to at least 30 entries before doubling it.
+const MIN_STAMPS = 30;
+const copies = Math.ceil(MIN_STAMPS / stamps.length);
+const paddedStamps = Array(copies).fill(stamps).flat();
+---
 
-      .scroll-container {
-        height: 100vh;
-        overflow-y: auto;
-        overscroll-behavior: none;
-      }
-
-      .bg-frame {
-        width: 100%;
-        background-size: 100% auto;
-        background-repeat: no-repeat;
-        background-position: center top;
-      }
-
-      .bg-frame-1 {
-        background: linear-gradient(to bottom, #74BF9E 0%, #429E76 45%, #429E76 100%);
-        aspect-ratio: 1920 / 1080;
-        position: relative;
-      }
-
-      .bg-frame-1::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 69%;
-        height: 100%;
-        background: linear-gradient(180deg, #74BF9E 0%, #429E76 57%);
-      }
-
-      .bg-frame-1::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: url("/frame1.svg") center top / 100% auto no-repeat;
-      }
-
-      .bg-frame-2 {
-        background-color: #429E76;
-        background-image: url("/frame2.svg");
-        background-size: 100% auto;
-        background-repeat: repeat-y;
-        background-position: center top;
-        min-height: 200vh;
-      }
-
-      main {
-        position: relative;
-        z-index: 1;
-        padding: 20vh 10%;
-      }
-
-      h1 {
-        font-size: 4rem;
-        margin-bottom: 1rem;
-      }
-
-      p {
-        font-size: 1.5rem;
-        line-height: 1.6;
-        max-width: 800px;
-      }
-
-      .construction-banner {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 100;
-        background: rgba(0, 0, 0, 0.516);
-        color: white;
-        text-align: center;
-        padding: 1rem 2rem;
-        font-size: 1.5rem;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="construction-banner">site under construction come back later :-)</div>
-    <div class="scroll-container">
-      <div class="bg-frame bg-frame-1"></div>
-      <div class="bg-frame bg-frame-2"></div>
+<BaseLayout title="Oliver Ohrt">
+  <div class="layout">
+    <div class="box header">
+      <div class="logo-wrap">
+        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt logo" />
+        <div class="logo-composite">
+          <img src="/images/gears.webp" width="169" height="287" alt=""
+            onload="this.closest('.logo-wrap').querySelector('.logo-fallback').style.display='none'" />
+          <img src="/images/static.png" width="654" height="287" alt="" />
+        </div>
+      </div>
     </div>
-  </body>
-</html>
+    <div class="box subheader">
+      <marquee behavior="scroll" direction="right" style="color:rgb(3, 48, 252); text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff; font-weight: bold; font-size: 14px;">
+        Welcome to my site!
+      </marquee>
+    </div>
+    <div class="box subheader stamps">
+      <div class="marquee">
+        <div class="marquee__inner">
+          <!-- paddedStamps is the base set (repeated until ≥30 entries so it
+               overflows the bar). Rendered twice total so the -50% trick loops
+               seamlessly — at -50% you're exactly back to where you started. -->
+          {paddedStamps.map(src => <img src={src} alt="" />)}
+          {paddedStamps.map(src => <img src={src} alt="" />)}
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .header {
+    height: 288px;
+    position: relative;
+    width: 134.5%;
+    left: -17.2%;
+    overflow: visible;
+    background: #597997;
+  }
+
+  .logo-wrap {
+    position: absolute;
+    left: -90px;
+    top: 5px;
+    z-index: 999;
+  }
+
+  .logo-fallback {
+    display: block;
+  }
+
+  .logo-composite {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+  }
+
+  .subheader {
+    height: 30px;
+    position: relative;
+    width: 134.5%;
+    left: -17.2%;
+    background: linear-gradient(to bottom, #BDD3F4 0%, #92AEED 50%, #597997 51%, #A8BEFF 100%);
+  }
+
+  /* Stamp marquee bar */
+  .stamps {
+    height: 60px;
+    background: linear-gradient(to bottom, #F4EFBD 0%, #EDEA92 50%, #979259 51%, #FFFFA8 100%);
+  }
+
+  .marquee {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    align-items: center;
+  }
+
+  .marquee__inner {
+    display: flex;
+    flex-shrink: 0;
+    animation: stamp-scroll 35s linear infinite;
+  }
+
+  .marquee__inner img {
+    flex-shrink: 0;
+    margin: 2px;
+    height: 52px;
+    width: auto;
+  }
+
+  @keyframes stamp-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── Mobile overrides ─────────────────────────────────────────────────────
+     The whole layout is scaled down via transform in BaseLayout.
+     These values are in the *unscaled* coordinate space, the browser scales
+     them along with everything else.
+
+     Logo: left: -90px sits at -255px in layout coords (header is at -165px).
+     Setting left: 165px cancels the header's -165px, landing the logo right
+     at the layout's left edge (~10px from viewport at 375px / scale 0.37).
+
+     Heights doubled so they appear the same relative size after scaling.
+     Font-size doubled; needs !important to beat the inline style.
+  ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 1020px) {
+    .logo-wrap {
+      left: 110px;
+    }
+
+    .subheader:not(.stamps) {
+      height: 60px;
+    }
+
+    .stamps {
+      height: 120px;
+    }
+
+    .marquee__inner img {
+      height: 104px;
+    }
+
+    .subheader:not(.stamps) marquee {
+      font-size: 28px !important;
+      line-height: 60px;
+    }
+  }
+</style>
