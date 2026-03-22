@@ -36,8 +36,8 @@ const paddedStamps = Array(copies).fill(stamps).flat();
           <!-- paddedStamps is the base set (repeated until ≥30 entries so it
                overflows the bar). Rendered twice total so the -50% trick loops
                seamlessly — at -50% you're exactly back to where you started. -->
-          {paddedStamps.map(src => <img src={src} alt="" />)}
-          {paddedStamps.map(src => <img src={src} alt="" />)}
+          {paddedStamps.map(src => <img src={src} alt="" loading="lazy" decoding="async" />)}
+          {paddedStamps.map(src => <img src={src} alt="" loading="lazy" decoding="async" />)}
         </div>
       </div>
     </div>
