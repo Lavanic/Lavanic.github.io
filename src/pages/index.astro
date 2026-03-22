@@ -27,22 +27,20 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     </div>
 
     <div class="box subheader">
-      <marquee behavior="scroll" direction="right" style="color:rgb(3, 48, 252); text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff; font-weight: bold; font-size: 14px;">
-        Welcome to my site!
-      </marquee>
+      <div class="welcome-scroll">
+        <span>Welcome to my site!</span>
+      </div>
     </div>
     <div class="box subheader stamps">
       <div class="marquee" aria-label="Stamp collection">
         <div class="marquee__inner">
-          {paddedStamps.map(src => <img src={src} alt="" decoding="async" fetchpriority="low" />)}
+          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" />)}
         </div>
         <div class="marquee__inner" aria-hidden="true">
-          {paddedStamps.map(src => <img src={src} alt="" decoding="async" fetchpriority="low" />)}
+          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" />)}
         </div>
       </div>
       <script>
-        // Pause the marquee until all stamp images have loaded, then fade in.
-        // This prevents the janky partial-load stutter.
         const marquee = document.querySelector('.marquee') as HTMLElement;
         if (marquee) {
           const imgs = marquee.querySelectorAll('img');
@@ -91,6 +89,29 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     background: linear-gradient(to bottom, #BDD3F4 0%, #92AEED 50%, #597997 51%, #A8BEFF 100%);
   }
 
+  .welcome-scroll {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    align-items: center;
+  }
+
+  .welcome-scroll span {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: welcome-scroll 12s linear infinite;
+    color: rgb(3, 48, 252);
+    text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  @keyframes welcome-scroll {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(100%); }
+  }
+
   /* Stamp marquee bar */
   .stamps {
     height: 60px;
@@ -117,7 +138,6 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     transition: opacity 0.3s ease;
   }
 
-  /* Stamps start hidden+paused, then fade in once all images load */
   .marquee.is-ready .marquee__inner {
     animation-play-state: running;
     opacity: 1;
@@ -138,6 +158,9 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       animation-play-state: paused !important;
       opacity: 1 !important;
     }
+    .welcome-scroll span {
+      animation-play-state: paused !important;
+    }
   }
 
   /* ── Mobile overrides ─────────────────────────────────────────────────────
@@ -146,11 +169,9 @@ const paddedStamps = Array(copies).fill(stamps).flat();
      them along with everything else.
 
      Logo: left: -90px sits at -255px in layout coords (header is at -165px).
-     Setting left: 165px cancels the header's -165px, landing the logo right
-     at the layout's left edge (~10px from viewport at 375px / scale 0.37).
+     Setting left: 110px brings the logo onto screen after scaling.
 
      Heights doubled so they appear the same relative size after scaling.
-     Font-size doubled; needs !important to beat the inline style.
   ───────────────────────────────────────────────────────────────────────── */
   @media (max-width: 1020px) {
     .logo-wrap {
@@ -173,9 +194,8 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       height: 104px;
     }
 
-    .subheader:not(.stamps) marquee {
-      font-size: 28px !important;
-      line-height: 60px;
+    .welcome-scroll span {
+      font-size: 28px;
     }
   }
 </style>
