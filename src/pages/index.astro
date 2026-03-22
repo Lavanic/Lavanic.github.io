@@ -98,7 +98,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   }
 
   .marquee {
-    contain: strict;
+    contain: layout paint;
     display: flex;
     overflow: hidden;
     height: 100%;
@@ -162,6 +162,10 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     }
 
     .stamps {
+      height: 120px;
+    }
+
+    .marquee {
       height: 120px;
     }
 
