@@ -6,14 +6,17 @@ const { title } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <!-- Browser chrome color: works on Android Chrome + iOS Safari 15+ for address bar -->
     <meta name="theme-color" content="#29303C" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <!-- Preload logo assets so the fallback appears immediately and gears
-         start decoding before the page finishes rendering everything else -->
+    <!-- Preload the static logo pieces immediately.
+         gears.webp is 2MB so we only preload it on desktop (media query). -->
     <link rel="preload" as="image" href="/images/logo_fallback.png" />
-    <link rel="preload" as="image" href="/images/gears.webp" />
     <link rel="preload" as="image" href="/images/static.png" />
+    <link rel="preload" as="image" href="/images/gears.webp" media="(min-width: 1021px)" />
   </head>
   <body>
     <slot />
@@ -44,6 +47,7 @@ const { title } = Astro.props;
     display: flex;
     justify-content: center;
     padding: 20px;
+    background-color: #29303C;
   }
 
   body::before {

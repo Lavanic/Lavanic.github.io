@@ -19,12 +19,22 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       <div class="logo-wrap">
         <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt logo" />
         <div class="logo-composite">
-          <img src="/images/gears.webp" width="169" height="287" alt=""
+          <!-- gears.webp is 2MB — skip it on mobile to avoid slow loads. -->
+          <img id="gears-img" src="" data-src="/images/gears.webp" width="169" height="287" alt=""
             onload="this.closest('.logo-wrap').querySelector('.logo-fallback').style.display='none'" />
           <img src="/images/static.png" width="654" height="287" alt="" />
         </div>
       </div>
     </div>
+    <script>
+      // Only load the 2MB animated gears on desktop
+      // static fallback PNG which is already loaded and looks the same.
+      if (window.innerWidth > 1020) {
+        const img = document.getElementById('gears-img') as HTMLImageElement | null;
+        if (img) img.src = img.dataset.src!;
+      }
+    </script>
+
     <div class="box subheader">
       <marquee behavior="scroll" direction="right" style="color:rgb(3, 48, 252); text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff; font-weight: bold; font-size: 14px;">
         Welcome to my site!
