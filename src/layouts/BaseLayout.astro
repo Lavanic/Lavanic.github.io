@@ -12,11 +12,9 @@ const { title } = Astro.props;
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <!-- Preload the static logo pieces immediately.
-         gears.webp is 2MB so we only preload it on desktop (media query). -->
     <link rel="preload" as="image" href="/images/logo_fallback.png" />
     <link rel="preload" as="image" href="/images/static.png" />
-    <link rel="preload" as="image" href="/images/gears.webp" media="(min-width: 1021px)" />
+    <link rel="preload" as="image" href="/images/gears.webp" />
   </head>
   <body>
     <slot />

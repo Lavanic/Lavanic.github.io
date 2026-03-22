@@ -19,21 +19,12 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       <div class="logo-wrap">
         <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt logo" />
         <div class="logo-composite">
-          <!-- gears.webp is 2MB — skip it on mobile to avoid slow loads. -->
-          <img id="gears-img" src="" data-src="/images/gears.webp" width="169" height="287" alt=""
+          <img src="/images/gears.webp" width="169" height="287" alt=""
             onload="this.closest('.logo-wrap').querySelector('.logo-fallback').style.display='none'" />
           <img src="/images/static.png" width="654" height="287" alt="" />
         </div>
       </div>
     </div>
-    <script>
-      // Only load the 2MB animated gears on desktop
-      // static fallback PNG which is already loaded and looks the same.
-      if (window.innerWidth > 1020) {
-        const img = document.getElementById('gears-img') as HTMLImageElement | null;
-        if (img) img.src = img.dataset.src!;
-      }
-    </script>
 
     <div class="box subheader">
       <marquee behavior="scroll" direction="right" style="color:rgb(3, 48, 252); text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff; font-weight: bold; font-size: 14px;">
@@ -41,15 +32,25 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       </marquee>
     </div>
     <div class="box subheader stamps">
-      <div class="marquee">
+      <div class="marquee" aria-label="Stamp collection">
         <div class="marquee__inner">
-          <!-- paddedStamps is the base set (repeated until ≥30 entries so it
-               overflows the bar). Rendered twice total so the -50% trick loops
-               seamlessly — at -50% you're exactly back to where you started. -->
-          {paddedStamps.map(src => <img src={src} alt="" loading="lazy" decoding="async" />)}
-          {paddedStamps.map(src => <img src={src} alt="" loading="lazy" decoding="async" />)}
+          {paddedStamps.map(src => <img src={src} alt="" decoding="async" fetchpriority="low" />)}
+        </div>
+        <div class="marquee__inner" aria-hidden="true">
+          {paddedStamps.map(src => <img src={src} alt="" decoding="async" fetchpriority="low" />)}
         </div>
       </div>
+      <script>
+        // Pause the marquee until all stamp images have loaded, then fade in.
+        // This prevents the janky partial-load stutter.
+        const marquee = document.querySelector('.marquee') as HTMLElement;
+        if (marquee) {
+          const imgs = marquee.querySelectorAll('img');
+          let loaded = 0;
+          const check = () => { if (++loaded >= imgs.length) marquee.classList.add('is-ready'); };
+          imgs.forEach(img => img.complete ? check() : (img.onload = img.onerror = check));
+        }
+      </script>
     </div>
   </div>
 </BaseLayout>
@@ -97,28 +98,46 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   }
 
   .marquee {
+    contain: strict;
     display: flex;
     overflow: hidden;
     height: 100%;
-    align-items: center;
   }
 
   .marquee__inner {
     display: flex;
     flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+    min-width: 100%;
+    will-change: transform;
     animation: stamp-scroll 35s linear infinite;
+    animation-play-state: paused;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Stamps start hidden+paused, then fade in once all images load */
+  .marquee.is-ready .marquee__inner {
+    animation-play-state: running;
+    opacity: 1;
   }
 
   .marquee__inner img {
     flex-shrink: 0;
-    margin: 2px;
     height: 52px;
     width: auto;
   }
 
   @keyframes stamp-scroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    to { transform: translateX(calc(-100% - 4px)); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__inner {
+      animation-play-state: paused !important;
+      opacity: 1 !important;
+    }
   }
 
   /* ── Mobile overrides ─────────────────────────────────────────────────────
