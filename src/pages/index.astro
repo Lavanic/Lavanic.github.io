@@ -60,7 +60,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     width: 134.5%;
     left: -17.2%;
     overflow: visible;
-    background: #597997;
+    background: #597997 url('/images/header.png') center/cover no-repeat;
   }
 
   .logo-wrap {
@@ -174,8 +174,14 @@ const paddedStamps = Array(copies).fill(stamps).flat();
      Heights doubled so they appear the same relative size after scaling.
   ───────────────────────────────────────────────────────────────────────── */
   @media (max-width: 1020px) {
+    .header,
+    .subheader {
+      width: 100%;
+      left: 0;
+    }
+
     .logo-wrap {
-      left: 110px;
+      left: -55px;
     }
 
     .subheader:not(.stamps) {
