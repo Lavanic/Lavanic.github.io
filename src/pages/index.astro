@@ -60,7 +60,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     width: 134.5%;
     left: -17.2%;
     overflow: visible;
-    background: #597997 url('/images/header.png') center/cover no-repeat;
+      background: #597997 url('/images/header.png') center/cover no-repeat;
   }
 
   .logo-wrap {
@@ -79,6 +79,8 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     top: 0;
     left: 0;
     display: flex;
+    opacity: 0;
+    transition: opacity 0.15s ease;
   }
 
   .subheader {
@@ -115,7 +117,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   /* Stamp marquee bar */
   .stamps {
     height: 60px;
-    background: linear-gradient(to bottom, #F4EFBD 0%, #EDEA92 50%, #979259 51%, #FFFFA8 100%);
+    background: linear-gradient(to bottom, #F4EFBD 0%, #EDEA92 50%, #989144 51%, #FFFFA8 100%);
   }
 
   .marquee {
