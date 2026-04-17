@@ -20,7 +20,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
         <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt logo" />
         <div class="logo-composite">
           <img src="/images/gears.webp" width="169" height="287" alt=""
-            onload="this.closest('.logo-wrap').querySelector('.logo-fallback').style.display='none'" />
+            onload="var w=this.closest('.logo-wrap');w.querySelector('.logo-fallback').style.display='none';w.querySelector('.logo-composite').style.opacity='1'" />
           <img src="/images/static.png" width="654" height="287" alt="" />
         </div>
       </div>
