@@ -50,6 +50,12 @@ const paddedStamps = Array(copies).fill(stamps).flat();
         }
       </script>
     </div>
+
+    <div class="row main-row">
+      <aside class="box panel panel-left"></aside>
+      <main class="box panel panel-center"></main>
+      <aside class="box panel panel-right no-mobile"></aside>
+    </div>
   </div>
 </BaseLayout>
 
@@ -60,7 +66,8 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     width: 134.5%;
     left: -17.2%;
     overflow: visible;
-      background: #597997 url('/images/header.png') center/cover no-repeat;
+    flex-shrink: 0;
+    background: #597997 url('/images/header.png') center/cover no-repeat;
   }
 
   .logo-wrap {
@@ -88,6 +95,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     position: relative;
     width: 134.5%;
     left: -17.2%;
+    flex-shrink: 0;
     background: linear-gradient(to bottom, #BDD3F4 0%, #92AEED 50%, #597997 51%, #A8BEFF 100%);
   }
 
@@ -165,6 +173,30 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     }
   }
 
+  /* Row of three panels below the stamp bar.*/
+  .main-row {
+    display: flex;
+    gap: var(--gap);
+    position: relative;
+    width: 140%;
+    left: -20%;
+    min-height: 620px;
+    flex-shrink: 0;
+  }
+
+  .panel-left   { flex: 0 0 21%; }
+  .panel-center { flex: 1 1 auto; }
+  .panel-right  { flex: 0 0 21%; }
+
+  /* Gradient*/
+  .panel {
+    background: linear-gradient(
+      to bottom,
+      rgba(123, 146, 168, 0.95) 0%,
+      rgba(107, 130, 152, 0.95) 100%
+    );
+  }
+
   /* ── Mobile overrides ─────────────────────────────────────────────────────
      The whole layout is scaled down via transform in BaseLayout.
      These values are in the *unscaled* coordinate space, the browser scales
@@ -180,6 +212,15 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     .subheader {
       width: 100%;
       left: 0;
+    }
+
+    /* Right panel is hidden via .no-mobile, so center auto-fills the freed
+       space. Extend leftward (width: 110%, all offset on the left side) so
+       the left panel pokes past the header on mobile. */
+    .main-row {
+      width: 102%;
+      left: -2%;
+      min-height: 150vh;
     }
 
     .logo-wrap {
