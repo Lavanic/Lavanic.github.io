@@ -184,9 +184,9 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     flex-shrink: 0;
   }
 
-  .panel-left   { flex: 0 0 21%; }
+  .panel-left   { flex: 0 0 17%; }
   .panel-center { flex: 1 1 auto; }
-  .panel-right  { flex: 0 0 21%; }
+  .panel-right  { flex: 0 0 20%; }
 
   /* Gradient*/
   .panel {
@@ -221,6 +221,10 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       width: 102%;
       left: -2%;
       min-height: 150vh;
+    }
+
+    .panel-left {
+      flex: 0 0 30%;
     }
 
     .logo-wrap {
