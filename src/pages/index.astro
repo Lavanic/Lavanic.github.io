@@ -53,7 +53,18 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 
     <div class="row main-row">
       <aside class="box panel panel-left"></aside>
-      <main class="box panel panel-center"></main>
+      <main class="box panel panel-center">
+        <div class="panel-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+          <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <p>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.</p>
+          <p>Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam.</p>
+          <p>Maecenas fermentum consequat mi. Donec fermentum. Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien.</p>
+          <p>Sed velit. Sed nec mi vel justo congue luctus. Aliquam erat volutpat. Sed quis velit. Nulla facilisi. Nulla libero. Vivamus pharetra posuere sapien. Nam consectetuer. Sed aliquam, nunc eget euismod ullamcorper, lectus nunc ullamcorper orci.</p>
+          <p>Quisque eget odio ac lectus vestibulum faucibus eget in metus. In pellentesque faucibus vestibulum. Nulla at nulla justo, eget luctus tortor. Nulla facilisi. Duis aliquet egestas purus in blandit.</p>
+          <p>Curabitur vulputate, ligula lacinia scelerisque tempor, lacus lacus ornare ante, ac egestas est urna sit amet arcu. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed molestie augue sit amet leo consequat posuere.</p>
+        </div>
+      </main>
       <aside class="box panel panel-right no-mobile"></aside>
     </div>
   </div>
@@ -185,8 +196,23 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   }
 
   .panel-left   { flex: 0 0 17%; }
-  .panel-center { flex: 1 1 auto; }
+  .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
   .panel-right  { flex: 0 0 20%; }
+
+  .panel-content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    background: #3F6589;
+    color: #fff;
+    padding: 18px;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .panel-content p + p {
+    margin-top: 12px;
+  }
 
   /* Gradient*/
   .panel {
