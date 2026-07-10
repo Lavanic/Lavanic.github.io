@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 - Oliver Ohrt" description="Page not found.">
+  <div class="layout">
+    <div class="box notfound">
+      <h1>404</h1>
+      <p>this page doesn't exist. maybe it never did.</p>
+      <a href="/">&larr; take me home</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound {
+    margin-top: 15vh;
+    padding: 48px 24px;
+    text-align: center;
+    color: rgb(0, 46, 255);
+  }
+
+  .notfound h1 {
+    font-size: 64px;
+    letter-spacing: 4px;
+  }
+
+  .notfound p {
+    margin: 12px 0 24px;
+    font-size: 15px;
+  }
+
+  .notfound a {
+    color: rgb(0, 46, 255);
+    font-weight: bold;
+  }
+</style>
