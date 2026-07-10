@@ -1,15 +1,22 @@
 ---
+import { readdir } from 'node:fs/promises';
+import path from 'node:path';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Auto-discovers every file in public/stamps/ at build time.
-const stampModules = import.meta.glob('/public/stamps/*');
-const stamps = Object.keys(stampModules).map(path => path.replace('/public', ''));
+// Auto-discovers every stamp in public/stamps/ at build time.
+// Plain readdir instead of import.meta.glob: globbing public/ makes Vite
+// emit a second hashed copy of every stamp into dist/_astro/ that nothing uses.
+const stampDir = path.join(process.cwd(), 'public/stamps');
+const stampFiles = (await readdir(stampDir))
+  .filter(f => /\.(png|gif|jpe?g|webp|avif)$/i.test(f))
+  .sort();
+const stamps = stampFiles.map(f => `/stamps/${f}`);
 
 // The seamless loop works by animating translateX(-50%) across a set rendered twice.
 // That only works if one set is wider than the visible bar (~1300px).
 // So we pad the array up to at least 30 entries before doubling it.
 const MIN_STAMPS = 30;
-const copies = Math.ceil(MIN_STAMPS / stamps.length);
+const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
 const paddedStamps = Array(copies).fill(stamps).flat();
 ---
 
