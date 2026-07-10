@@ -34,7 +34,11 @@ const ogImage = new URL("/images/logo_fallback.png", Astro.site);
     <meta property="og:image:width" content="823" />
     <meta property="og:image:height" content="287" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- background.webp and header.png live in CSS, so without a preload the
+         browser only discovers them after the stylesheet is parsed -->
+    <link rel="preload" as="image" href="/images/background.webp" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/logo_fallback.png" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/header.png" />
     <link rel="preload" as="image" href="/images/static.png" />
     <link rel="preload" as="image" href="/images/gears.webp" />
   </head>
