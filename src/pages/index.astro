@@ -23,14 +23,14 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 <BaseLayout title="Oliver Ohrt">
   <div class="layout">
     <div class="box header">
-      <div class="logo-wrap">
-        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt logo" />
+      <h1 class="logo-wrap">
+        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt" />
         <div class="logo-composite">
           <img src="/images/gears.webp" width="169" height="287" alt=""
             onload="var w=this.closest('.logo-wrap');w.querySelector('.logo-fallback').style.display='none';w.querySelector('.logo-composite').style.opacity='1'" />
           <img src="/images/static.png" width="654" height="287" alt="" />
         </div>
-      </div>
+      </h1>
     </div>
 
     <div class="box subheader">
@@ -39,14 +39,28 @@ const paddedStamps = Array(copies).fill(stamps).flat();
       </div>
     </div>
     <div class="box subheader stamps">
-      <div class="marquee" aria-label="Stamp collection">
+      <div class="marquee" role="img" aria-label="Stamp collection">
         <div class="marquee__inner">
-          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" />)}
+          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
         </div>
         <div class="marquee__inner" aria-hidden="true">
-          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" />)}
+          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
         </div>
       </div>
+      <noscript>
+        <style is:inline>
+          /* The is-ready class never arrives without JS, so force the marquee visible */
+          .marquee .marquee__inner {
+            opacity: 1 !important;
+            animation-play-state: running !important;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .marquee .marquee__inner {
+              animation-play-state: paused !important;
+            }
+          }
+        </style>
+      </noscript>
       <script>
         const marquee = document.querySelector('.marquee') as HTMLElement;
         if (marquee) {
