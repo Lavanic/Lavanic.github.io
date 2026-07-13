@@ -62,11 +62,61 @@ const paddedStamps = Array(copies).fill(stamps).flat();
         </style>
       </noscript>
       <script>
-        const marquee = document.querySelector('.marquee') as HTMLElement;
-        if (marquee) {
+        const marquee = document.querySelector('.marquee') as HTMLElement | null;
+        const inners = marquee ? Array.from(marquee.querySelectorAll<HTMLElement>('.marquee__inner')) : [];
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+        if (marquee && inners.length) {
+          // The CSS animation runs on the compositor thread, so the browser's
+          // main thread keeps a stale idea of which stamps are on screen and
+          // pauses their gif playback as "offscreen". Driving the transform
+          // from rAF keeps the visibility bookkeeping fresh every frame.
+          const GAP = 4;
+          const DURATION = 35; // seconds per loop, same speed as the CSS animation
+          let x = 0;
+          let width = 0;
+          let last = 0;
+          let raf = 0;
+
+          // offsetWidth is layout width, unaffected by the mobile scale transform
+          const measure = () => { width = inners[0].offsetWidth + GAP; };
+
+          const step = (now: number) => {
+            // Clamp dt so returning from a background tab does not jump the bar
+            const dt = Math.min((now - last) / 1000, 0.064);
+            last = now;
+            x = (x - (width / DURATION) * dt) % width;
+            for (const inner of inners) inner.style.transform = `translate3d(${x}px, 0, 0)`;
+            raf = requestAnimationFrame(step);
+          };
+
+          const start = () => {
+            if (raf || reduced.matches || !marquee.classList.contains('is-ready')) return;
+            marquee.classList.add('js-drive');
+            measure();
+            last = performance.now();
+            raf = requestAnimationFrame(step);
+          };
+
+          const stop = () => {
+            cancelAnimationFrame(raf);
+            raf = 0;
+            marquee.classList.remove('js-drive');
+            for (const inner of inners) inner.style.transform = '';
+          };
+
+          window.addEventListener('resize', () => { if (raf) measure(); });
+          reduced.addEventListener('change', () => reduced.matches ? stop() : start());
+
+          // Fade the bar in once every stamp has loaded or failed, then start
           const imgs = marquee.querySelectorAll('img');
           let loaded = 0;
-          const check = () => { if (++loaded >= imgs.length) marquee.classList.add('is-ready'); };
+          const check = () => {
+            if (++loaded >= imgs.length) {
+              marquee.classList.add('is-ready');
+              start();
+            }
+          };
           imgs.forEach(img => img.complete ? check() : (img.onload = img.onerror = check));
         }
       </script>
@@ -187,6 +237,12 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   .marquee.is-ready .marquee__inner {
     animation-play-state: running;
     opacity: 1;
+  }
+
+  /* When the script drives the transform, the CSS animation has to get out
+     of the way. The animation still serves as the no-js fallback. */
+  .marquee.js-drive .marquee__inner {
+    animation: none;
   }
 
   .marquee__inner img {
