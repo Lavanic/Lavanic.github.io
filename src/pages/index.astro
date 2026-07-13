@@ -163,6 +163,10 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   .marquee {
     contain: layout paint;
     display: flex;
+    /* The keyframe travels -100% - 4px, so the two strips need the same 4px
+       gap between them that the stamps have inside each strip. Without this
+       the bar pops 4px sideways every time the loop wraps. */
+    gap: 4px;
     overflow: hidden;
     height: 100%;
   }
