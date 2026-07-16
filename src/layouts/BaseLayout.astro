@@ -95,6 +95,12 @@ const ogImage = new URL("/images/logo_fallback.png", Astro.site);
     display: flex;
     flex-direction: column;
     gap: var(--gap);
+    --scale: 1;
+    transform: scale(var(--scale));
+    transform-origin: top center;
+    /* The transform does not shrink layout height, so pull the page bottom
+       up by the height the scale removed. Same trick the mobile ladder used. */
+    margin-bottom: calc((var(--scale) - 1) * 100%);
   }
 
   .box {
@@ -110,63 +116,30 @@ const ogImage = new URL("/images/logo_fallback.png", Astro.site);
     .no-mobile { display: none !important; }
   }
 
+  /* ── Desktop scaling ─────────────────────────────────────────────────────
+     The design is sized for a 1920px wide screen where 960px fills half the
+     viewport. Smaller or high-dpi laptops (a 14in retina MacBook is only
+     1512 css px wide) see far fewer css pixels, so the fixed 960px looks
+     zoomed in. These steps keep the site near the same fraction of the
+     screen it has at 1920. Steps of 0.05 instead of a continuous formula
+     because css cannot divide two lengths into a number in Firefox.
+     Floor of 0.75 so text stays readable on tablets and small windows. */
+  @media (max-width: 1919px) { .layout { --scale: 0.95; } }
+  @media (max-width: 1750px) { .layout { --scale: 0.9;  } }
+  @media (max-width: 1650px) { .layout { --scale: 0.85; } }
+  @media (max-width: 1550px) { .layout { --scale: 0.8;  } }
+  @media (max-width: 1450px) { .layout { --scale: 0.75; } }
+
   /* ── Mobile scaling ──────────────────────────────────────────────────────
      The site is fixed-width (960px). Rather than rebuilding the layout,
-     we scale the whole thing down like zooming out
+     we scale the whole thing down like zooming out. Each step only sets
+     --scale; the transform and margin compensation live on .layout above.
   ───────────────────────────────────────────────────────────────────────── */
-  @media (max-width: 1020px) {
-    .layout {
-      transform: scale(0.9);
-      transform-origin: top center;
-      margin-bottom: -10%;
-    }
-  }
-
-  @media (max-width: 900px) {
-    .layout {
-      transform: scale(0.78);
-      transform-origin: top center;
-      margin-bottom: -22%;
-    }
-  }
-
-  @media (max-width: 780px) {
-    .layout {
-      transform: scale(0.67);
-      transform-origin: top center;
-      margin-bottom: -33%;
-    }
-  }
-
-  @media (max-width: 650px) {
-    .layout {
-      transform: scale(0.56);
-      transform-origin: top center;
-      margin-bottom: -44%;
-    }
-  }
-
-  @media (max-width: 540px) {
-    .layout {
-      transform: scale(0.46);
-      transform-origin: top center;
-      margin-bottom: -54%;
-    }
-  }
-
-  @media (max-width: 430px) {
-    .layout {
-      transform: scale(0.37);
-      transform-origin: top center;
-      margin-bottom: -63%;
-    }
-  }
-
-  @media (max-width: 360px) {
-    .layout {
-      transform: scale(0.31);
-      transform-origin: top center;
-      margin-bottom: -69%;
-    }
-  }
+  @media (max-width: 1020px) { .layout { --scale: 0.9; } }
+  @media (max-width: 900px)  { .layout { --scale: 0.78; } }
+  @media (max-width: 780px)  { .layout { --scale: 0.67; } }
+  @media (max-width: 650px)  { .layout { --scale: 0.56; } }
+  @media (max-width: 540px)  { .layout { --scale: 0.46; } }
+  @media (max-width: 430px)  { .layout { --scale: 0.37; } }
+  @media (max-width: 360px)  { .layout { --scale: 0.31; } }
 </style>
