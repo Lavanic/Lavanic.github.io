@@ -60,4 +60,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     color: #fff;
     font-weight: bold;
   }
+
+  @media (max-width: 1020px) {
+    .notfound {
+      width: 100%;
+      margin-top: 6vh;
+      min-height: calc(400px / var(--scale));
+    }
+
+    .notfound-text {
+      padding: calc(28px / var(--scale)) calc(24px / var(--scale));
+      gap: calc(14px / var(--scale));
+    }
+
+    .notfound-text h1 {
+      font-size: calc(26px / var(--scale));
+      letter-spacing: calc(2px / var(--scale));
+    }
+
+    .notfound-text p {
+      font-size: calc(14px / var(--scale));
+    }
+
+    .notfound-text a {
+      font-size: calc(14px / var(--scale));
+    }
+  }
 </style>
