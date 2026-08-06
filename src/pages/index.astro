@@ -28,8 +28,8 @@ const paddedStamps = Array(copies).fill(stamps).flat();
         <div class="logo-composite">
           <canvas class="gears" width="169" height="287" aria-hidden="true"></canvas>
           <img src="/images/static.png" width="654" height="287" alt="" />
+          <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
         </div>
-        <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
       </h1>
       <script>
         // Gear spin easter egg. Tapping the logo kicks the 
@@ -95,11 +95,11 @@ const paddedStamps = Array(copies).fill(stamps).flat();
             requestAnimationFrame(step);
           }).catch(() => {}); // decode failed, the fallback logo stays up
 
-          const tick = wrap.querySelector<HTMLInputElement>('.haptic-tick');
+          // iOS plays its own tick because the finger lands on the real switch
+          // overlaying the logo. Android has no such tick, so ask for one.
           wrap.addEventListener('pointerdown', () => {
             vel = Math.min(vel + KICK, MAX);
-            if (navigator.vibrate) navigator.vibrate(15);
-            else tick?.click(); // iOS 17.4+: toggling a switch control buzzes
+            navigator.vibrate?.(15);
           });
         }
       </script>
@@ -235,13 +235,21 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     -webkit-touch-callout: none;
   }
 
-  /* Kept renderable (not display:none) or Safari drops the haptic */
+  /* A real native switch laid invisibly over the whole logo. iOS only plays
+     its tick for a genuine finger tap on the control, a scripted .click() is
+     silent as of iOS 26.5, so the finger has to land on this element.
+     Deliberately no appearance:none, stripping the native look kills the tick. */
   .haptic-tick {
     position: absolute;
-    width: 1px;
-    height: 1px;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
     opacity: 0;
-    pointer-events: none;
+    z-index: 2;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .logo-fallback {
