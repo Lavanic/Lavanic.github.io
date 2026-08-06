@@ -23,14 +23,86 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 <BaseLayout title="Oliver Ohrt">
   <div class="layout">
     <div class="box header">
-      <h1 class="logo-wrap">
-        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="Oliver Ohrt" />
+      <h1 class="logo-wrap" aria-label="oliverohrt.com, with spinning gears in place of the two O's">
+        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="oliverohrt.com, with gears in place of the two O's" />
         <div class="logo-composite">
-          <img src="/images/gears.webp" width="169" height="287" alt=""
-            onload="var w=this.closest('.logo-wrap');w.querySelector('.logo-fallback').style.display='none';w.querySelector('.logo-composite').style.opacity='1'" />
+          <canvas class="gears" width="169" height="287" aria-hidden="true"></canvas>
           <img src="/images/static.png" width="654" height="287" alt="" />
         </div>
+        <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
       </h1>
+      <script>
+        // Gear spin easter egg. Tapping the logo kicks the 
+        // velocity up (it stacks) and then decays to resting speed.
+        const wrap = document.querySelector<HTMLElement>('.logo-wrap');
+        const canvas = wrap?.querySelector<HTMLCanvasElement>('canvas.gears');
+        const ctx = canvas?.getContext('2d');
+
+        if (wrap && canvas && ctx) {
+          const COLS = 10;
+          const FRAMES = 150;
+          const FW = 169;
+          const FH = 287;
+          const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
+          const KICK = 120;
+          const MAX = BASE * 10;
+          const TAU = 1.3; // seconds for a kick to fade
+          const SHUTTER = 0.9; // how much of the swept arc to smear, 0 disables
+          const BLEND_MAX = 6;
+
+          const sheet = new Image();
+          sheet.src = '/images/gears_sheet.webp';
+
+          let pos = 0;
+          let vel = BASE;
+          let last = 0;
+          let drawn = -1;
+          let blended = 0;
+
+          const blit = (f: number) => {
+            ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
+          };
+
+          const step = (now: number) => {
+            // Clamp dt so returning from a background tab doesn't fast-forward
+            const dt = Math.min((now - last) / 1000, 0.064);
+            last = now;
+            const advance = vel * dt;
+            pos = (pos + advance) % FRAMES;
+            vel = BASE + (vel - BASE) * Math.exp(-dt / TAU);
+            const f = pos | 0;
+            // Motion blur by averaging the frames the gears swept through
+            // since the last repaint, the same thing a camera shutter does
+            const n = Math.max(1, Math.min(BLEND_MAX, Math.round(advance * SHUTTER)));
+            if (f !== drawn || n !== blended) {
+              drawn = f;
+              blended = n;
+              ctx.clearRect(0, 0, FW, FH);
+              blit(f);
+              for (let k = 1; k < n; k++) {
+                ctx.globalAlpha = 1 / (k + 1);
+                blit((f - k + FRAMES) % FRAMES);
+              }
+              ctx.globalAlpha = 1;
+            }
+            requestAnimationFrame(step);
+          };
+
+          sheet.decode().then(() => {
+            wrap.querySelector<HTMLElement>('.logo-fallback')!.style.display = 'none';
+            wrap.querySelector<HTMLElement>('.logo-composite')!.style.opacity = '1';
+            last = performance.now();
+            requestAnimationFrame(step);
+          }).catch(() => {}); // decode failed, the fallback logo stays up
+
+          const tick = wrap.querySelector<HTMLInputElement>('.haptic-tick');
+          wrap.addEventListener('pointerdown', () => {
+            vel = Math.min(vel + KICK, MAX);
+            if (navigator.vibrate) navigator.vibrate(15);
+            else tick?.click(); // iOS 17.4+: toggling a switch control buzzes
+          });
+        }
+      </script>
     </div>
 
     <div class="box subheader">
@@ -155,6 +227,21 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     left: -90px;
     top: 5px;
     z-index: 999;
+    cursor: pointer;
+    /* no double-tap zoom or long-press callout when spamming the gears */
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Kept renderable (not display:none) or Safari drops the haptic */
+  .haptic-tick {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .logo-fallback {
