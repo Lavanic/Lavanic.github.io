@@ -41,15 +41,15 @@ const ogImage = new URL("/images/logo_fallback.png", Astro.site);
     <link rel="preload" as="image" href="/images/header.png" />
     <link rel="preload" as="image" href="/images/static.png" />
     <link rel="preload" as="image" href="/images/gears_sheet.webp" />
+    <script
+      defer
+      src="https://app.rybbit.io/api/script.js"
+      data-site-id="6958f7ab97a7"
+      is:inline
+    ></script>
   </head>
   <body>
     <slot />
-    <script
-      defer
-      src="https://cloud.umami.is/script.js"
-      data-website-id="02aa9e5f-726b-484a-99f2-e8fdd2e46275"
-      is:inline
-    ></script>
   </body>
 </html>
 
