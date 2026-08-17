@@ -380,7 +380,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   }
 
   .panel-left   { flex: 0 0 17%; }
-
+  
   /* Same bar as the subheaders, sitting at the top of the left panel.
      Empty for now, it will carry the nav label. */
   .panel-nav {
@@ -414,11 +414,27 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 
   /* Gradient*/
   .panel {
-    background: linear-gradient(
+    --panel-gradient: linear-gradient(
       to bottom,
       rgba(101, 146, 190, 0.95) 0%,
       rgba(84, 130, 174, 0.95) 100%
     );
+    background: var(--panel-gradient);
+  }
+
+  .panel.panel-center {
+    --grid-cell: 15px;
+    --dot-pitch: 2.5px;
+    --dot-r: 0.9px;
+    --dot-color: rgba(32, 46, 70, 0.15);
+    background-image:
+      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
+      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
+      var(--panel-gradient);
+    background-size:
+      var(--grid-cell) var(--dot-pitch),
+      var(--dot-pitch) var(--grid-cell),
+      auto;
   }
 
   /* ── Mobile overrides ─────────────────────────────────────────────────────
@@ -477,6 +493,12 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 
     .welcome-scroll span {
       font-size: 28px;
+    }
+
+    .panel.panel-center {
+      --grid-cell: calc(7px / var(--scale));
+      --dot-pitch: calc(2px / var(--scale));
+      --dot-r: calc(0.7px / var(--scale));
     }
 
     /* Counter the global scale so the about text renders at a constant
