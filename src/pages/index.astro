@@ -196,13 +196,15 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     </div>
 
     <div class="row main-row">
-      <aside class="box panel panel-left"></aside>
+      <aside class="box panel panel-left">
+        <div class="panel-nav"></div>
+      </aside>
       <main class="box panel panel-center">
         <div class="panel-content">
           <h2>Welcome to my website</h2>
           <p>You may be thinking to yourself, "Oliver, your website looks a little crazy." I know right. It's an homage to the early internet and GeoCities era of personal site dev and it has been a ton of fun to work on.</p>
           <p>If you don't know me, you can probably guess my name :^) I'm a CS student at UW-Madison though I was born and raised in Seattle. At Madison I helped run the Undergraduate Projects Lab, a student lab that's been around since the 1980s. I helped plan various events and Wisconsin's largest hackathon. Last summer I was at Amazon writing internal tools for the AGI org, this summer I'm doing the same. I graduate in December 2026.</p>
-          <p>Most of my free time goes into hanging with friends and building things. Some recent ones: a  Tauri desktop app for mapping out social graphs in Neo4j, and a Go bot that watches company career pages so I don't have to. This site rennovation (rennovation #4 actually) is the latest project. It's not done. It may never be done. That's kind of the point.</p>
+          <p>Most of my free time goes into hanging with friends and building things. Some recent ones: a  Tauri desktop app for mapping out social graphs in Neo4j, and a Go bot that watches company career pages so I don't have to. This site renovation (renovation #4 actually) is the latest project. It's not done. It may never be done. That's kind of the point.</p>
           <p>Off the computer it's fishing, cooking, and listening to music (Recently Alice in Chains). Next semester I'm studying abroad in Thailand, so expect blog posts about that whenever the blog exists.</p>
           <p>Thanks for stopping by. Sign the guestbook on your way out (there is no guestbook yet).</p>
         </div>
@@ -279,7 +281,7 @@ const paddedStamps = Array(copies).fill(stamps).flat();
     width: 134.5%;
     left: -17.2%;
     flex-shrink: 0;
-    background: linear-gradient(to bottom, #B2D1FF 0%, #80A7FF 50%, #3A7AB6 51%, #A8BEFF 100%);
+    background: var(--bar-gradient);
   }
 
   .welcome-scroll {
@@ -378,6 +380,14 @@ const paddedStamps = Array(copies).fill(stamps).flat();
   }
 
   .panel-left   { flex: 0 0 17%; }
+
+  /* Same bar as the subheaders, sitting at the top of the left panel.
+     Empty for now, it will carry the nav label. */
+  .panel-nav {
+    height: 60px;
+    background: var(--bar-gradient);
+  }
+
   .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
   .panel-right  { flex: 0 0 20%; }
 
@@ -447,6 +457,10 @@ const paddedStamps = Array(copies).fill(stamps).flat();
 
     .subheader:not(.stamps) {
       height: 60px;
+    }
+
+    .panel-nav {
+      height: 120px;
     }
 
     .stamps {
