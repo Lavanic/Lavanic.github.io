@@ -1,521 +1,691 @@
----
-import { readdir } from 'node:fs/promises';
-import path from 'node:path';
-import BaseLayout from '../layouts/BaseLayout.astro';
+  ---
+  import { readdir } from 'node:fs/promises';
+  import { execFile } from 'node:child_process';
+  import { promisify } from 'node:util';
+  import path from 'node:path';
+  import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Auto-discovers every stamp in public/stamps/ at build time.
-// Plain readdir instead of import.meta.glob: globbing public/ makes Vite
-// emit a second hashed copy of every stamp into dist/_astro/ that nothing uses.
-const stampDir = path.join(process.cwd(), 'public/stamps');
-const stampFiles = (await readdir(stampDir))
-  .filter(f => /\.(png|gif|jpe?g|webp|avif)$/i.test(f))
-  .sort();
-const stamps = stampFiles.map(f => `/stamps/${f}`);
+  // Auto-discovers every stamp in public/stamps/ at build time.
+  // Plain readdir instead of import.meta.glob: globbing public/ makes Vite
+  // emit a second hashed copy of every stamp into dist/_astro/ that nothing uses.
+  const stampDir = path.join(process.cwd(), 'public/stamps');
+  const stampFiles = (await readdir(stampDir))
+    .filter(f => /\.(png|gif|jpe?g|webp|avif)$/i.test(f))
+    .sort();
+  const stamps = stampFiles.map(f => `/stamps/${f}`);
 
-// The seamless loop works by animating translateX(-50%) across a set rendered twice.
-// That only works if one set is wider than the visible bar (~1300px).
-// So we pad the array up to at least 30 entries before doubling it.
-const MIN_STAMPS = 30;
-const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
-const paddedStamps = Array(copies).fill(stamps).flat();
----
+  // The seamless loop works by animating translateX(-50%) across a set rendered twice.
+  // That only works if one set is wider than the visible bar (~1300px).
+  // So we pad the array up to at least 30 entries before doubling it.
+  const MIN_STAMPS = 30;
+  const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
+  const paddedStamps = Array(copies).fill(stamps).flat();
+  const GH_WEEKS = 14;
+  const GH_CELLS = GH_WEEKS * 7;
+  const ghFuture = 6 - new Date().getDay();
 
-<BaseLayout title="Oliver Ohrt">
-  <div class="layout">
-    <div class="box header">
-      <h1 class="logo-wrap" aria-label="oliverohrt.com, with spinning gears in place of the two O's">
-        <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="oliverohrt.com, with gears in place of the two O's" />
-        <div class="logo-composite">
-          <canvas class="gears" width="169" height="287" aria-hidden="true"></canvas>
-          <img src="/images/static.png" width="654" height="287" alt="" />
-          <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
-        </div>
-      </h1>
-      <script>
-        // Gear spin easter egg. Tapping the logo kicks the 
-        // velocity up (it stacks) and then decays to resting speed.
-        const wrap = document.querySelector<HTMLElement>('.logo-wrap');
-        const canvas = wrap?.querySelector<HTMLCanvasElement>('canvas.gears');
-        const ctx = canvas?.getContext('2d');
+  const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
+  let commits: { hash: string; date: string; subject: string }[] = [];
+  try {
+    const { stdout } = await promisify(execFile)('git', [
+      'log', '-10', '--date=format:%m/%d/%y', '--format=%h%x1f%ad%x1f%s%x1e',
+    ]);
+    commits = stdout
+      .split('\x1e')
+      .map(r => r.trim())
+      .filter(Boolean)
+      .map(r => {
+        const [hash, date, subject] = r.split('\x1f');
+        return { hash, date, subject };
+      });
+  } catch {
+    // No git available, the changelog just doesn't render
+  }
+  ---
 
-        if (wrap && canvas && ctx) {
-          const COLS = 10;
-          const FRAMES = 150;
-          const FW = 169;
-          const FH = 287;
-          const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
-          const KICK = 120;
-          const MAX = BASE * 15;
-          const TAU = 1.3; // seconds for a kick to fade
-          const SHUTTER = 0.9; // how much of the swept arc to smear, 0 disables
-          const BLEND_MAX = 6;
+  <BaseLayout title="Oliver Ohrt">
+    <div class="layout">
+      <div class="box header">
+        <h1 class="logo-wrap" aria-label="oliverohrt.com, with spinning gears in place of the two O's">
+          <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="oliverohrt.com, with gears in place of the two O's" />
+          <div class="logo-composite">
+            <canvas class="gears" width="169" height="287" aria-hidden="true"></canvas>
+            <img src="/images/static.png" width="654" height="287" alt="" />
+            <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
+          </div>
+        </h1>
+        <script>
+          // Gear spin easter egg. Tapping the logo kicks the 
+          // velocity up (it stacks) and then decays to resting speed.
+          const wrap = document.querySelector<HTMLElement>('.logo-wrap');
+          const canvas = wrap?.querySelector<HTMLCanvasElement>('canvas.gears');
+          const ctx = canvas?.getContext('2d');
 
-          const sheet = new Image();
-          sheet.src = '/images/gears_sheet.webp';
+          if (wrap && canvas && ctx) {
+            const COLS = 10;
+            const FRAMES = 150;
+            const FW = 169;
+            const FH = 287;
+            const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
+            const KICK = 120;
+            const MAX = BASE * 15;
+            const TAU = 1.3; // seconds for a kick to fade
+            const SHUTTER = 0.9; // how much of the swept arc to smear, 0 disables
+            const BLEND_MAX = 6;
 
-          let pos = 0;
-          let vel = BASE;
-          let last = 0;
-          let drawn = -1;
-          let blended = 0;
+            const sheet = new Image();
+            sheet.src = '/images/gears_sheet.webp';
 
-          const blit = (f: number) => {
-            ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
-          };
+            let pos = 0;
+            let vel = BASE;
+            let last = 0;
+            let drawn = -1;
+            let blended = 0;
 
-          const step = (now: number) => {
-            // Clamp dt so returning from a background tab doesn't fast-forward
-            const dt = Math.min((now - last) / 1000, 0.064);
-            last = now;
-            const advance = vel * dt;
-            pos = (pos + advance) % FRAMES;
-            vel = BASE + (vel - BASE) * Math.exp(-dt / TAU);
-            const f = pos | 0;
-            // Motion blur by averaging the frames the gears swept through
-            // since the last repaint, the same thing a camera shutter does
-            const n = Math.max(1, Math.min(BLEND_MAX, Math.round(advance * SHUTTER)));
-            if (f !== drawn || n !== blended) {
-              drawn = f;
-              blended = n;
-              ctx.clearRect(0, 0, FW, FH);
-              blit(f);
-              for (let k = 1; k < n; k++) {
-                ctx.globalAlpha = 1 / (k + 1);
-                blit((f - k + FRAMES) % FRAMES);
+            const blit = (f: number) => {
+              ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
+            };
+
+            const step = (now: number) => {
+              // Clamp dt so returning from a background tab doesn't fast-forward
+              const dt = Math.min((now - last) / 1000, 0.064);
+              last = now;
+              const advance = vel * dt;
+              pos = (pos + advance) % FRAMES;
+              vel = BASE + (vel - BASE) * Math.exp(-dt / TAU);
+              const f = pos | 0;
+              // Motion blur by averaging the frames the gears swept through
+              // since the last repaint, the same thing a camera shutter does
+              const n = Math.max(1, Math.min(BLEND_MAX, Math.round(advance * SHUTTER)));
+              if (f !== drawn || n !== blended) {
+                drawn = f;
+                blended = n;
+                ctx.clearRect(0, 0, FW, FH);
+                blit(f);
+                for (let k = 1; k < n; k++) {
+                  ctx.globalAlpha = 1 / (k + 1);
+                  blit((f - k + FRAMES) % FRAMES);
+                }
+                ctx.globalAlpha = 1;
               }
-              ctx.globalAlpha = 1;
-            }
-            requestAnimationFrame(step);
-          };
+              requestAnimationFrame(step);
+            };
 
-          sheet.decode().then(() => {
-            wrap.querySelector<HTMLElement>('.logo-fallback')!.style.display = 'none';
-            wrap.querySelector<HTMLElement>('.logo-composite')!.style.opacity = '1';
-            last = performance.now();
-            requestAnimationFrame(step);
-          }).catch(() => {}); // decode failed, the fallback logo stays up
+            sheet.decode().then(() => {
+              wrap.querySelector<HTMLElement>('.logo-fallback')!.style.display = 'none';
+              wrap.querySelector<HTMLElement>('.logo-composite')!.style.opacity = '1';
+              last = performance.now();
+              requestAnimationFrame(step);
+            }).catch(() => {}); // decode failed, the fallback logo stays up
 
-          // iOS plays its own tick because the finger lands on the real switch
-          // overlaying the logo. Android has no such tick, so ask for one.
-          wrap.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'mouse') return;
-            vel = Math.min(vel + KICK, MAX);
-            navigator.vibrate?.(15);
-          });
-        }
-      </script>
-    </div>
-
-    <div class="box subheader">
-      <div class="welcome-scroll">
-        <span>Welcome to my site!</span>
-      </div>
-    </div>
-    <div class="box subheader stamps">
-      <div class="marquee" role="img" aria-label="Stamp collection">
-        <div class="marquee__inner">
-          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
-        </div>
-        <div class="marquee__inner" aria-hidden="true">
-          {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
-        </div>
-      </div>
-      <noscript>
-        <style is:inline>
-          /* The is-ready class never arrives without JS, so force the marquee visible */
-          .marquee .marquee__inner {
-            opacity: 1 !important;
-            animation-play-state: running !important;
+            // iOS plays its own tick because the finger lands on the real switch
+            // overlaying the logo. Android has no such tick, so ask for one.
+            wrap.addEventListener('pointerdown', (e) => {
+              if (e.pointerType === 'mouse') return;
+              vel = Math.min(vel + KICK, MAX);
+              navigator.vibrate?.(15);
+            });
           }
-          @media (prefers-reduced-motion: reduce) {
+        </script>
+      </div>
+
+      <div class="box subheader">
+        <div class="welcome-scroll">
+          <span>Welcome to my site!</span>
+        </div>
+      </div>
+      <div class="box subheader stamps">
+        <div class="marquee" role="img" aria-label="Stamp collection">
+          <div class="marquee__inner">
+            {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
+          </div>
+          <div class="marquee__inner" aria-hidden="true">
+            {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
+          </div>
+        </div>
+        <noscript>
+          <style is:inline>
+            /* The is-ready class never arrives without JS, so force the marquee visible */
             .marquee .marquee__inner {
-              animation-play-state: paused !important;
+              opacity: 1 !important;
+              animation-play-state: running !important;
             }
+            @media (prefers-reduced-motion: reduce) {
+              .marquee .marquee__inner {
+                animation-play-state: paused !important;
+              }
+            }
+          </style>
+        </noscript>
+        <script>
+          const marquee = document.querySelector('.marquee') as HTMLElement | null;
+          const inners = marquee ? Array.from(marquee.querySelectorAll<HTMLElement>('.marquee__inner')) : [];
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+          if (marquee && inners.length) {
+            // The CSS animation runs on the compositor thread, so the browser's
+            // main thread keeps a stale idea of which stamps are on screen and
+            // pauses their gif playback as "offscreen". Driving the transform
+            // from rAF keeps the visibility bookkeeping fresh every frame.
+            const GAP = 4;
+            const DURATION = 35; // seconds per loop, same speed as the CSS animation
+            let x = 0;
+            let width = 0;
+            let last = 0;
+            let raf = 0;
+
+            // offsetWidth is layout width, unaffected by the mobile scale transform
+            const measure = () => { width = inners[0].offsetWidth + GAP; };
+
+            const step = (now: number) => {
+              // Clamp dt so returning from a background tab does not jump the bar
+              const dt = Math.min((now - last) / 1000, 0.064);
+              last = now;
+              x = (x - (width / DURATION) * dt) % width;
+              for (const inner of inners) inner.style.transform = `translate3d(${x}px, 0, 0)`;
+              raf = requestAnimationFrame(step);
+            };
+
+            const start = () => {
+              if (raf || reduced.matches || !marquee.classList.contains('is-ready')) return;
+              marquee.classList.add('js-drive');
+              measure();
+              last = performance.now();
+              raf = requestAnimationFrame(step);
+            };
+
+            const stop = () => {
+              cancelAnimationFrame(raf);
+              raf = 0;
+              marquee.classList.remove('js-drive');
+              for (const inner of inners) inner.style.transform = '';
+            };
+
+            window.addEventListener('resize', () => { if (raf) measure(); });
+            reduced.addEventListener('change', () => reduced.matches ? stop() : start());
+
+            // Fade the bar in once every stamp has loaded or failed, then start
+            const imgs = marquee.querySelectorAll('img');
+            let loaded = 0;
+            const check = () => {
+              if (++loaded >= imgs.length) {
+                marquee.classList.add('is-ready');
+                start();
+              }
+            };
+            imgs.forEach(img => img.complete ? check() : (img.onload = img.onerror = check));
           }
-        </style>
-      </noscript>
-      <script>
-        const marquee = document.querySelector('.marquee') as HTMLElement | null;
-        const inners = marquee ? Array.from(marquee.querySelectorAll<HTMLElement>('.marquee__inner')) : [];
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        </script>
+      </div>
 
-        if (marquee && inners.length) {
-          // The CSS animation runs on the compositor thread, so the browser's
-          // main thread keeps a stale idea of which stamps are on screen and
-          // pauses their gif playback as "offscreen". Driving the transform
-          // from rAF keeps the visibility bookkeeping fresh every frame.
-          const GAP = 4;
-          const DURATION = 35; // seconds per loop, same speed as the CSS animation
-          let x = 0;
-          let width = 0;
-          let last = 0;
-          let raf = 0;
+      <div class="row main-row">
+        <aside class="box panel panel-left">
+          <div class="panel-nav"></div>
+        </aside>
+        <main class="box panel panel-center">
+          <div class="panel-content">
+            <h2>Welcome to my website</h2>
+            <p>You may be thinking to yourself, "Oliver, your website looks a little crazy." I know right. It's an homage to the early internet and GeoCities era of personal site dev and it has been a ton of fun to work on.</p>
+            <p>If you don't know me, you can probably guess my name :^) I'm a CS student at UW-Madison though I was born and raised in Seattle. At Madison I helped run the Undergraduate Projects Lab, a student lab that's been around since the 1980s. I helped plan various events and Wisconsin's largest hackathon. Last summer I was at Amazon writing internal tools for the AGI org, this summer I'm doing the same. I graduate in December 2026.</p>
+            <p>Most of my free time goes into hanging with friends and building things. Some recent ones: a  Tauri desktop app for mapping out social graphs in Neo4j, and a Go bot that watches company career pages so I don't have to. This site renovation (renovation #4 actually) is the latest project. It's not done. It may never be done. That's kind of the point.</p>
+            <p>Off the computer it's fishing, cooking, and listening to music (Recently Alice in Chains). Next semester I'm studying abroad in Thailand, so expect blog posts about that whenever the blog exists.</p>
+            <p>Thanks for stopping by. Sign the guestbook on your way out (there is no guestbook yet).</p>
+          </div>
+        </main>
+        <aside class="box panel panel-right no-mobile">
+          <a class="gh-chart" href="https://github.com/Lavanic" target="_blank" rel="noopener" aria-label="GitHub contributions, last 14 weeks">
+            {Array.from({ length: GH_CELLS }, (_, i) => (
+              <div class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}></div>
+            ))}
+          </a>
+          {commits.length > 0 && (
+            <section class="changelog">
+              <h3 class="changelog-title">
+                Changelog
+                <a class="changelog-head" href={`${REPO}/commit/${commits[0].hash}`} target="_blank" rel="noopener">{commits[0].hash}</a>
+              </h3>
+              <ul class="changelog-list">
+                {commits.map(c => (
+                  <li>
+                    {c.date} : <a href={`${REPO}/commit/${c.hash}`} target="_blank" rel="noopener">{c.hash}</a>
+                    <br />
+                    {c.subject}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </aside>
+        <script>
+          // The empty grid ships in the HTML, this only colors it in. Cells the
+          // data does not reach (the rest of the current week) stay empty.
+          const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
 
-          // offsetWidth is layout width, unaffected by the mobile scale transform
-          const measure = () => { width = inners[0].offsetWidth + GAP; };
+          if (ghCells.length) {
+            const WEEKS = 14;
+            const future = 6 - new Date().getDay();
+            ghCells.forEach((cell, i) => {
+              cell.classList.toggle('is-future', i >= ghCells.length - future);
+            });
 
-          const step = (now: number) => {
-            // Clamp dt so returning from a background tab does not jump the bar
-            const dt = Math.min((now - last) / 1000, 0.064);
-            last = now;
-            x = (x - (width / DURATION) * dt) % width;
-            for (const inner of inners) inner.style.transform = `translate3d(${x}px, 0, 0)`;
-            raf = requestAnimationFrame(step);
-          };
+            const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const ordinal = (d: number) =>
+              d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th';
 
-          const start = () => {
-            if (raf || reduced.matches || !marquee.classList.contains('is-ready')) return;
-            marquee.classList.add('js-drive');
-            measure();
-            last = performance.now();
-            raf = requestAnimationFrame(step);
-          };
+            type Day = { date: string; count: number; level: number };
 
-          const stop = () => {
-            cancelAnimationFrame(raf);
-            raf = 0;
-            marquee.classList.remove('js-drive');
-            for (const inner of inners) inner.style.transform = '';
-          };
+            fetch('https://github-contributions-api.jogruber.de/v4/Lavanic?y=last')
+              .then((res) => {
+                if (!res.ok) throw new Error(String(res.status));
+                return res.json();
+              })
+              .then((data: { contributions: Day[] }) => {
+                // Group days into Sunday-first columns, same as GH
+                const cols: Day[][] = [];
+                for (const day of data.contributions) {
+                  const [y, m, d] = day.date.split('-').map(Number);
+                  if (cols.length === 0 || new Date(y, m - 1, d).getDay() === 0) cols.push([]);
+                  cols[cols.length - 1].push(day);
+                }
 
-          window.addEventListener('resize', () => { if (raf) measure(); });
-          reduced.addEventListener('change', () => reduced.matches ? stop() : start());
-
-          // Fade the bar in once every stamp has loaded or failed, then start
-          const imgs = marquee.querySelectorAll('img');
-          let loaded = 0;
-          const check = () => {
-            if (++loaded >= imgs.length) {
-              marquee.classList.add('is-ready');
-              start();
-            }
-          };
-          imgs.forEach(img => img.complete ? check() : (img.onload = img.onerror = check));
-        }
-      </script>
+                const days = cols.slice(-WEEKS).flat();
+                days.slice(-ghCells.length).forEach((day, i) => {
+                  const cell = ghCells[i];
+                  cell.dataset.lv = String(day.level);
+                  const [, m, d] = day.date.split('-').map(Number);
+                  const n = day.count;
+                  cell.title = `${n === 0 ? 'No' : n} contribution${n === 1 ? '' : 's'} on ${MONTHS[m - 1]} ${d}${ordinal(d)}.`;
+                });
+              })
+              .catch(() => {});
+          }
+        </script>
+      </div>
     </div>
+  </BaseLayout>
 
-    <div class="row main-row">
-      <aside class="box panel panel-left">
-        <div class="panel-nav"></div>
-      </aside>
-      <main class="box panel panel-center">
-        <div class="panel-content">
-          <h2>Welcome to my website</h2>
-          <p>You may be thinking to yourself, "Oliver, your website looks a little crazy." I know right. It's an homage to the early internet and GeoCities era of personal site dev and it has been a ton of fun to work on.</p>
-          <p>If you don't know me, you can probably guess my name :^) I'm a CS student at UW-Madison though I was born and raised in Seattle. At Madison I helped run the Undergraduate Projects Lab, a student lab that's been around since the 1980s. I helped plan various events and Wisconsin's largest hackathon. Last summer I was at Amazon writing internal tools for the AGI org, this summer I'm doing the same. I graduate in December 2026.</p>
-          <p>Most of my free time goes into hanging with friends and building things. Some recent ones: a  Tauri desktop app for mapping out social graphs in Neo4j, and a Go bot that watches company career pages so I don't have to. This site renovation (renovation #4 actually) is the latest project. It's not done. It may never be done. That's kind of the point.</p>
-          <p>Off the computer it's fishing, cooking, and listening to music (Recently Alice in Chains). Next semester I'm studying abroad in Thailand, so expect blog posts about that whenever the blog exists.</p>
-          <p>Thanks for stopping by. Sign the guestbook on your way out (there is no guestbook yet).</p>
-        </div>
-      </main>
-      <aside class="box panel panel-right no-mobile"></aside>
-    </div>
-  </div>
-</BaseLayout>
-
-<style>
-  .header {
-    height: 288px;
-    position: relative;
-    width: 134.5%;
-    left: -17.2%;
-    overflow: visible;
-    flex-shrink: 0;
-    background: #3A7AB6 url('/images/header.png') center/cover no-repeat;
-  }
-
-  .logo-wrap {
-    position: absolute;
-    left: -90px;
-    top: 5px;
-    z-index: 999;
-    cursor: pointer;
-    /* no double-tap zoom or long-press callout when spamming the gears */
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-  }
-
-  /* A real native switch laid invisibly over the whole logo. iOS only plays
-     its tick for a genuine finger tap on the control, a scripted .click() is
-     silent as of iOS 26.5, so the finger has to land on this element.
-     Deliberately no appearance:none, stripping the native look kills the tick. */
-  .haptic-tick {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    opacity: 0;
-    z-index: 2;
-    cursor: pointer;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* The tap egg is touch only, so a mouse should not be offered a click target
-     the pointerdown handler is going to ignore anyway. */
-  @media (hover: hover) and (pointer: fine) {
-    .logo-wrap { cursor: default; }
-    .haptic-tick { display: none; }
-  }
-
-  .logo-fallback {
-    display: block;
-  }
-
-  .logo-composite {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    opacity: 0;
-    transition: opacity 0.15s ease;
-  }
-
-  .subheader {
-    height: 30px;
-    position: relative;
-    width: 134.5%;
-    left: -17.2%;
-    flex-shrink: 0;
-    background: var(--bar-gradient);
-  }
-
-  .welcome-scroll {
-    display: flex;
-    overflow: hidden;
-    height: 100%;
-    align-items: center;
-  }
-
-  .welcome-scroll span {
-    display: inline-block;
-    white-space: nowrap;
-    padding-left: 100%;
-    animation: welcome-scroll 12s linear infinite;
-    color: rgb(0, 46, 255);
-    text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff;
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  @keyframes welcome-scroll {
-    from { transform: translateX(-100%); }
-    to   { transform: translateX(100%); }
-  }
-
-  /* Stamp marquee bar */
-  .stamps {
-    height: 60px;
-    background: linear-gradient(to bottom, #FFF8B2 0%, #FFFB80 50%, #C2B41A 51%, #FFFFA8 100%);
-  }
-
-  .marquee {
-    contain: layout paint;
-    display: flex;
-    /* The keyframe travels -100% - 4px, so the two strips need the same 4px
-       gap between them that the stamps have inside each strip. Without this
-       the bar pops 4px sideways every time the loop wraps. */
-    gap: 4px;
-    overflow: hidden;
-    height: 100%;
-  }
-
-  .marquee__inner {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 4px;
-    min-width: 100%;
-    will-change: transform;
-    animation: stamp-scroll 35s linear infinite;
-    animation-play-state: paused;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .marquee.is-ready .marquee__inner {
-    animation-play-state: running;
-    opacity: 1;
-  }
-
-  /* When the script drives the transform, the CSS animation has to get out
-     of the way. The animation still serves as the no-js fallback. */
-  .marquee.js-drive .marquee__inner {
-    animation: none;
-  }
-
-  .marquee__inner img {
-    flex-shrink: 0;
-    height: 52px;
-    width: auto;
-  }
-
-  @keyframes stamp-scroll {
-    to { transform: translateX(calc(-100% - 4px)); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .marquee__inner {
-      animation-play-state: paused !important;
-      opacity: 1 !important;
-    }
-    .welcome-scroll span {
-      animation-play-state: paused !important;
-    }
-  }
-
-  /* Row of three panels below the stamp bar.*/
-  .main-row {
-    display: flex;
-    gap: var(--gap);
-    position: relative;
-    width: 140%;
-    left: -20%;
-    min-height: 620px;
-    flex-shrink: 0;
-  }
-
-  .panel-left   { flex: 0 0 17%; }
-  
-  /* Same bar as the subheaders, sitting at the top of the left panel.
-     Empty for now, it will carry the nav label. */
-  .panel-nav {
-    height: 60px;
-    background: var(--bar-gradient);
-  }
-
-  .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
-  .panel-right  { flex: 0 0 20%; }
-
-  .panel-content {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow-y: auto;
-    background: #3F6589;
-    color: #fff;
-    padding: 20px;
-    font-size: 17px;
-    line-height: 1.55;
-  }
-
-  .panel-content p + p {
-    margin-top: 14px;
-  }
-
-  .panel-content h2 {
-    font-size: 24px;
-    letter-spacing: 1px;
-    margin-bottom: 14px;
-  }
-
-  /* Gradient*/
-  .panel {
-    --panel-gradient: linear-gradient(
-      to bottom,
-      rgba(101, 146, 190, 0.95) 0%,
-      rgba(84, 130, 174, 0.95) 100%
-    );
-    background: var(--panel-gradient);
-  }
-
-  .panel.panel-center {
-    --grid-cell: 15px;
-    --dot-pitch: 2.5px;
-    --dot-r: 0.9px;
-    --dot-color: rgba(32, 46, 70, 0.15);
-    background-image:
-      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
-      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
-      var(--panel-gradient);
-    background-size:
-      var(--grid-cell) var(--dot-pitch),
-      var(--dot-pitch) var(--grid-cell),
-      auto;
-  }
-
-  /* ── Mobile overrides ─────────────────────────────────────────────────────
-     The whole layout is scaled down via transform in BaseLayout.
-     These values are in the *unscaled* coordinate space, the browser scales
-     them along with everything else.
-
-     Logo: left: -90px sits at -255px in layout coords (header is at -165px).
-     Setting left: 110px brings the logo onto screen after scaling.
-
-     Heights doubled so they appear the same relative size after scaling.
-  ───────────────────────────────────────────────────────────────────────── */
-  @media (max-width: 1020px) {
-    .header,
-    .subheader {
-      width: 100%;
-      left: 0;
-    }
-
-    /* Right panel is hidden via .no-mobile, so center auto-fills the freed
-       space. Extend leftward (width: 110%, all offset on the left side) so
-       the left panel pokes past the header on mobile. */
-    .main-row {
-      width: 102%;
-      left: -2%;
-      min-height: 150vh;
-    }
-
-    .panel-left {
-      flex: 0 0 30%;
+  <style>
+    .header {
+      height: 288px;
+      position: relative;
+      width: 134.5%;
+      left: -17.2%;
+      overflow: visible;
+      flex-shrink: 0;
+      background: #3A7AB6 url('/images/header.png') center/cover no-repeat;
     }
 
     .logo-wrap {
-      left: -55px;
+      position: absolute;
+      left: -90px;
+      top: 5px;
+      z-index: 999;
+      cursor: pointer;
+      /* no double-tap zoom or long-press callout when spamming the gears */
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
 
-    .subheader:not(.stamps) {
-      height: 60px;
+    /* A real native switch laid invisibly over the whole logo. iOS only plays
+      its tick for a genuine finger tap on the control, a scripted .click() is
+      silent as of iOS 26.5, so the finger has to land on this element.
+      Deliberately no appearance:none, stripping the native look kills the tick. */
+    .haptic-tick {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      z-index: 2;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .panel-nav {
-      height: 120px;
+    /* The tap egg is touch only, so a mouse should not be offered a click target
+      the pointerdown handler is going to ignore anyway. */
+    @media (hover: hover) and (pointer: fine) {
+      .logo-wrap { cursor: default; }
+      .haptic-tick { display: none; }
     }
 
-    .stamps {
-      height: 120px;
+    .logo-fallback {
+      display: block;
     }
 
-    .marquee {
-      height: 120px;
+    .logo-composite {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      opacity: 0;
+      transition: opacity 0.15s ease;
     }
 
-    .marquee__inner img {
-      height: 104px;
+    .subheader {
+      height: 30px;
+      position: relative;
+      width: 134.5%;
+      left: -17.2%;
+      flex-shrink: 0;
+      background: var(--bar-gradient);
+    }
+
+    .welcome-scroll {
+      display: flex;
+      overflow: hidden;
+      height: 100%;
+      align-items: center;
     }
 
     .welcome-scroll span {
-      font-size: 28px;
+      display: inline-block;
+      white-space: nowrap;
+      padding-left: 100%;
+      animation: welcome-scroll 12s linear infinite;
+      color: rgb(0, 46, 255);
+      text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff;
+      font-weight: bold;
+      font-size: 14px;
     }
 
-    .panel.panel-center {
-      --grid-cell: calc(7px / var(--scale));
-      --dot-pitch: calc(2px / var(--scale));
-      --dot-r: calc(0.7px / var(--scale));
+    @keyframes welcome-scroll {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(100%); }
     }
 
-    /* Counter the global scale so the about text renders at a constant
-       real size on phones, same trick as the 404 card */
+    /* Stamp marquee bar */
+    .stamps {
+      height: 60px;
+      background: linear-gradient(to bottom, #FFF8B2 0%, #FFFB80 50%, #C2B41A 51%, #FFFFA8 100%);
+    }
+
+    .marquee {
+      contain: layout paint;
+      display: flex;
+      /* The keyframe travels -100% - 4px, so the two strips need the same 4px
+        gap between them that the stamps have inside each strip. Without this
+        the bar pops 4px sideways every time the loop wraps. */
+      gap: 4px;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    .marquee__inner {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 4px;
+      min-width: 100%;
+      will-change: transform;
+      animation: stamp-scroll 35s linear infinite;
+      animation-play-state: paused;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .marquee.is-ready .marquee__inner {
+      animation-play-state: running;
+      opacity: 1;
+    }
+
+    /* When the script drives the transform, the CSS animation has to get out
+      of the way. The animation still serves as the no-js fallback. */
+    .marquee.js-drive .marquee__inner {
+      animation: none;
+    }
+
+    .marquee__inner img {
+      flex-shrink: 0;
+      height: 52px;
+      width: auto;
+    }
+
+    @keyframes stamp-scroll {
+      to { transform: translateX(calc(-100% - 4px)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .marquee__inner {
+        animation-play-state: paused !important;
+        opacity: 1 !important;
+      }
+      .welcome-scroll span {
+        animation-play-state: paused !important;
+      }
+    }
+
+    /* Row of three panels below the stamp bar.*/
+    .main-row {
+      display: flex;
+      gap: var(--gap);
+      position: relative;
+      width: 140%;
+      left: -20%;
+      min-height: 620px;
+      flex-shrink: 0;
+    }
+
+    .panel-left   { flex: 0 0 17%; }
+    
+    /* Same bar as the subheaders, sitting at the top of the left panel.
+      Empty for now, it will carry the nav label. */
+    .panel-nav {
+      height: 60px;
+      background: var(--bar-gradient);
+    }
+
+    .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
+    .panel-right  { flex: 0 0 20%; }
+
+    .gh-chart {
+      display: grid;
+      grid-template-rows: repeat(7, 15px);
+      grid-auto-flow: column;
+      grid-auto-columns: 15px;
+      gap: 4px;
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .gh-cell {
+      background: #4a78a4;
+      border-radius: 2px;
+      transition: transform 0.25s ease;
+    }
+    .gh-cell.is-future {
+      display: none;
+    }
+
+    .gh-cell:hover {
+      transform: scale(1.25);
+      z-index: 1;
+    }
+    .gh-cell:active {
+      transform: scale(1.1);
+    }
+    .gh-cell[data-lv="1"] { background: #9be9a8; }
+    .gh-cell[data-lv="2"] { background: #40c463; }
+    .gh-cell[data-lv="3"] { background: #30a14e; }
+    .gh-cell[data-lv="4"] { background: #216e39; }
+
+    .changelog {
+      margin: 8px 10px 16px;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1.5px var(--border-inner),
+        0 0 0 3px var(--border-outer);
+      background: #3F6589;
+    }
+
+    .changelog-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 30px;
+      padding: 0 10px;
+      background: var(--bar-gradient);
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .changelog-head {
+      color: #fff;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .changelog-head:hover {
+      text-decoration: underline;
+    }
+
+    .changelog-list {
+      max-height: 170px;
+      overflow-y: auto;
+      padding: 8px 8px 8px 26px;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .changelog-list li {
+      margin-bottom: 6px;
+    }
+
+    .changelog-list a {
+      color: #B2D1FF;
+    }
+
     .panel-content {
-      font-size: calc(11px / var(--scale));
-      padding: calc(12px / var(--scale));
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      background: #3F6589;
+      color: #fff;
+      padding: 20px;
+      font-size: 17px;
+      line-height: 1.55;
     }
 
     .panel-content p + p {
-      margin-top: calc(8px / var(--scale));
+      margin-top: 14px;
     }
 
     .panel-content h2 {
-      font-size: calc(14px / var(--scale));
-      letter-spacing: calc(1px / var(--scale));
-      margin-bottom: calc(6px / var(--scale));
+      font-size: 24px;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
     }
-  }
-</style>
+
+    /* Gradient*/
+    .panel {
+      --panel-gradient: linear-gradient(
+        to bottom,
+        rgba(101, 146, 190, 0.95) 0%,
+        rgba(84, 130, 174, 0.95) 100%
+      );
+      background: var(--panel-gradient);
+    }
+
+    .panel.panel-center {
+      --grid-cell: 15px;
+      --dot-pitch: 2.5px;
+      --dot-r: 0.9px;
+      --dot-color: rgba(32, 46, 70, 0.15);
+      background-image:
+        radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
+        radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
+        var(--panel-gradient);
+      background-size:
+        var(--grid-cell) var(--dot-pitch),
+        var(--dot-pitch) var(--grid-cell),
+        auto;
+    }
+
+    /* ── Mobile overrides ─────────────────────────────────────────────────────
+      The whole layout is scaled down via transform in BaseLayout.
+      These values are in the *unscaled* coordinate space, the browser scales
+      them along with everything else.
+
+      Logo: left: -90px sits at -255px in layout coords (header is at -165px).
+      Setting left: 110px brings the logo onto screen after scaling.
+
+      Heights doubled so they appear the same relative size after scaling.
+    ───────────────────────────────────────────────────────────────────────── */
+    @media (max-width: 1020px) {
+      .header,
+      .subheader {
+        width: 100%;
+        left: 0;
+      }
+
+      /* Right panel is hidden via .no-mobile, so center auto-fills the freed
+        space. Extend leftward (width: 110%, all offset on the left side) so
+        the left panel pokes past the header on mobile. */
+      .main-row {
+        width: 102%;
+        left: -2%;
+        min-height: 150vh;
+      }
+
+      .panel-left {
+        flex: 0 0 30%;
+      }
+
+      .logo-wrap {
+        left: -55px;
+      }
+
+      .subheader:not(.stamps) {
+        height: 60px;
+      }
+
+      .panel-nav {
+        height: 120px;
+      }
+
+      .stamps {
+        height: 120px;
+      }
+
+      .marquee {
+        height: 120px;
+      }
+
+      .marquee__inner img {
+        height: 104px;
+      }
+
+      .welcome-scroll span {
+        font-size: 28px;
+      }
+
+      .panel.panel-center {
+        --grid-cell: calc(7px / var(--scale));
+        --dot-pitch: calc(2px / var(--scale));
+        --dot-r: calc(0.7px / var(--scale));
+      }
+
+      /* Counter the global scale so the about text renders at a constant
+        real size on phones, same trick as the 404 card */
+      .panel-content {
+        font-size: calc(11px / var(--scale));
+        padding: calc(12px / var(--scale));
+      }
+
+      .panel-content p + p {
+        margin-top: calc(8px / var(--scale));
+      }
+
+      .panel-content h2 {
+        font-size: calc(14px / var(--scale));
+        letter-spacing: calc(1px / var(--scale));
+        margin-bottom: calc(6px / var(--scale));
+      }
+    }
+  </style>

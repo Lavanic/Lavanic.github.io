@@ -38,6 +38,7 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="oliverohrt.com, with gears in place of the two O's" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://github-contributions-api.jogruber.de" />
     <!-- background.webp and header.png live in CSS, so without a preload the
          browser only discovers them after the stylesheet is parsed -->
     <link rel="preload" as="image" href="/images/background.webp" fetchpriority="high" />
