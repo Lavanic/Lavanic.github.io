@@ -228,10 +228,41 @@
             <p>You may be thinking to yourself, "Oliver, your website looks a little crazy." I know right. It's an homage to the early internet and GeoCities era of personal site dev and it has been a ton of fun to work on.</p>
             <p>If you don't know me, you can probably guess my name :^) I'm a CS student at UW-Madison though I was born and raised in Seattle. At Madison I helped run the Undergraduate Projects Lab, a student lab that's been around since the 1980s. I helped plan various events and Wisconsin's largest hackathon. Last summer I was at Amazon writing internal tools for the AGI org, this summer I'm doing the same. I graduate in December 2026.</p>
             <p>Most of my free time goes into hanging with friends and building things. Some recent ones: a  Tauri desktop app for mapping out social graphs in Neo4j, and a Go bot that watches company career pages so I don't have to. This site renovation (renovation #4 actually) is the latest project. It's not done. It may never be done. That's kind of the point.</p>
-            <p>Off the computer it's fishing, cooking, and listening to music (Recently Alice in Chains). Next semester I'm studying abroad in Thailand, so expect blog posts about that whenever the blog exists.</p>
+            <p>Off the computer it's fishing, cooking, and listening to music (Recently <span class="lastfm-artist">Alice in Chains</span>). Next semester I'm studying abroad in Thailand, so expect blog posts about that whenever the blog exists.</p>
             <p>Thanks for stopping by. Sign the guestbook on your way out (there is no guestbook yet).</p>
           </div>
         </main>
+        <script>
+          // Swaps the band name in the about text for the artist of the last
+          // thing I scrobbled. The name baked into the HTML stands on its own,
+          // so no key, no JS or a bad response all just leave the paragraph
+          // as written.
+          const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
+          // Read-only key so it's ok here... I think.
+          const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
+
+          if (artistEl && LASTFM_KEY) {
+            const url = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
+              + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
+
+            fetch(url)
+              .then((res) => {
+                if (!res.ok) throw new Error(String(res.status));
+                return res.json();
+              })
+              .then((data) => {
+                const track = data?.recenttracks?.track?.[0];
+                const name = track?.artist?.['#text'];
+                if (!name) return;
+                artistEl.textContent = name;
+                if (track.name) {
+                  const playing = track['@attr']?.nowplaying === 'true';
+                  artistEl.title = `${playing ? 'Playing' : 'Last played'}: ${track.name}`;
+                }
+              })
+              .catch(() => {});
+          }
+        </script>
         <aside class="box panel panel-right no-mobile">
           <a class="gh-chart" href="https://github.com/Lavanic" target="_blank" rel="noopener" aria-label="GitHub contributions, last 14 weeks">
             {Array.from({ length: GH_CELLS }, (_, i) => (
