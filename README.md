@@ -1,4 +1,4 @@
-# oliverohrt.com
+# ohrt.dev
 
 Personal website built with [Astro](https://astro.build).
 
