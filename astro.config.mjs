@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://oliverohrt.com",
+  site: "https://ohrt.dev",
   base: "/",
   outDir: "dist"
 });
