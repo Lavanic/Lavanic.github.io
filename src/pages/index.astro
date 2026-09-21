@@ -47,10 +47,10 @@
     <div class="layout">
       <div class="box header">
         <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
-          <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
+          <img class="logo-fallback" src="/images/logo_fallback.png" width="740" height="258" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
           <div class="logo-composite">
-            <canvas class="gears" width="171" height="287" aria-hidden="true"></canvas>
-            <img src="/images/static.png" width="654" height="287" alt="" draggable="false" />
+            <canvas class="gears" width="154" height="258" aria-hidden="true"></canvas>
+            <img src="/images/static.png" width="588" height="258" alt="" draggable="false" />
             <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
           </div>
         </h1>
@@ -64,8 +64,8 @@
           if (wrap && canvas && ctx) {
             const COLS = 10;
             const FRAMES = 15;
-            const FW = 171;
-            const FH = 287;
+            const FW = 154;
+            const FH = 258;
             const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
             const KICK = 120;
             const MAX = BASE * 15;
@@ -337,7 +337,7 @@
 
   <style>
     .header {
-      height: 288px;
+      height: 259px;
       position: relative;
       width: 134.5%;
       left: -17.2%;
@@ -348,7 +348,7 @@
 
     .logo-wrap {
       position: absolute;
-      left: -90px;
+      left: -81px;
       top: 5px;
       z-index: 999;
       cursor: pointer;
@@ -403,7 +403,7 @@
     }
 
     .subheader {
-      height: 30px;
+      height: 27px;
       position: relative;
       width: 134.5%;
       left: -17.2%;
@@ -436,7 +436,7 @@
 
     /* Stamp marquee bar */
     .stamps {
-      height: 60px;
+      height: 54px;
       background: linear-gradient(to bottom, #FFF8B2 0%, #FFFB80 50%, #C2B41A 51%, #FFFFA8 100%);
     }
 
@@ -477,7 +477,7 @@
 
     .marquee__inner img {
       flex-shrink: 0;
-      height: 52px;
+      height: 47px;
       width: auto;
     }
 
@@ -502,7 +502,7 @@
       position: relative;
       width: 140%;
       left: -20%;
-      min-height: 620px;
+      min-height: 760px;
       flex-shrink: 0;
     }
 
@@ -567,13 +567,13 @@
       padding: 0 10px;
       background: var(--bar-gradient);
       color: #fff;
-      font-size: 14px;
+      font-size: 15px;
       letter-spacing: 1px;
     }
 
     .changelog-head {
       color: #fff;
-      font-size: 12px;
+      font-size: 14px;
       text-decoration: none;
     }
 
@@ -582,12 +582,12 @@
     }
 
     .changelog-list {
-      max-height: 170px;
+      max-height: 200px;
       overflow-y: auto;
       padding: 8px 8px 8px 26px;
       color: #fff;
-      font-size: 12px;
-      line-height: 1.35;
+      font-size: 13px;
+      line-height: 1.4;
     }
 
     .changelog-list li {
@@ -605,7 +605,7 @@
       background: #3F6589;
       color: #fff;
       padding: 20px;
-      font-size: 17px;
+      font-size: 17.5px;
       line-height: 1.55;
     }
 
@@ -614,7 +614,7 @@
     }
 
     .panel-content h2 {
-      font-size: 24px;
+      font-size: 26px;
       letter-spacing: 1px;
       margin-bottom: 14px;
     }
@@ -661,6 +661,25 @@
         left: 0;
       }
 
+      .header {
+        height: 288px;
+      }
+
+      .logo-fallback {
+        width: 823px;
+        height: 287px;
+      }
+
+      .logo-composite canvas {
+        width: 171px;
+        height: 287px;
+      }
+
+      .logo-composite img {
+        width: 654px;
+        height: 287px;
+      }
+
       /* Right panel is hidden via .no-mobile, so center auto-fills the freed
         space. Extend leftward (width: 110%, all offset on the left side) so
         the left panel pokes past the header on mobile. */
@@ -679,7 +698,7 @@
       }
 
       .subheader:not(.stamps) {
-        height: 60px;
+        height: 48px;
       }
 
       .panel-nav {
@@ -687,19 +706,19 @@
       }
 
       .stamps {
-        height: 120px;
+        height: 96px;
       }
 
       .marquee {
-        height: 120px;
+        height: 96px;
       }
 
       .marquee__inner img {
-        height: 104px;
+        height: 83px;
       }
 
       .welcome-scroll span {
-        font-size: 28px;
+        font-size: 26px;
       }
 
       .panel.panel-center {
@@ -711,7 +730,7 @@
       /* Counter the global scale so the about text renders at a constant
         real size on phones, same trick as the 404 card */
       .panel-content {
-        font-size: calc(11px / var(--scale));
+        font-size: calc(12px / var(--scale));
         padding: calc(12px / var(--scale));
       }
 
