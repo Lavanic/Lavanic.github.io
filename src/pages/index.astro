@@ -47,10 +47,10 @@
     <div class="layout">
       <div class="box header">
         <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
-          <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" alt="ohrt.dev, with gears in place of the two O's" />
+          <img class="logo-fallback" src="/images/logo_fallback.png" width="823" height="287" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
           <div class="logo-composite">
-            <canvas class="gears" width="169" height="287" aria-hidden="true"></canvas>
-            <img src="/images/static.png" width="654" height="287" alt="" />
+            <canvas class="gears" width="171" height="287" aria-hidden="true"></canvas>
+            <img src="/images/static.png" width="654" height="287" alt="" draggable="false" />
             <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
           </div>
         </h1>
@@ -64,7 +64,7 @@
           if (wrap && canvas && ctx) {
             const COLS = 10;
             const FRAMES = 15;
-            const FW = 169;
+            const FW = 171;
             const FH = 287;
             const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
             const KICK = 120;
@@ -357,6 +357,7 @@
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
+      -webkit-user-drag: none;
     }
 
     /* A real native switch laid invisibly over the whole logo. iOS only plays
@@ -385,6 +386,11 @@
 
     .logo-fallback {
       display: block;
+    }
+
+    .logo-composite img {
+      margin-left: -2px;
+      -webkit-user-drag: none;
     }
 
     .logo-composite {
