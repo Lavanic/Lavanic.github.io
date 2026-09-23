@@ -65,13 +65,30 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     --container-width: 960px;
     --border-inner: rgb(0, 15, 149);
     --border-outer: rgb(96, 96, 96);
-    /* Shared by the subheader bars and the left panel's nav strip */
+    /* Shared by the subheader bars and the changelog title */
     --bar-gradient: linear-gradient(
       to bottom,
       #B2D1FF 0%,
       #80A7FF 50%,
       #3A7AB6 51%,
       #A8BEFF 100%
+    );
+    /* The left panel's buttons: --bar-gradient pulled toward the panel
+      slate, then knocked back again so they sit quieter than the bar */
+    --nav-gradient: linear-gradient(
+      to bottom,
+      #709BDC 0%,
+      #5179D5 50%,
+      #3F5D79 51%,
+      #6A86DB 100%
+    );
+    /* The stamp bar */
+    --stamp-gradient: linear-gradient(
+      to bottom,
+      #F6F2CD 0%,
+      #EFECA2 50%,
+      #B6AC37 51%,
+      #F5F5C4 100%
     );
   }
 
