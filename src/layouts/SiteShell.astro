@@ -4,6 +4,7 @@
   import { promisify } from 'node:util';
   import path from 'node:path';
   import BaseLayout from './BaseLayout.astro';
+  import { WEEKS, fetchDays, toCells, type Cell } from '../lib/contributions';
 
   interface Props {
     title?: string;
@@ -27,9 +28,14 @@
   const MIN_STAMPS = 30;
   const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
   const paddedStamps = Array(copies).fill(stamps).flat();
-  const GH_WEEKS = 14;
-  const GH_CELLS = GH_WEEKS * 7;
+  const GH_CELLS = WEEKS * 7;
   const ghFuture = 6 - new Date().getDay();
+  let contributions: Cell[] = [];
+  try {
+    contributions = toCells(await fetchDays(), GH_CELLS);
+  } catch (err) {
+    console.warn(`[contributions] ${err}, shipping an empty chart`);
+  }
 
   const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
   let commits: { hash: string; date: string; subject: string }[] = [];
@@ -291,7 +297,11 @@
         <aside class="box panel panel-right no-mobile" transition:persist="right-panel" transition:animate="none">
           <a class="gh-chart" href="https://github.com/Lavanic" target="_blank" rel="noopener" aria-label="GitHub contributions, last 14 weeks">
             {Array.from({ length: GH_CELLS }, (_, i) => (
-              <div class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}></div>
+              <div
+                class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}
+                data-lv={contributions[i]?.level}
+                title={contributions[i]?.title}
+              ></div>
             ))}
           </a>
           {commits.length > 0 && (
@@ -313,44 +323,21 @@
           )}
         </aside>
         <script>
-          // The empty grid ships in the HTML, this only colors it in. Cells the
-          // data does not reach (the rest of the current week) stay empty.
+          import { fetchDays, toCells } from '../lib/contributions';
+
           const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
 
           if (ghCells.length) {
-            const WEEKS = 14;
             const future = 6 - new Date().getDay();
             ghCells.forEach((cell, i) => {
               cell.classList.toggle('is-future', i >= ghCells.length - future);
             });
 
-            const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-            const ordinal = (d: number) =>
-              d % 10 === 1 && d !== 11 ? 'st' : d % 10 === 2 && d !== 12 ? 'nd' : d % 10 === 3 && d !== 13 ? 'rd' : 'th';
-
-            type Day = { date: string; count: number; level: number };
-
-            fetch('https://github-contributions-api.jogruber.de/v4/Lavanic?y=last')
-              .then((res) => {
-                if (!res.ok) throw new Error(String(res.status));
-                return res.json();
-              })
-              .then((data: { contributions: Day[] }) => {
-                // Group days into Sunday-first columns, same as GH
-                const cols: Day[][] = [];
-                for (const day of data.contributions) {
-                  const [y, m, d] = day.date.split('-').map(Number);
-                  if (cols.length === 0 || new Date(y, m - 1, d).getDay() === 0) cols.push([]);
-                  cols[cols.length - 1].push(day);
-                }
-
-                const days = cols.slice(-WEEKS).flat();
-                days.slice(-ghCells.length).forEach((day, i) => {
-                  const cell = ghCells[i];
-                  cell.dataset.lv = String(day.level);
-                  const [, m, d] = day.date.split('-').map(Number);
-                  const n = day.count;
-                  cell.title = `${n === 0 ? 'No' : n} contribution${n === 1 ? '' : 's'} on ${MONTHS[m - 1]} ${d}${ordinal(d)}.`;
+            fetchDays()
+              .then((days) => {
+                toCells(days, ghCells.length).forEach((cell, i) => {
+                  ghCells[i].dataset.lv = String(cell.level);
+                  ghCells[i].title = cell.title;
                 });
               })
               .catch(() => {});
