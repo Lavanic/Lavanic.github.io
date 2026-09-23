@@ -549,6 +549,27 @@
       background: var(--nav-gradient);
     }
 
+    .nav-btn,
+    .gh-cell {
+      transition: transform 0.6s ease-out, box-shadow 0.6s ease-out;
+    }
+
+    @media (hover: hover) {
+      .nav-btn:hover,
+      .gh-cell:hover {
+        z-index: 1;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        transition-duration: 0s;
+      }
+    }
+
+    .nav-btn:active,
+    .gh-cell:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
     .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
     .panel-right  { flex: 0 0 20%; }
 
@@ -565,19 +586,11 @@
     .gh-cell {
       background: #4a78a4;
       border-radius: 2px;
-      transition: transform 0.25s ease;
     }
     .gh-cell.is-future {
       display: none;
     }
 
-    .gh-cell:hover {
-      transform: scale(1.25);
-      z-index: 1;
-    }
-    .gh-cell:active {
-      transform: scale(1.1);
-    }
     .gh-cell[data-lv="1"] { background: #9be9a8; }
     .gh-cell[data-lv="2"] { background: #40c463; }
     .gh-cell[data-lv="3"] { background: #30a14e; }
