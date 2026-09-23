@@ -15,7 +15,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL("/images/og.jpg", Astro.site);
 ---
 
-<html lang="en">
+<html lang="en" transition:animate="none">
   <head>
     <meta charset="utf-8" />
     <ClientRouter />
@@ -76,8 +76,7 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
       #3A7AB6 51%,
       #A8BEFF 100%
     );
-    /* The left panel's buttons: --bar-gradient pulled toward the panel
-      slate, then knocked back again so they sit quieter than the bar */
+    /* The left panel's buttons */
     --nav-gradient: linear-gradient(
       to bottom,
       #709BDC 0%,
