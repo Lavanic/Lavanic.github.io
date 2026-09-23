@@ -140,6 +140,15 @@
         <div class="welcome-scroll">
           <span>Welcome to my site!</span>
         </div>
+        <script>
+          const scroll = () => document.querySelector('.welcome-scroll span')?.getAnimations()[0];
+          let start: CSSNumberish | null = null;
+          document.addEventListener('astro:before-swap', () => { start = scroll()?.startTime ?? null; });
+          document.addEventListener('astro:after-swap', () => {
+            const anim = scroll();
+            if (anim && start !== null) anim.startTime = start;
+          });
+        </script>
       </div>
       <div class="box subheader stamps" transition:persist="stamp-bar" transition:animate="none">
         <div class="marquee" role="img" aria-label="Stamp collection">
