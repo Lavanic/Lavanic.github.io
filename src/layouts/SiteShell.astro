@@ -52,7 +52,7 @@
 
   <BaseLayout title={title} description={description}>
     <div class="layout">
-      <div class="box header">
+      <div class="box header" transition:persist="header" transition:animate="none">
         <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
           <img class="logo-fallback" src="/images/logo_fallback.png" width="740" height="258" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
           <div class="logo-composite">
@@ -136,12 +136,12 @@
         </script>
       </div>
 
-      <div class="box subheader">
+      <div class="box subheader" transition:persist="welcome-bar" transition:animate="none">
         <div class="welcome-scroll">
           <span>Welcome to my site!</span>
         </div>
       </div>
-      <div class="box subheader stamps">
+      <div class="box subheader stamps" transition:persist="stamp-bar" transition:animate="none">
         <div class="marquee" role="img" aria-label="Stamp collection">
           <div class="marquee__inner">
             {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
@@ -229,8 +229,8 @@
         <aside class="box panel panel-left">
           <div class="panel-nav"></div>
           <div class="nav">
-            <div class="nav-btn"></div>
-            <div class="nav-btn"></div>
+            <a class="nav-btn" href="/" aria-label="Welcome"></a>
+            <a class="nav-btn" href="/webmaster" aria-label="Webmaster"></a>
             <div class="nav-btn"></div>
           </div>
         </aside>
@@ -244,33 +244,37 @@
           // thing I scrobbled. The name baked into the HTML stands on its own,
           // so no key, no JS or a bad response all just leave the paragraph
           // as written.
-          const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
-          // Read-only key so it's ok here... I think.
-          const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
+          // The span sits in the swapped content, so this re-runs after every
+          // client-side navigation, not just the first load.
+          document.addEventListener('astro:page-load', () => {
+            const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
+            // Read-only key so it's ok here... I think.
+            const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
 
-          if (artistEl && LASTFM_KEY) {
-            const url = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
-              + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
+            if (artistEl && LASTFM_KEY) {
+              const url = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
+                + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
 
-            fetch(url)
-              .then((res) => {
-                if (!res.ok) throw new Error(String(res.status));
-                return res.json();
-              })
-              .then((data) => {
-                const track = data?.recenttracks?.track?.[0];
-                const name = track?.artist?.['#text'];
-                if (!name) return;
-                artistEl.textContent = name;
-                if (track.name) {
-                  const playing = track['@attr']?.nowplaying === 'true';
-                  artistEl.title = `${playing ? 'Playing' : 'Last played'}: ${track.name}`;
-                }
-              })
-              .catch(() => {});
-          }
+              fetch(url)
+                .then((res) => {
+                  if (!res.ok) throw new Error(String(res.status));
+                  return res.json();
+                })
+                .then((data) => {
+                  const track = data?.recenttracks?.track?.[0];
+                  const name = track?.artist?.['#text'];
+                  if (!name) return;
+                  artistEl.textContent = name;
+                  if (track.name) {
+                    const playing = track['@attr']?.nowplaying === 'true';
+                    artistEl.title = `${playing ? 'Playing' : 'Last played'}: ${track.name}`;
+                  }
+                })
+                .catch(() => {});
+            }
+          });
         </script>
-        <aside class="box panel panel-right no-mobile">
+        <aside class="box panel panel-right no-mobile" transition:persist="right-panel" transition:animate="none">
           <a class="gh-chart" href="https://github.com/Lavanic" target="_blank" rel="noopener" aria-label="GitHub contributions, last 14 weeks">
             {Array.from({ length: GH_CELLS }, (_, i) => (
               <div class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}></div>
@@ -529,6 +533,7 @@
     }
 
     .nav-btn {
+      display: block;
       height: 40px;
       border-radius: 4px;
       background: var(--nav-gradient);

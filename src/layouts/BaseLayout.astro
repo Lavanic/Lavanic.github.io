@@ -1,4 +1,6 @@
 ---
+import { ClientRouter } from 'astro:transitions';
+
 interface Props {
   title: string;
   description?: string;
@@ -16,6 +18,7 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <ClientRouter />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Browser chrome color: works on Android Chrome + iOS Safari 15+ for address bar -->
     <meta name="theme-color" content="#202E46" />
