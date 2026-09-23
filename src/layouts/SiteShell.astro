@@ -253,34 +253,39 @@
           // thing I scrobbled. The name baked into the HTML stands on its own,
           // so no key, no JS or a bad response all just leave the paragraph
           // as written.
-          // The span sits in the swapped content, so this re-runs after every
-          // client-side navigation, not just the first load.
-          document.addEventListener('astro:page-load', () => {
+          // Read-only key so it's ok here... I think.
+          const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
+          const url = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
+            + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
+          let artist: { name: string; title?: string } | null = null;
+
+          const paint = () => {
             const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
-            // Read-only key so it's ok here... I think.
-            const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
+            if (!artistEl || !artist) return;
+            artistEl.textContent = artist.name;
+            if (artist.title) artistEl.title = artist.title;
+          };
 
-            if (artistEl && LASTFM_KEY) {
-              const url = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
-                + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
-
-              fetch(url)
-                .then((res) => {
-                  if (!res.ok) throw new Error(String(res.status));
-                  return res.json();
-                })
-                .then((data) => {
-                  const track = data?.recenttracks?.track?.[0];
-                  const name = track?.artist?.['#text'];
-                  if (!name) return;
-                  artistEl.textContent = name;
-                  if (track.name) {
-                    const playing = track['@attr']?.nowplaying === 'true';
-                    artistEl.title = `${playing ? 'Playing' : 'Last played'}: ${track.name}`;
-                  }
-                })
-                .catch(() => {});
-            }
+          document.addEventListener('astro:after-swap', paint);
+          document.addEventListener('astro:page-load', () => {
+            if (!LASTFM_KEY || !document.querySelector('.lastfm-artist')) return;
+            fetch(url)
+              .then((res) => {
+                if (!res.ok) throw new Error(String(res.status));
+                return res.json();
+              })
+              .then((data) => {
+                const track = data?.recenttracks?.track?.[0];
+                const name = track?.artist?.['#text'];
+                if (!name) return;
+                const playing = track['@attr']?.nowplaying === 'true';
+                artist = {
+                  name,
+                  title: track.name ? `${playing ? 'Playing' : 'Last played'}: ${track.name}` : undefined,
+                };
+                paint();
+              })
+              .catch(() => {});
           });
         </script>
         <aside class="box panel panel-right no-mobile" transition:persist="right-panel" transition:animate="none">
