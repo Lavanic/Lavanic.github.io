@@ -350,6 +350,15 @@
               })
               .catch(() => {});
           }
+
+          let changelogScroll = 0;
+          document.addEventListener('astro:before-swap', () => {
+            changelogScroll = document.querySelector('.changelog-list')?.scrollTop ?? 0;
+          });
+          document.addEventListener('astro:after-swap', () => {
+            const list = document.querySelector('.changelog-list');
+            if (list) list.scrollTop = changelogScroll;
+          });
         </script>
       </div>
     </div>
