@@ -537,7 +537,11 @@
     /* Same bar as the subheaders, sitting at the top of the left panel. */
     .panel-nav {
       height: 60px;
+      margin-left: -6px;
       background: var(--bar-gradient);
+      box-shadow:
+        -0.75px -0.75px 0 0.75px var(--border-inner),
+        -1.5px -1.5px 0 1.5px var(--border-outer);
     }
 
     .nav {
@@ -765,6 +769,7 @@
 
       .panel-nav {
         height: 120px;
+        margin-left: -12px;
       }
 
       .nav {
