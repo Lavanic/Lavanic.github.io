@@ -15,6 +15,7 @@
     <h2>{name}</h2>
     <p class="construction">This page is under construction... come back later!</p>
     <img class="construction-banner" src="/images/construction_banner.gif" width="468" height="28" alt="" />
+    <img class="construction-dig" src="/stickers/construction.gif" width="40" height="40" alt="" />
   </SiteShell>
 
   <style>
@@ -41,15 +42,22 @@
       margin: 14px 20px 0;
     }
 
-    @media (max-width: 1020px) {
-      .construction {
-        gap: calc(6px / var(--scale));
-      }
+    .construction-dig {
+      display: none;
+    }
 
+    @media (max-width: 1020px) {
       .construction::before,
       .construction::after {
-        width: calc(24px / var(--scale));
-        height: calc(24px / var(--scale));
+        content: none;
+      }
+
+      .construction-dig {
+        display: block;
+        width: calc(120px / var(--scale));
+        height: auto;
+        margin: calc(12px / var(--scale)) auto 0;
+        image-rendering: pixelated;
       }
     }
   </style>
