@@ -250,7 +250,7 @@
             <div class="nav-btn">Links</div>
           <div class="panel-nav nav-offsite"><span class="visually-hidden">Offsite</span></div>
             <a class="nav-btn" href="https://blog.ohrt.dev">Weblog</a>
-            <div class="nav-btn">Projects</div>
+            <div class="nav-btn nav-warn">Projects</div>
             <div class="nav-btn">Services</div>
           </div>
         </aside>
@@ -592,6 +592,21 @@
       filter: drop-shadow(0 0 1.5px #2A5BD7);
     }
 
+    .nav-btn.nav-warn::before,
+    .nav-btn.nav-warn::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      margin: 0 7px;
+      background: url("/stickers/warning.gif") center / contain no-repeat;
+      filter: none;
+      image-rendering: pixelated;
+    }
+
+    .nav-btn.nav-warn::before {
+      margin-left: 0;
+    }
+
     .nav-btn {
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -829,6 +844,17 @@
         height: 28px;
         margin-right: 10px;
         filter: drop-shadow(0 0 3px #2A5BD7);
+      }
+
+      .nav-btn.nav-warn::before,
+      .nav-btn.nav-warn::after {
+        width: 40px;
+        height: 40px;
+        margin: 0 10px;
+      }
+
+      .nav-btn.nav-warn::before {
+        margin-left: 0;
       }
 
       .stamps {
