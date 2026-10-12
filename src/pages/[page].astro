@@ -1,0 +1,47 @@
+  ---
+  import SiteShell from '../layouts/SiteShell.astro';
+
+  export function getStaticPaths() {
+    return ['Webmaster', 'Guestbook', 'Links'].map((name) => ({
+      params: { page: name.toLowerCase() },
+      props: { name },
+    }));
+  }
+
+  const { name } = Astro.props;
+  ---
+
+  <SiteShell>
+    <h2>{name}</h2>
+    <p class="construction">This page is under construction... come back later!</p>
+  </SiteShell>
+
+  <style>
+    .construction {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .construction::before,
+    .construction::after {
+      content: "";
+      flex: none;
+      width: 40px;
+      height: 40px;
+      background: url("/stickers/construction.gif") center / contain no-repeat;
+      image-rendering: pixelated;
+    }
+
+    @media (max-width: 1020px) {
+      .construction {
+        gap: calc(6px / var(--scale));
+      }
+
+      .construction::before,
+      .construction::after {
+        width: calc(24px / var(--scale));
+        height: calc(24px / var(--scale));
+      }
+    }
+  </style>
