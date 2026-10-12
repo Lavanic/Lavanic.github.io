@@ -14,6 +14,7 @@
   <SiteShell>
     <h2>{name}</h2>
     <p class="construction">This page is under construction... come back later!</p>
+    <img class="construction-banner" src="/images/construction_banner.gif" width="468" height="28" alt="" />
   </SiteShell>
 
   <style>
@@ -31,6 +32,13 @@
       height: 40px;
       background: url("/stickers/construction.gif") center / contain no-repeat;
       image-rendering: pixelated;
+    }
+
+    .construction-banner {
+      display: block;
+      width: calc(100% - 40px);
+      height: auto;
+      margin: 14px 20px 0;
     }
 
     @media (max-width: 1020px) {
