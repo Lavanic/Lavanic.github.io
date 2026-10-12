@@ -242,13 +242,13 @@
 
       <div class="row main-row">
         <aside class="box panel panel-left">
-          <div class="panel-nav"></div>
+          <div class="panel-nav nav-navigate"><span class="visually-hidden">Navigate</span></div>
           <div class="nav">
             <a class="nav-btn" href="/">Welcome</a>
             <a class="nav-btn" href="/webmaster/">Webmaster</a>
             <div class="nav-btn">Guestbook</div>
             <div class="nav-btn">Links</div>
-          <div class="panel-nav"></div>
+          <div class="panel-nav nav-offsite"><span class="visually-hidden">Offsite</span></div>
             <a class="nav-btn" href="https://blog.ohrt.dev">Weblog</a>
             <div class="nav-btn">Projects</div>
             <div class="nav-btn">Services</div>
@@ -535,10 +535,31 @@
     .panel-nav {
       height: 60px;
       margin-left: -6px;
+      position: relative;
       background: var(--bar-gradient);
       box-shadow:
         -0.75px -0.75px 0 0.75px var(--border-inner),
         -1.5px -1.5px 0 1.5px var(--border-outer);
+    }
+
+    .panel-nav::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--label) 10px center / auto 31px no-repeat;
+      opacity: 0.95;
+    }
+
+    .nav-navigate { --label: url("/images/nav_navigate.png"); }
+    .nav-offsite { --label: url("/images/nav_offsite.png"); }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
 
     .nav {
@@ -783,6 +804,11 @@
       .panel-nav {
         height: 120px;
         margin-left: -12px;
+      }
+
+      .panel-nav::before {
+        background-position: center;
+        background-size: calc(100% - 16px) 58px;
       }
 
       .nav {
