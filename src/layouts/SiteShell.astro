@@ -244,14 +244,14 @@
         <aside class="box panel panel-left">
           <div class="panel-nav"></div>
           <div class="nav">
-            <a class="nav-btn" href="/" aria-label="Welcome"></a>
-            <a class="nav-btn" href="/webmaster/" aria-label="Webmaster"></a>
-            <div class="nav-btn"></div>
-            <div class="nav-btn"></div>
+            <a class="nav-btn" href="/">Welcome</a>
+            <a class="nav-btn" href="/webmaster/">Webmaster</a>
+            <div class="nav-btn">Guestbook</div>
+            <div class="nav-btn">Links</div>
           <div class="panel-nav"></div>
-            <a class="nav-btn" href="https://blog.ohrt.dev" aria-label="Weblog"></a>
-            <div class="nav-btn"></div>
-            <div class="nav-btn"></div>
+            <a class="nav-btn" href="https://blog.ohrt.dev">Weblog</a>
+            <div class="nav-btn">Projects</div>
+            <div class="nav-btn">Services</div>
           </div>
         </aside>
         <main class="box panel panel-center">
@@ -549,10 +549,26 @@
     }
 
     .nav-btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
       height: 40px;
       border-radius: 4px;
       background: var(--nav-gradient);
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      text-decoration: none;
+      text-shadow: 0 0 2px #0B2A8A, 0 0 4px #0B2A8A;
+    }
+
+    .nav-btn::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      margin-right: 7px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 2.5l5.5 5.5L2 13.5M8.5 2.5L14 8l-5.5 5.5' fill='none' stroke='%23CFE6FF' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+      filter: drop-shadow(0 0 1.5px #2A5BD7);
     }
 
     .nav-btn {
@@ -777,6 +793,16 @@
       .nav-btn {
         height: 80px;
         border-radius: 8px;
+        padding-left: 20px;
+        font-size: 34px;
+        text-shadow: 0 0 4px #0B2A8A, 0 0 8px #0B2A8A;
+      }
+
+      .nav-btn::before {
+        width: 28px;
+        height: 28px;
+        margin-right: 10px;
+        filter: drop-shadow(0 0 3px #2A5BD7);
       }
 
       .stamps {
