@@ -14,8 +14,8 @@
   <SiteShell>
     <h2>{name}</h2>
     <p class="construction">This page is under construction... come back later!</p>
+    <img class="construction-dog" src="/images/construction_dalmatian.gif" width="220" height="170" alt="" />
     <img class="construction-banner" src="/images/construction_banner.gif" width="468" height="28" alt="" />
-    <img class="construction-dig" src="/stickers/construction.gif" width="40" height="40" alt="" />
   </SiteShell>
 
   <style>
@@ -40,9 +40,10 @@
       width: calc(100% - 40px);
       height: auto;
       margin: 14px 20px 0;
+      opacity: 0.8;
     }
 
-    .construction-dig {
+    .construction-dog {
       display: none;
     }
 
@@ -52,12 +53,18 @@
         content: none;
       }
 
-      .construction-dig {
+      .construction-banner {
+        width: 100%;
+        margin: calc(12px / var(--scale)) 0 0;
+        opacity:0.8;
+      }
+
+      .construction-dog {
         display: block;
-        width: calc(120px / var(--scale));
+        width: 100%;
         height: auto;
-        margin: calc(12px / var(--scale)) auto 0;
-        image-rendering: pixelated;
+        margin-top: calc(12px / var(--scale));
+        opacity: 0.9;
       }
     }
   </style>
