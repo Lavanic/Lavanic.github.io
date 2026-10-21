@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { GOATCOUNTER } from '../lib/goatcounter';
 
 interface Props {
   title: string;
@@ -59,6 +60,17 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
       data-website-id="02aa9e5f-726b-484a-99f2-e8fdd2e46275"
       is:inline
     ></script>
+    <script
+      async
+      src="https://gc.zgo.at/count.js"
+      data-goatcounter={`${GOATCOUNTER}/count`}
+      is:inline
+    ></script>
+    <script>
+      document.addEventListener('astro:after-swap', () => {
+        (window as any).goatcounter?.count?.({ path: location.pathname });
+      });
+    </script>
   </body>
 </html>
 

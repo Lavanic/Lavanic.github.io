@@ -314,9 +314,14 @@
               </ul>
             </section>
           )}
+          <section class="counter" hidden>
+            <h3 class="counter-title">Visitors</h3>
+            <div class="counter-digits" role="img"></div>
+          </section>
         </aside>
         <script>
           import { fetchDays, toCells } from '../lib/contributions';
+          import { fetchVisits } from '../lib/goatcounter';
 
           const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
 
@@ -332,6 +337,24 @@
                   ghCells[i].dataset.lv = String(cell.level);
                   ghCells[i].title = cell.title;
                 });
+              })
+              .catch(() => {});
+          }
+
+          const counter = document.querySelector<HTMLElement>('.counter');
+
+          if (counter) {
+            fetchVisits()
+              .then((visits) => {
+                counter.querySelector('.counter-digits')?.replaceChildren(
+                  ...String(visits).padStart(7, '0').split('').map((digit) => {
+                    const span = document.createElement('span');
+                    span.style.setProperty('--digit', digit);
+                    return span;
+                  }),
+                );
+                counter.querySelector('.counter-digits')?.setAttribute('aria-label', String(visits));
+                counter.hidden = false;
               })
               .catch(() => {});
           }
@@ -660,7 +683,8 @@
     .gh-cell[data-lv="3"] { background: #30a14e; }
     .gh-cell[data-lv="4"] { background: #216e39; }
 
-    .changelog {
+    .changelog,
+    .counter {
       margin: 8px 10px 16px;
       border-radius: 6px;
       overflow: hidden;
@@ -670,7 +694,8 @@
       background: #3F6589;
     }
 
-    .changelog-title {
+    .changelog-title,
+    .counter-title {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -707,6 +732,22 @@
 
     .changelog-list a {
       color: #B2D1FF;
+    }
+
+    .counter-digits {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      padding: 6px 0;
+      opacity: 0.85;
+    }
+
+    .counter-digits :global(span) {
+      flex: none;
+      width: 27px;
+      height: 39px;
+      background: url("/images/counter_digits.gif") calc(var(--digit) * -27px) 0 / 270px 39px;
+      image-rendering: pixelated;
     }
 
     .panel-content {
