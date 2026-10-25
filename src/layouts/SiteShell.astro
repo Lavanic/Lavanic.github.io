@@ -5,6 +5,7 @@
   import path from 'node:path';
   import BaseLayout from './BaseLayout.astro';
   import { WEEKS, fetchDays, toCells, type Cell } from '../lib/contributions';
+  import { fetchVisits, toDigits } from '../lib/goatcounter';
 
   interface Props {
     title?: string;
@@ -35,6 +36,13 @@
     contributions = toCells(await fetchDays(), GH_CELLS);
   } catch (err) {
     console.warn(`[contributions] ${err}, shipping an empty chart`);
+  }
+
+  let visits: number | null = null;
+  try {
+    visits = await fetchVisits();
+  } catch (err) {
+    console.warn(`[goatcounter] ${err}, hiding the counter until the browser loads it`);
   }
 
   const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
@@ -314,14 +322,16 @@
               </ul>
             </section>
           )}
-          <section class="counter" hidden>
+          <section class="counter" hidden={visits === null}>
             <h3 class="counter-title">Visitors</h3>
-            <div class="counter-digits" role="img"></div>
+            <div class="counter-digits" role="img" aria-label={visits ?? undefined}>
+              {visits !== null && toDigits(visits).map((digit) => <span>{digit}</span>)}
+            </div>
           </section>
         </aside>
         <script>
           import { fetchDays, toCells } from '../lib/contributions';
-          import { fetchVisits } from '../lib/goatcounter';
+          import { fetchVisits, toDigits } from '../lib/goatcounter';
 
           const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
 
@@ -342,18 +352,19 @@
           }
 
           const counter = document.querySelector<HTMLElement>('.counter');
+          const digits = counter?.querySelector('.counter-digits');
 
-          if (counter) {
+          if (counter && digits) {
             fetchVisits()
               .then((visits) => {
-                counter.querySelector('.counter-digits')?.replaceChildren(
-                  ...String(visits).padStart(7, '0').split('').map((digit) => {
+                digits.replaceChildren(
+                  ...toDigits(visits).map((digit) => {
                     const span = document.createElement('span');
-                    span.style.setProperty('--digit', digit);
+                    span.textContent = digit;
                     return span;
                   }),
                 );
-                counter.querySelector('.counter-digits')?.setAttribute('aria-label', String(visits));
+                digits.setAttribute('aria-label', String(visits));
                 counter.hidden = false;
               })
               .catch(() => {});
@@ -734,20 +745,36 @@
       color: #B2D1FF;
     }
 
+    @font-face {
+      font-family: "DSEG7";
+      src: url("/fonts/DSEG7Classic-Bold.woff2") format("woff2");
+      font-display: block;
+    }
+
     .counter-digits {
       display: flex;
       justify-content: center;
-      gap: 2px;
-      padding: 6px 0;
-      opacity: 0.85;
+      gap: 1px;
+      margin: 10px;
+      padding: 6px 4px;
+      border-radius: 3px;
+      background: linear-gradient(#a8c47a, #8fac62);
+      box-shadow: inset 0 0 0 2px #56703a, inset 0 2px 4px rgba(0, 0, 0, 0.35);
     }
 
     .counter-digits :global(span) {
-      flex: none;
-      width: 27px;
-      height: 39px;
-      background: url("/images/counter_digits.gif") calc(var(--digit) * -27px) 0 / 270px 39px;
-      image-rendering: pixelated;
+      position: relative;
+      width: 19px;
+      color: #18240e;
+      font: 19px/26px "DSEG7";
+      text-align: center;
+    }
+
+    .counter-digits :global(span)::before {
+      content: "8";
+      position: absolute;
+      inset: 0;
+      color: rgba(24, 36, 14, 0.1);
     }
 
     .panel-content {
