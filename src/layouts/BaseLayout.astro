@@ -45,9 +45,9 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     <link rel="preconnect" href="https://github-contributions-api.jogruber.de" crossorigin />
     <link rel="preconnect" href="https://ws.audioscrobbler.com" crossorigin />
     <link rel="preconnect" href={GOATCOUNTER} crossorigin />
-    <!-- background.webp and header.png live in CSS, so without a preload the
+    <!-- background.avif and header.png live in CSS, so without a preload the
          browser only discovers them after the stylesheet is parsed -->
-    <link rel="preload" as="image" href="/images/background.webp" fetchpriority="high" />
+    <link rel="preload" as="image" href="/images/background.avif" type="image/avif" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/logo_fallback.png" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/header.png" />
     <link rel="preload" as="image" href="/images/static.png" />
@@ -135,6 +135,10 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     position: fixed;
     inset: 0;
     background-image: url("/images/background.webp");
+    background-image: image-set(
+      url("/images/background.avif") type("image/avif"),
+      url("/images/background.webp") type("image/webp")
+    );
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
