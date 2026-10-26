@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 
 export default defineConfig({
   site: "https://ohrt.dev",
-  base: "/",
-  outDir: "dist",
+  build: { inlineStylesheets: "always" },
   prefetch: { prefetchAll: true, defaultStrategy: "viewport" }
 });
