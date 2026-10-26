@@ -1,0 +1,8 @@
+dist/
+node_modules/
+.astro/
+public/
+package-lock.json
+src/pages/portfolio/
+knoxstation.neocities.org/
+CNAME
