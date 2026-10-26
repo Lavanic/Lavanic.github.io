@@ -7,13 +7,10 @@ interface Props {
   description?: string;
 }
 
-const {
-  title,
-  description = "Oliver's corner of the web.",
-} = Astro.props;
+const { title, description = "Oliver's corner of the web." } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL("/images/og.jpg", Astro.site);
+const ogImage = new URL('/images/og.jpg', Astro.site);
 ---
 
 <html lang="en" transition:animate="none">
@@ -52,7 +49,14 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     <link rel="preload" as="image" href="/images/header.png" />
     <link rel="preload" as="image" href="/images/static.png" />
     <link rel="preload" as="image" href="/images/gears_sheet.webp" />
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/DSEG7Classic-Bold.woff2" media="(min-width: 1021px)" crossorigin />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/DSEG7Classic-Bold.woff2"
+      media="(min-width: 1021px)"
+      crossorigin
+    />
   </head>
   <body>
     <slot />
@@ -62,12 +66,7 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
       data-website-id="02aa9e5f-726b-484a-99f2-e8fdd2e46275"
       is:inline
     ></script>
-    <script
-      async
-      src="https://gc.zgo.at/count.js"
-      data-goatcounter={`${GOATCOUNTER}/count`}
-      is:inline
-    ></script>
+    <script async src="https://gc.zgo.at/count.js" data-goatcounter={`${GOATCOUNTER}/count`} is:inline></script>
     <script>
       document.addEventListener('astro:after-swap', () => {
         (window as any).goatcounter?.count?.({ path: location.pathname });
@@ -83,29 +82,11 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     --border-inner: rgb(0, 15, 149);
     --border-outer: rgb(96, 96, 96);
     /* Shared by the subheader bars and the changelog title */
-    --bar-gradient: linear-gradient(
-      to bottom,
-      #B2D1FF 0%,
-      #80A7FF 50%,
-      #3A7AB6 51%,
-      #A8BEFF 100%
-    );
+    --bar-gradient: linear-gradient(to bottom, #b2d1ff 0%, #80a7ff 50%, #3a7ab6 51%, #a8beff 100%);
     /* The left panel's buttons */
-    --nav-gradient: linear-gradient(
-      to bottom,
-      #709BDC 0%,
-      #5179D5 50%,
-      #3F5D79 51%,
-      #6A86DB 100%
-    );
+    --nav-gradient: linear-gradient(to bottom, #709bdc 0%, #5179d5 50%, #3f5d79 51%, #6a86db 100%);
     /* The stamp bar */
-    --stamp-gradient: linear-gradient(
-      to bottom,
-      #F6F2CD 0%,
-      #EFECA2 50%,
-      #B6AC37 51%,
-      #F5F5C4 100%
-    );
+    --stamp-gradient: linear-gradient(to bottom, #f6f2cd 0%, #efeca2 50%, #b6ac37 51%, #f5f5c4 100%);
   }
 
   * {
@@ -114,7 +95,8 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     box-sizing: border-box;
   }
 
-  html, body {
+  html,
+  body {
     width: 100%;
     height: 100%;
     overflow-x: hidden;
@@ -126,18 +108,18 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
     display: flex;
     justify-content: center;
     padding: 20px;
-    background-color: #202E46;
-    font-family: "MS UI Gothic", "MS PGothic", sans-serif;
+    background-color: #202e46;
+    font-family: 'MS UI Gothic', 'MS PGothic', sans-serif;
   }
 
   body::before {
-    content: "";
+    content: '';
     position: fixed;
     inset: 0;
-    background-image: url("/images/background.webp");
+    background-image: url('/images/background.webp');
     background-image: image-set(
-      url("/images/background.avif") type("image/avif"),
-      url("/images/background.webp") type("image/webp")
+      url('/images/background.avif') type('image/avif'),
+      url('/images/background.webp') type('image/webp')
     );
     background-size: cover;
     background-position: center;
@@ -170,7 +152,9 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
   /* Utility: add `no-mobile` to any element to hide it once the layout hits
      its first scale-down breakpoint. Will be used for arm lol */
   @media (max-width: 1020px) {
-    .no-mobile { display: none !important; }
+    .no-mobile {
+      display: none !important;
+    }
   }
 
   /* ── Desktop scaling ─────────────────────────────────────────────────────
@@ -180,7 +164,9 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
      zoomed in. tan(atan2()) divides the two lengths into a plain number, so
      the site keeps the same fraction of the screen it has at 1920.
      Floor of 0.75 so text stays readable on tablets and small windows. */
-  .layout { --scale: clamp(0.75, tan(atan2(100vw, 1920px)), 1); }
+  .layout {
+    --scale: clamp(0.75, tan(atan2(100vw, 1920px)), 1);
+  }
 
   /* ── Mobile scaling ──────────────────────────────────────────────────────
      The site is fixed-width (960px). Rather than rebuilding the layout,
@@ -188,5 +174,9 @@ const ogImage = new URL("/images/og.jpg", Astro.site);
      viewport minus the body padding. The transform and margin compensation
      live on .layout above.
   ───────────────────────────────────────────────────────────────────────── */
-  @media (max-width: 1020px) { .layout { --scale: min(1, tan(atan2(100vw - 40px, 960px))); } }
+  @media (max-width: 1020px) {
+    .layout {
+      --scale: min(1, tan(atan2(100vw - 40px, 960px)));
+    }
+  }
 </style>

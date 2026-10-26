@@ -2,9 +2,9 @@ name: Deploy Astro site to Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   schedule:
-    - cron: "0 12 * * *"
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 permissions:
@@ -14,7 +14,7 @@ permissions:
 
 # One deployment at a time, but let in-progress production deploys finish
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:

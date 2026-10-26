@@ -1,7 +1,9 @@
 // Read-only key so it's ok here... I think.
 const LASTFM_KEY = '52f94a497db597d18bc7023b38097315';
-const LASTFM_URL = 'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks'
-  + '&user=oliverohrt&limit=1&format=json&api_key=' + LASTFM_KEY;
+const LASTFM_URL =
+  'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks' +
+  '&user=oliverohrt&limit=1&format=json&api_key=' +
+  LASTFM_KEY;
 
 export type Artist = { name: string; title?: string };
 

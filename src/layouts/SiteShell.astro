@@ -1,983 +1,1072 @@
-  ---
-  import { readdir } from 'node:fs/promises';
-  import { execFile } from 'node:child_process';
-  import { promisify } from 'node:util';
-  import path from 'node:path';
-  import BaseLayout from './BaseLayout.astro';
-  import { WEEKS, fetchDays, toCells, type Cell } from '../lib/contributions';
-  import { fetchVisits, toDigits } from '../lib/goatcounter';
+---
+import { readdir } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import path from 'node:path';
+import BaseLayout from './BaseLayout.astro';
+import { WEEKS, fetchDays, toCells, type Cell } from '../lib/contributions';
+import { fetchVisits, toDigits } from '../lib/goatcounter';
 
-  interface Props {
-    title?: string;
-    description?: string;
-  }
+interface Props {
+  title?: string;
+  description?: string;
+}
 
-  const { title = "ohrt.dev", description } = Astro.props;
+const { title = 'ohrt.dev', description } = Astro.props;
 
-  // Auto-discovers every stamp in public/stamps/ at build time.
-  // Plain readdir instead of import.meta.glob: globbing public/ makes Vite
-  // emit a second hashed copy of every stamp into dist/_astro/ that nothing uses.
-  const stampDir = path.join(process.cwd(), 'public/stamps');
-  const stampFiles = (await readdir(stampDir))
-    .filter(f => /\.(png|gif|jpe?g|webp|avif)$/i.test(f))
-    .sort();
-  const stamps = stampFiles.map(f => `/stamps/${f}`);
+// Auto-discovers every stamp in public/stamps/ at build time.
+// Plain readdir instead of import.meta.glob: globbing public/ makes Vite
+// emit a second hashed copy of every stamp into dist/_astro/ that nothing uses.
+const stampDir = path.join(process.cwd(), 'public/stamps');
+const stampFiles = (await readdir(stampDir)).filter((f) => /\.(png|gif|jpe?g|webp|avif)$/i.test(f)).sort();
+const stamps = stampFiles.map((f) => `/stamps/${f}`);
 
-  // The seamless loop works by animating translateX(-50%) across a set rendered twice.
-  // That only works if one set is wider than the visible bar (~1300px).
-  // So we pad the array up to at least 30 entries before doubling it.
-  const MIN_STAMPS = 30;
-  const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
-  const paddedStamps = Array(copies).fill(stamps).flat();
-  const GH_CELLS = WEEKS * 7;
-  const ghFuture = 6 - new Date().getDay();
-  let contributions: Cell[] = [];
-  try {
-    contributions = toCells(await fetchDays(), GH_CELLS);
-  } catch (err) {
-    console.warn(`[contributions] ${err}, shipping an empty chart`);
-  }
+// The seamless loop works by animating translateX(-50%) across a set rendered twice.
+// That only works if one set is wider than the visible bar (~1300px).
+// So we pad the array up to at least 30 entries before doubling it.
+const MIN_STAMPS = 30;
+const copies = stamps.length ? Math.ceil(MIN_STAMPS / stamps.length) : 0;
+const paddedStamps = Array(copies).fill(stamps).flat();
+const GH_CELLS = WEEKS * 7;
+const ghFuture = 6 - new Date().getDay();
+let contributions: Cell[] = [];
+try {
+  contributions = toCells(await fetchDays(), GH_CELLS);
+} catch (err) {
+  console.warn(`[contributions] ${err}, shipping an empty chart`);
+}
 
-  let visits: number | null = null;
-  try {
-    visits = await fetchVisits();
-  } catch (err) {
-    console.warn(`[goatcounter] ${err}, hiding the counter until the browser loads it`);
-  }
+let visits: number | null = null;
+try {
+  visits = await fetchVisits();
+} catch (err) {
+  console.warn(`[goatcounter] ${err}, hiding the counter until the browser loads it`);
+}
 
-  const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
-  let commits: { hash: string; date: string; subject: string }[] = [];
-  try {
-    const { stdout } = await promisify(execFile)('git', [
-      'log', '-10', '--date=format:%m/%d/%y', '--format=%h%x1f%ad%x1f%s%x1e',
-    ]);
-    commits = stdout
-      .split('\x1e')
-      .map(r => r.trim())
-      .filter(Boolean)
-      .map(r => {
-        const [hash, date, subject] = r.split('\x1f');
-        return { hash, date, subject };
-      });
-  } catch {
-    // No git available, the changelog just doesn't render
-  }
-  ---
+const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
+let commits: { hash: string; date: string; subject: string }[] = [];
+try {
+  const { stdout } = await promisify(execFile)('git', [
+    'log',
+    '-10',
+    '--date=format:%m/%d/%y',
+    '--format=%h%x1f%ad%x1f%s%x1e',
+  ]);
+  commits = stdout
+    .split('\x1e')
+    .map((r) => r.trim())
+    .filter(Boolean)
+    .map((r) => {
+      const [hash, date, subject] = r.split('\x1f');
+      return { hash, date, subject };
+    });
+} catch {
+  // No git available, the changelog just doesn't render
+}
+---
 
-  <BaseLayout title={title} description={description}>
-    <div class="layout">
-      <div class="box header" transition:persist="header" transition:animate="none">
-        <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
-          <img class="logo-fallback" src="/images/logo_fallback.png" width="740" height="258" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
-          <span class="logo-composite">
-            <canvas class="gears" width="154" height="258" aria-hidden="true"></canvas>
-            <img src="/images/static.png" width="588" height="258" alt="" draggable="false" />
-            <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
-          </span>
-        </h1>
-        <script>
-          // Gear spin easter egg. Tapping the logo kicks the 
-          // velocity up (it stacks) and then decays to resting speed.
-          const wrap = document.querySelector<HTMLElement>('.logo-wrap');
-          const canvas = wrap?.querySelector<HTMLCanvasElement>('canvas.gears');
-          const ctx = canvas?.getContext('2d');
+<BaseLayout title={title} description={description}>
+  <div class="layout">
+    <div class="box header" transition:persist="header" transition:animate="none">
+      <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
+        <img
+          class="logo-fallback"
+          src="/images/logo_fallback.png"
+          width="740"
+          height="258"
+          draggable="false"
+          alt="ohrt.dev, with gears in place of the two O's"
+        />
+        <span class="logo-composite">
+          <canvas class="gears" width="154" height="258" aria-hidden="true"></canvas>
+          <img src="/images/static.png" width="588" height="258" alt="" draggable="false" />
+          <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
+        </span>
+      </h1>
+      <script>
+        // Gear spin easter egg. Tapping the logo kicks the
+        // velocity up (it stacks) and then decays to resting speed.
+        const wrap = document.querySelector<HTMLElement>('.logo-wrap');
+        const canvas = wrap?.querySelector<HTMLCanvasElement>('canvas.gears');
+        const ctx = canvas?.getContext('2d');
 
-          if (wrap && canvas && ctx) {
-            const COLS = 10;
-            const FRAMES = 15;
-            const FW = 154;
-            const FH = 258;
-            const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
-            const KICK = 120;
-            const MAX = BASE * 15;
-            const TAU = 1.3; // seconds for a kick to fade
-            const SHUTTER = 0.9; // how much of the swept arc to smear, 0 disables
-            const BLEND_MAX = 6;
+        if (wrap && canvas && ctx) {
+          const COLS = 10;
+          const FRAMES = 15;
+          const FW = 154;
+          const FH = 258;
+          const BASE = 1000 / 30; // frames/sec, the webp ran one frame per 30ms
+          const KICK = 120;
+          const MAX = BASE * 15;
+          const TAU = 1.3; // seconds for a kick to fade
+          const SHUTTER = 0.9; // how much of the swept arc to smear, 0 disables
+          const BLEND_MAX = 6;
 
-            const sheet = new Image();
-            sheet.src = '/images/gears_sheet.webp';
+          const sheet = new Image();
+          sheet.src = '/images/gears_sheet.webp';
 
-            let pos = 0;
-            let vel = BASE;
-            let last = 0;
-            let drawn = -1;
-            let blended = 0;
-            let raf = 0;
-            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-            const blit = (f: number) => {
-              ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
-            };
-
-            const step = (now: number) => {
-              // Clamp dt so returning from a background tab doesn't fast-forward
-              const dt = Math.min((now - last) / 1000, 0.064);
-              last = now;
-              const advance = vel * dt;
-              pos = (pos + advance) % FRAMES;
-              vel = BASE + (vel - BASE) * Math.exp(-dt / TAU);
-              const f = pos | 0;
-              // Motion blur by averaging the frames the gears swept through
-              // since the last repaint, the same thing a camera shutter does
-              const n = Math.max(1, Math.min(BLEND_MAX, Math.round(advance * SHUTTER)));
-              if (f !== drawn || n !== blended) {
-                drawn = f;
-                blended = n;
-                ctx.clearRect(0, 0, FW, FH);
-                blit(f);
-                for (let k = 1; k < n; k++) {
-                  ctx.globalAlpha = 1 / (k + 1);
-                  blit((f - k + FRAMES) % FRAMES);
-                }
-                ctx.globalAlpha = 1;
-              }
-              raf = requestAnimationFrame(step);
-            };
-
-            const fallback = wrap.querySelector<HTMLElement>('.logo-fallback')!;
-            const composite = wrap.querySelector<HTMLElement>('.logo-composite')!;
-
-            const start = () => {
-              if (raf || reduced.matches) return;
-              fallback.style.display = 'none';
-              composite.style.opacity = '1';
-              last = performance.now();
-              raf = requestAnimationFrame(step);
-            };
-
-            const stop = () => {
-              cancelAnimationFrame(raf);
-              raf = 0;
-              composite.style.opacity = '';
-              fallback.style.display = '';
-            };
-
-            sheet.decode().then(start).catch(() => {}); // decode failed, the fallback logo stays up
-            reduced.addEventListener('change', () => reduced.matches ? stop() : start());
-
-            // iOS plays its own tick because the finger lands on the real switch
-            // overlaying the logo. Android has no such tick, so ask for one.
-            wrap.addEventListener('pointerdown', (e) => {
-              if (e.pointerType === 'mouse') return;
-              vel = Math.min(vel + KICK, MAX);
-              navigator.vibrate?.(15);
-            });
-          }
-        </script>
-      </div>
-
-      <div class="box subheader" transition:persist="welcome-bar" transition:animate="none">
-        <div class="welcome-scroll">
-          <span>Welcome to my site!</span>
-        </div>
-        <script>
-          const scroll = () => document.querySelector('.welcome-scroll span')?.getAnimations()[0];
-          let start: CSSNumberish | null = null;
-          document.addEventListener('astro:before-swap', () => { start = scroll()?.startTime ?? null; });
-          document.addEventListener('astro:after-swap', () => {
-            const anim = scroll();
-            if (anim && start !== null) anim.startTime = start;
-          });
-        </script>
-      </div>
-      <div class="box subheader stamps" transition:persist="stamp-bar" transition:animate="none">
-        <div class="marquee" role="img" aria-label="Stamp collection">
-          <div class="marquee__inner">
-            {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
-          </div>
-          <div class="marquee__inner" aria-hidden="true">
-            {paddedStamps.map(src => <img src={src} alt="" fetchpriority="low" decoding="async" />)}
-          </div>
-        </div>
-        <noscript>
-          <style is:inline>
-            /* The is-ready class never arrives without JS, so force the marquee visible */
-            .marquee .marquee__inner {
-              opacity: 1 !important;
-              animation-play-state: running !important;
-            }
-            @media (prefers-reduced-motion: reduce) {
-              .marquee .marquee__inner {
-                animation-play-state: paused !important;
-              }
-            }
-          </style>
-        </noscript>
-        <script>
-          const marquee = document.querySelector('.marquee') as HTMLElement | null;
-          const inners = marquee ? Array.from(marquee.querySelectorAll<HTMLElement>('.marquee__inner')) : [];
+          let pos = 0;
+          let vel = BASE;
+          let last = 0;
+          let drawn = -1;
+          let blended = 0;
+          let raf = 0;
           const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-          if (marquee && inners.length) {
-            // The CSS animation runs on the compositor thread, so the browser's
-            // main thread keeps a stale idea of which stamps are on screen and
-            // pauses their gif playback as "offscreen". Driving the transform
-            // from rAF keeps the visibility bookkeeping fresh every frame.
-            const GAP = 4;
-            const DURATION = 35; // seconds per loop, same speed as the CSS animation
-            let x = 0;
-            let width = 0;
-            let last = 0;
-            let raf = 0;
-
-            // offsetWidth is layout width, unaffected by the mobile scale transform
-            const measure = () => { width = inners[0].offsetWidth + GAP; };
-
-            const step = (now: number) => {
-              // Clamp dt so returning from a background tab does not jump the bar
-              const dt = Math.min((now - last) / 1000, 0.064);
-              last = now;
-              x = (x - (width / DURATION) * dt) % width;
-              for (const inner of inners) inner.style.transform = `translate3d(${x}px, 0, 0)`;
-              raf = requestAnimationFrame(step);
-            };
-
-            const start = () => {
-              if (raf || reduced.matches || !marquee.classList.contains('is-ready')) return;
-              marquee.classList.add('js-drive');
-              measure();
-              last = performance.now();
-              raf = requestAnimationFrame(step);
-            };
-
-            const stop = () => {
-              cancelAnimationFrame(raf);
-              raf = 0;
-              marquee.classList.remove('js-drive');
-              for (const inner of inners) inner.style.transform = '';
-            };
-
-            window.addEventListener('resize', () => { if (raf) measure(); });
-            reduced.addEventListener('change', () => reduced.matches ? stop() : start());
-
-            // Fade the bar in once every stamp has loaded or failed, then start
-            const imgs = marquee.querySelectorAll('img');
-            let loaded = 0;
-            const check = () => {
-              if (++loaded >= imgs.length) {
-                marquee.classList.add('is-ready');
-                start();
-              }
-            };
-            imgs.forEach(img => img.complete ? check() : (img.onload = img.onerror = check));
-          }
-        </script>
-      </div>
-
-      <div class="row main-row">
-        <nav class="box panel panel-left">
-          <div class="panel-nav nav-navigate"><span class="visually-hidden">Navigate</span></div>
-          <div class="nav">
-            <a class="nav-btn" href="/">Welcome</a>
-            <a class="nav-btn nav-warn" href="/webmaster/">Webmaster</a>
-            <a class="nav-btn nav-warn" href="/guestbook/">Guestbook</a>
-            <a class="nav-btn nav-warn" href="/links/">Links</a>
-          <div class="panel-nav nav-offsite"><span class="visually-hidden">Offsite</span></div>
-            <a class="nav-btn" href="https://blog.ohrt.dev" target="_blank" rel="noopener">Weblog</a>
-            <div class="nav-btn nav-warn">Projects</div>
-            <div class="nav-btn nav-warn">Services</div>
-          </div>
-        </nav>
-        <main class="box panel panel-center">
-          <div class="panel-content">
-            <slot />
-          </div>
-        </main>
-        <script>
-          // Swaps the band name in the about text for the artist of the last
-          // thing I scrobbled. The name baked into the HTML stands on its own,
-          // so no key, no JS or a bad response all just leave the paragraph
-          // as written.
-          import { fetchArtist, type Artist } from '../lib/lastfm';
-
-          let artist: Artist | null = null;
-
-          const paint = () => {
-            const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
-            if (!artistEl || !artist) return;
-            artistEl.textContent = artist.name;
-            if (artist.title) artistEl.title = artist.title;
+          const blit = (f: number) => {
+            ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
           };
 
-          document.addEventListener('astro:after-swap', paint);
-          document.addEventListener('astro:page-load', () => {
-            if (!document.querySelector('.lastfm-artist')) return;
-            fetchArtist()
-              .then((latest) => {
-                if (!latest) return;
-                artist = latest;
-                paint();
-              })
-              .catch(() => {});
+          const step = (now: number) => {
+            // Clamp dt so returning from a background tab doesn't fast-forward
+            const dt = Math.min((now - last) / 1000, 0.064);
+            last = now;
+            const advance = vel * dt;
+            pos = (pos + advance) % FRAMES;
+            vel = BASE + (vel - BASE) * Math.exp(-dt / TAU);
+            const f = pos | 0;
+            // Motion blur by averaging the frames the gears swept through
+            // since the last repaint, the same thing a camera shutter does
+            const n = Math.max(1, Math.min(BLEND_MAX, Math.round(advance * SHUTTER)));
+            if (f !== drawn || n !== blended) {
+              drawn = f;
+              blended = n;
+              ctx.clearRect(0, 0, FW, FH);
+              blit(f);
+              for (let k = 1; k < n; k++) {
+                ctx.globalAlpha = 1 / (k + 1);
+                blit((f - k + FRAMES) % FRAMES);
+              }
+              ctx.globalAlpha = 1;
+            }
+            raf = requestAnimationFrame(step);
+          };
+
+          const fallback = wrap.querySelector<HTMLElement>('.logo-fallback')!;
+          const composite = wrap.querySelector<HTMLElement>('.logo-composite')!;
+
+          const start = () => {
+            if (raf || reduced.matches) return;
+            fallback.style.display = 'none';
+            composite.style.opacity = '1';
+            last = performance.now();
+            raf = requestAnimationFrame(step);
+          };
+
+          const stop = () => {
+            cancelAnimationFrame(raf);
+            raf = 0;
+            composite.style.opacity = '';
+            fallback.style.display = '';
+          };
+
+          sheet
+            .decode()
+            .then(start)
+            .catch(() => {}); // decode failed, the fallback logo stays up
+          reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
+
+          // iOS plays its own tick because the finger lands on the real switch
+          // overlaying the logo. Android has no such tick, so ask for one.
+          wrap.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse') return;
+            vel = Math.min(vel + KICK, MAX);
+            navigator.vibrate?.(15);
           });
-        </script>
-        <aside class="box panel panel-right no-mobile" transition:persist="right-panel" transition:animate="none">
-          <a class="gh-chart" href="https://github.com/Lavanic" target="_blank" rel="noopener" aria-label="GitHub contributions, last 14 weeks">
-            {Array.from({ length: GH_CELLS }, (_, i) => (
-              <div
-                class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}
-                data-lv={contributions[i]?.level}
-                title={contributions[i]?.title}
-              ></div>
-            ))}
-          </a>
-          {commits.length > 0 && (
-            <section class="changelog">
-              <h3 class="changelog-title">
-                Changelog
-                <a class="changelog-head" href={`${REPO}/commit/${commits[0].hash}`} target="_blank" rel="noopener">{commits[0].hash}</a>
-              </h3>
-              <ul class="changelog-list">
-                {commits.map(c => (
-                  <li>
-                    {c.date} : <a href={`${REPO}/commit/${c.hash}`} target="_blank" rel="noopener">{c.hash}</a>
-                    <br />
-                    {c.subject}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-          <section class="counter" hidden={visits === null}>
-            <h3 class="counter-title">Visitors</h3>
-            <div class="counter-digits" role="img" aria-label={visits?.toString()}>
-              {visits !== null && toDigits(visits).map((digit) => <span>{digit}</span>)}
-            </div>
-          </section>
-        </aside>
-        <script>
-          import { fetchDays, toCells } from '../lib/contributions';
-          import { fetchVisits, toDigits } from '../lib/goatcounter';
-
-          const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
-
-          if (ghCells.length) {
-            const future = 6 - new Date().getDay();
-            ghCells.forEach((cell, i) => {
-              cell.classList.toggle('is-future', i >= ghCells.length - future);
-            });
-
-            fetchDays()
-              .then((days) => {
-                toCells(days, ghCells.length).forEach((cell, i) => {
-                  ghCells[i].dataset.lv = String(cell.level);
-                  ghCells[i].title = cell.title;
-                });
-              })
-              .catch(() => {});
-          }
-
-          const counter = document.querySelector<HTMLElement>('.counter');
-          const digits = counter?.querySelector('.counter-digits');
-
-          if (counter && digits) {
-            fetchVisits()
-              .then((visits) => {
-                digits.replaceChildren(
-                  ...toDigits(visits).map((digit) => {
-                    const span = document.createElement('span');
-                    span.textContent = digit;
-                    return span;
-                  }),
-                );
-                digits.setAttribute('aria-label', String(visits));
-                counter.hidden = false;
-              })
-              .catch(() => {});
-          }
-
-          let changelogScroll = 0;
-          document.addEventListener('astro:before-swap', () => {
-            changelogScroll = document.querySelector('.changelog-list')?.scrollTop ?? 0;
-          });
-          document.addEventListener('astro:after-swap', () => {
-            const list = document.querySelector('.changelog-list');
-            if (list) list.scrollTop = changelogScroll;
-          });
-        </script>
-      </div>
+        }
+      </script>
     </div>
-    <script>
-      let pageScroll: number | null = null;
-      document.addEventListener('astro:before-swap', (e) => {
-        pageScroll = e.navigationType === 'traverse' ? null : scrollY;
-      });
-      document.addEventListener('astro:after-swap', () => {
-        if (pageScroll !== null) scrollTo(0, pageScroll);
-      });
-    </script>
-  </BaseLayout>
 
-  <style>
-    .header {
-      height: 259px;
-      position: relative;
-      width: 134.5%;
-      left: -17.2%;
-      overflow: visible;
-      flex-shrink: 0;
-      background: #3A7AB6 url('/images/header.png') center/cover no-repeat;
-    }
+    <div class="box subheader" transition:persist="welcome-bar" transition:animate="none">
+      <div class="welcome-scroll">
+        <span>Welcome to my site!</span>
+      </div>
+      <script>
+        const scroll = () => document.querySelector('.welcome-scroll span')?.getAnimations()[0];
+        let start: CSSNumberish | null = null;
+        document.addEventListener('astro:before-swap', () => {
+          start = scroll()?.startTime ?? null;
+        });
+        document.addEventListener('astro:after-swap', () => {
+          const anim = scroll();
+          if (anim && start !== null) anim.startTime = start;
+        });
+      </script>
+    </div>
+    <div class="box subheader stamps" transition:persist="stamp-bar" transition:animate="none">
+      <div class="marquee" role="img" aria-label="Stamp collection">
+        <div class="marquee__inner">
+          {paddedStamps.map((src) => (
+            <img src={src} alt="" fetchpriority="low" decoding="async" />
+          ))}
+        </div>
+        <div class="marquee__inner" aria-hidden="true">
+          {paddedStamps.map((src) => (
+            <img src={src} alt="" fetchpriority="low" decoding="async" />
+          ))}
+        </div>
+      </div>
+      <noscript>
+        <style is:inline>
+          /* The is-ready class never arrives without JS, so force the marquee visible */
+          .marquee .marquee__inner {
+            opacity: 1 !important;
+            animation-play-state: running !important;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .marquee .marquee__inner {
+              animation-play-state: paused !important;
+            }
+          }
+        </style>
+      </noscript>
+      <script>
+        const marquee = document.querySelector('.marquee') as HTMLElement | null;
+        const inners = marquee ? Array.from(marquee.querySelectorAll<HTMLElement>('.marquee__inner')) : [];
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+        if (marquee && inners.length) {
+          // The CSS animation runs on the compositor thread, so the browser's
+          // main thread keeps a stale idea of which stamps are on screen and
+          // pauses their gif playback as "offscreen". Driving the transform
+          // from rAF keeps the visibility bookkeeping fresh every frame.
+          const GAP = 4;
+          const DURATION = 35; // seconds per loop, same speed as the CSS animation
+          let x = 0;
+          let width = 0;
+          let last = 0;
+          let raf = 0;
+
+          // offsetWidth is layout width, unaffected by the mobile scale transform
+          const measure = () => {
+            width = inners[0].offsetWidth + GAP;
+          };
+
+          const step = (now: number) => {
+            // Clamp dt so returning from a background tab does not jump the bar
+            const dt = Math.min((now - last) / 1000, 0.064);
+            last = now;
+            x = (x - (width / DURATION) * dt) % width;
+            for (const inner of inners) inner.style.transform = `translate3d(${x}px, 0, 0)`;
+            raf = requestAnimationFrame(step);
+          };
+
+          const start = () => {
+            if (raf || reduced.matches || !marquee.classList.contains('is-ready')) return;
+            marquee.classList.add('js-drive');
+            measure();
+            last = performance.now();
+            raf = requestAnimationFrame(step);
+          };
+
+          const stop = () => {
+            cancelAnimationFrame(raf);
+            raf = 0;
+            marquee.classList.remove('js-drive');
+            for (const inner of inners) inner.style.transform = '';
+          };
+
+          window.addEventListener('resize', () => {
+            if (raf) measure();
+          });
+          reduced.addEventListener('change', () => (reduced.matches ? stop() : start()));
+
+          // Fade the bar in once every stamp has loaded or failed, then start
+          const imgs = marquee.querySelectorAll('img');
+          let loaded = 0;
+          const check = () => {
+            if (++loaded >= imgs.length) {
+              marquee.classList.add('is-ready');
+              start();
+            }
+          };
+          imgs.forEach((img) => (img.complete ? check() : (img.onload = img.onerror = check)));
+        }
+      </script>
+    </div>
+
+    <div class="row main-row">
+      <nav class="box panel panel-left">
+        <div class="panel-nav nav-navigate">
+          <span class="visually-hidden">Navigate</span>
+        </div>
+        <div class="nav">
+          <a class="nav-btn" href="/">
+            Welcome
+          </a>
+          <a class="nav-btn nav-warn" href="/webmaster/">
+            Webmaster
+          </a>
+          <a class="nav-btn nav-warn" href="/guestbook/">
+            Guestbook
+          </a>
+          <a class="nav-btn nav-warn" href="/links/">
+            Links
+          </a>
+          <div class="panel-nav nav-offsite">
+            <span class="visually-hidden">Offsite</span>
+          </div>
+          <a class="nav-btn" href="https://blog.ohrt.dev" target="_blank" rel="noopener">
+            Weblog
+          </a>
+          <div class="nav-btn nav-warn">Projects</div>
+          <div class="nav-btn nav-warn">Services</div>
+        </div>
+      </nav>
+      <main class="box panel panel-center">
+        <div class="panel-content">
+          <slot />
+        </div>
+      </main>
+      <script>
+        // Swaps the band name in the about text for the artist of the last
+        // thing I scrobbled. The name baked into the HTML stands on its own,
+        // so no key, no JS or a bad response all just leave the paragraph
+        // as written.
+        import { fetchArtist, type Artist } from '../lib/lastfm';
+
+        let artist: Artist | null = null;
+
+        const paint = () => {
+          const artistEl = document.querySelector<HTMLElement>('.lastfm-artist');
+          if (!artistEl || !artist) return;
+          artistEl.textContent = artist.name;
+          if (artist.title) artistEl.title = artist.title;
+        };
+
+        document.addEventListener('astro:after-swap', paint);
+        document.addEventListener('astro:page-load', () => {
+          if (!document.querySelector('.lastfm-artist')) return;
+          fetchArtist()
+            .then((latest) => {
+              if (!latest) return;
+              artist = latest;
+              paint();
+            })
+            .catch(() => {});
+        });
+      </script>
+      <aside class="box panel panel-right no-mobile" transition:persist="right-panel" transition:animate="none">
+        <a
+          class="gh-chart"
+          href="https://github.com/Lavanic"
+          target="_blank"
+          rel="noopener"
+          aria-label="GitHub contributions, last 14 weeks"
+        >
+          {Array.from({ length: GH_CELLS }, (_, i) => (
+            <div
+              class:list={['gh-cell', { 'is-future': i >= GH_CELLS - ghFuture }]}
+              data-lv={contributions[i]?.level}
+              title={contributions[i]?.title}
+            ></div>
+          ))}
+        </a>
+        {commits.length > 0 && (
+          <section class="changelog">
+            <h3 class="changelog-title">
+              Changelog
+              <a class="changelog-head" href={`${REPO}/commit/${commits[0].hash}`} target="_blank" rel="noopener">
+                {commits[0].hash}
+              </a>
+            </h3>
+            <ul class="changelog-list">
+              {commits.map((c) => (
+                <li>
+                  {c.date} :{' '}
+                  <a href={`${REPO}/commit/${c.hash}`} target="_blank" rel="noopener">
+                    {c.hash}
+                  </a>
+                  <br />
+                  {c.subject}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        <section class="counter" hidden={visits === null}>
+          <h3 class="counter-title">Visitors</h3>
+          <div class="counter-digits" role="img" aria-label={visits?.toString()}>
+            {visits !== null && toDigits(visits).map((digit) => <span>{digit}</span>)}
+          </div>
+        </section>
+      </aside>
+      <script>
+        import { fetchDays, toCells } from '../lib/contributions';
+        import { fetchVisits, toDigits } from '../lib/goatcounter';
+
+        const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
+
+        if (ghCells.length) {
+          const future = 6 - new Date().getDay();
+          ghCells.forEach((cell, i) => {
+            cell.classList.toggle('is-future', i >= ghCells.length - future);
+          });
+
+          fetchDays()
+            .then((days) => {
+              toCells(days, ghCells.length).forEach((cell, i) => {
+                ghCells[i].dataset.lv = String(cell.level);
+                ghCells[i].title = cell.title;
+              });
+            })
+            .catch(() => {});
+        }
+
+        const counter = document.querySelector<HTMLElement>('.counter');
+        const digits = counter?.querySelector('.counter-digits');
+
+        if (counter && digits) {
+          fetchVisits()
+            .then((visits) => {
+              digits.replaceChildren(
+                ...toDigits(visits).map((digit) => {
+                  const span = document.createElement('span');
+                  span.textContent = digit;
+                  return span;
+                }),
+              );
+              digits.setAttribute('aria-label', String(visits));
+              counter.hidden = false;
+            })
+            .catch(() => {});
+        }
+
+        let changelogScroll = 0;
+        document.addEventListener('astro:before-swap', () => {
+          changelogScroll = document.querySelector('.changelog-list')?.scrollTop ?? 0;
+        });
+        document.addEventListener('astro:after-swap', () => {
+          const list = document.querySelector('.changelog-list');
+          if (list) list.scrollTop = changelogScroll;
+        });
+      </script>
+    </div>
+  </div>
+  <script>
+    let pageScroll: number | null = null;
+    document.addEventListener('astro:before-swap', (e) => {
+      pageScroll = e.navigationType === 'traverse' ? null : scrollY;
+    });
+    document.addEventListener('astro:after-swap', () => {
+      if (pageScroll !== null) scrollTo(0, pageScroll);
+    });
+  </script>
+</BaseLayout>
+
+<style>
+  .header {
+    height: 259px;
+    position: relative;
+    width: 134.5%;
+    left: -17.2%;
+    overflow: visible;
+    flex-shrink: 0;
+    background: #3a7ab6 url('/images/header.png') center/cover no-repeat;
+  }
+
+  .logo-wrap {
+    position: absolute;
+    left: -81px;
+    top: 5px;
+    z-index: 999;
+    cursor: pointer;
+    /* no double-tap zoom or long-press callout when spamming the gears */
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+  }
+
+  /* A real native switch laid invisibly over the whole logo. iOS only plays
+    its tick for a genuine finger tap on the control, a scripted .click() is
+    silent as of iOS 26.5, so the finger has to land on this element.
+    Deliberately no appearance:none, stripping the native look kills the tick. */
+  .haptic-tick {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The tap egg is touch only, so a mouse should not be offered a click target
+    the pointerdown handler is going to ignore anyway. */
+  @media (hover: hover) and (pointer: fine) {
     .logo-wrap {
-      position: absolute;
-      left: -81px;
-      top: 5px;
-      z-index: 999;
-      cursor: pointer;
-      /* no double-tap zoom or long-press callout when spamming the gears */
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-touch-callout: none;
-      -webkit-user-drag: none;
+      cursor: default;
     }
-
-    /* A real native switch laid invisibly over the whole logo. iOS only plays
-      its tick for a genuine finger tap on the control, a scripted .click() is
-      silent as of iOS 26.5, so the finger has to land on this element.
-      Deliberately no appearance:none, stripping the native look kills the tick. */
     .haptic-tick {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      opacity: 0;
-      z-index: 2;
-      cursor: pointer;
-      touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
+      display: none;
+    }
+  }
+
+  .logo-fallback {
+    display: block;
+  }
+
+  .logo-composite img {
+    margin-left: -2px;
+    -webkit-user-drag: none;
+  }
+
+  .logo-composite {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .subheader {
+    height: 27px;
+    position: relative;
+    width: 134.5%;
+    left: -17.2%;
+    flex-shrink: 0;
+    background: var(--bar-gradient);
+  }
+
+  .welcome-scroll {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    align-items: center;
+  }
+
+  .welcome-scroll span {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: welcome-scroll 20s linear infinite;
+    color: rgb(0, 46, 255);
+    text-shadow:
+      0 0 6px #ffffff,
+      0 0 10px #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  @keyframes welcome-scroll {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Stamp marquee bar */
+  .stamps {
+    height: 54px;
+    background: var(--stamp-gradient);
+  }
+
+  .marquee {
+    contain: layout paint;
+    display: flex;
+    /* The keyframe travels -100% - 4px, so the two strips need the same 4px
+      gap between them that the stamps have inside each strip. Without this
+      the bar pops 4px sideways every time the loop wraps. */
+    gap: 4px;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .marquee__inner {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 4px;
+    min-width: 100%;
+    will-change: transform;
+    animation: stamp-scroll 35s linear infinite;
+    animation-play-state: paused;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .marquee.is-ready .marquee__inner {
+    animation-play-state: running;
+    opacity: 1;
+  }
+
+  /* When the script drives the transform, the CSS animation has to get out
+    of the way. The animation still serves as the no-js fallback. */
+  .marquee.js-drive .marquee__inner {
+    animation: none;
+  }
+
+  .marquee__inner img {
+    flex-shrink: 0;
+    height: 47px;
+    width: auto;
+  }
+
+  @keyframes stamp-scroll {
+    to {
+      transform: translateX(calc(-100% - 4px));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__inner {
+      animation-play-state: paused !important;
+      opacity: 1 !important;
+    }
+    .welcome-scroll span {
+      animation-play-state: paused !important;
+    }
+  }
+
+  /* Row of three panels below the stamp bar.*/
+  .main-row {
+    display: flex;
+    gap: var(--gap);
+    position: relative;
+    width: 140%;
+    left: -20%;
+    min-height: 760px;
+    flex-shrink: 0;
+  }
+
+  .panel-left {
+    flex: 0 0 17%;
+  }
+
+  /* Same bar as the subheaders, sitting at the top of the left panel. */
+  .panel-nav {
+    height: 60px;
+    margin-left: -6px;
+    position: relative;
+    background: var(--bar-gradient);
+    box-shadow:
+      -0.75px -0.75px 0 0.75px var(--border-inner),
+      -1.5px -1.5px 0 1.5px var(--border-outer);
+  }
+
+  .panel-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--label) 10px center / auto 31px no-repeat;
+    opacity: 0.88;
+  }
+
+  .nav-navigate {
+    --label: url('/images/nav_navigate.png');
+  }
+  .nav-offsite {
+    --label: url('/images/nav_offsite.png');
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    height: 40px;
+    border-radius: 4px;
+    background: var(--nav-gradient);
+    color: #cfe6ff;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow:
+      0 0 2px #0b2a8a,
+      0 0 4px #0b2a8a;
+  }
+
+  .nav-btn::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    margin-right: 7px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 2.5l5.5 5.5L2 13.5M8.5 2.5L14 8l-5.5 5.5' fill='none' stroke='%23CFE6FF' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    filter: drop-shadow(0 0 1.5px #2a5bd7);
+  }
+
+  .nav-btn.nav-warn::before,
+  .nav-btn.nav-warn::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    margin: 0 7px;
+    background: url('/stickers/warning.gif') center / contain no-repeat;
+    filter: none;
+    image-rendering: pixelated;
+  }
+
+  .nav-btn.nav-warn::before {
+    margin-left: 0;
+  }
+
+  .nav-btn {
+    transition:
+      transform 0.2s,
+      box-shadow 0.2s;
+  }
+
+  .gh-cell {
+    transition:
+      transform 0.6s ease-out,
+      box-shadow 0.6s ease-out;
+  }
+
+  @media (hover: hover) {
+    .nav-btn:hover,
+    .gh-cell:hover {
+      z-index: 1;
+      transform: translateY(-2px);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
 
-    /* The tap egg is touch only, so a mouse should not be offered a click target
-      the pointerdown handler is going to ignore anyway. */
-    @media (hover: hover) and (pointer: fine) {
-      .logo-wrap { cursor: default; }
-      .haptic-tick { display: none; }
+    .gh-cell:hover {
+      transition-duration: 0s;
+    }
+  }
+
+  .nav-btn:active,
+  .gh-cell:active {
+    transform: translateY(0);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  .panel-center {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+  }
+  .panel-right {
+    flex: 0 0 20%;
+  }
+
+  .gh-chart {
+    display: grid;
+    grid-template-rows: repeat(7, 15px);
+    grid-auto-flow: column;
+    grid-auto-columns: 15px;
+    gap: 4px;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  .gh-cell {
+    background: #4a78a4;
+    border-radius: 2px;
+  }
+  .gh-cell.is-future {
+    display: none;
+  }
+
+  .gh-cell[data-lv='1'] {
+    background: #9be9a8;
+  }
+  .gh-cell[data-lv='2'] {
+    background: #40c463;
+  }
+  .gh-cell[data-lv='3'] {
+    background: #30a14e;
+  }
+  .gh-cell[data-lv='4'] {
+    background: #216e39;
+  }
+
+  .changelog,
+  .counter {
+    margin: 8px 10px 16px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1.5px var(--border-inner),
+      0 0 0 3px var(--border-outer);
+    background: #3f6589;
+  }
+
+  .changelog-title,
+  .counter-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+    background: var(--bar-gradient);
+    color: #fff;
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  .changelog-head {
+    color: #fff;
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .changelog-head:hover {
+    text-decoration: underline;
+  }
+
+  .changelog-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 8px 8px 8px 26px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .changelog-list li {
+    margin-bottom: 6px;
+  }
+
+  .changelog-list a {
+    color: #cfe6ff;
+  }
+
+  @font-face {
+    font-family: 'DSEG7';
+    src: url('/fonts/DSEG7Classic-Bold.woff2') format('woff2');
+    font-display: block;
+  }
+
+  .counter-digits {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    margin: 10px;
+    padding: 6px 4px;
+    border-radius: 3px;
+    background: linear-gradient(#a7ddb0, #8ec497);
+    box-shadow:
+      inset 0 0 0 2px #56703a,
+      inset 0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  .counter-digits :global(span) {
+    position: relative;
+    width: 19px;
+    color: #18240e;
+    font: 19px/26px 'DSEG7';
+    text-align: center;
+  }
+
+  .counter-digits :global(span)::before {
+    content: '8';
+    position: absolute;
+    inset: 0;
+    color: rgba(24, 36, 14, 0.1);
+  }
+
+  .panel-content {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    background: #3f6589;
+    color: #fff;
+    padding: 20px;
+    font-size: 17.5px;
+    line-height: 1.55;
+  }
+
+  .panel-content :global(p + p) {
+    margin-top: 14px;
+  }
+
+  .panel-content :global(a) {
+    color: #cfe6ff;
+  }
+
+  .panel-content :global(h2) {
+    font-size: 26px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+
+  /* Gradient*/
+  .panel {
+    --panel-gradient: linear-gradient(to bottom, rgba(101, 146, 190, 0.95) 0%, rgba(84, 130, 174, 0.95) 100%);
+    background: var(--panel-gradient);
+  }
+
+  .panel.panel-center {
+    --grid-cell: 15px;
+    --dot-pitch: 2.5px;
+    --dot-r: 0.9px;
+    --dot-color: rgba(32, 46, 70, 0.15);
+    background-image:
+      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
+      radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)), var(--panel-gradient);
+    background-size:
+      var(--grid-cell) var(--dot-pitch),
+      var(--dot-pitch) var(--grid-cell),
+      auto;
+  }
+
+  /* ── Mobile overrides ─────────────────────────────────────────────────────
+    The whole layout is scaled down via transform in BaseLayout.
+    These values are in the *unscaled* coordinate space, the browser scales
+    them along with everything else.
+
+    Logo: left: -90px sits at -255px in layout coords (header is at -165px).
+    Setting left: 110px brings the logo onto screen after scaling.
+
+    Heights doubled so they appear the same relative size after scaling.
+  ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 1020px) {
+    .header,
+    .subheader {
+      width: 100%;
+      left: 0;
+    }
+
+    .header {
+      height: 288px;
     }
 
     .logo-fallback {
-      display: block;
+      width: 823px;
+      height: 287px;
+    }
+
+    .logo-composite canvas {
+      width: 171px;
+      height: 287px;
     }
 
     .logo-composite img {
-      margin-left: -2px;
-      -webkit-user-drag: none;
+      width: 654px;
+      height: 287px;
     }
 
-    .logo-composite {
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      opacity: 0;
-      transition: opacity 0.15s ease;
-    }
-
-    .subheader {
-      height: 27px;
-      position: relative;
-      width: 134.5%;
-      left: -17.2%;
-      flex-shrink: 0;
-      background: var(--bar-gradient);
-    }
-
-    .welcome-scroll {
-      display: flex;
-      overflow: hidden;
-      height: 100%;
-      align-items: center;
-    }
-
-    .welcome-scroll span {
-      display: inline-block;
-      white-space: nowrap;
-      padding-left: 100%;
-      animation: welcome-scroll 20s linear infinite;
-      color: rgb(0, 46, 255);
-      text-shadow: 0 0 6px #ffffff, 0 0 10px #ffffff;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    @keyframes welcome-scroll {
-      from { transform: translateX(-100%); }
-      to   { transform: translateX(100%); }
-    }
-
-    /* Stamp marquee bar */
-    .stamps {
-      height: 54px;
-      background: var(--stamp-gradient);
-    }
-
-    .marquee {
-      contain: layout paint;
-      display: flex;
-      /* The keyframe travels -100% - 4px, so the two strips need the same 4px
-        gap between them that the stamps have inside each strip. Without this
-        the bar pops 4px sideways every time the loop wraps. */
-      gap: 4px;
-      overflow: hidden;
-      height: 100%;
-    }
-
-    .marquee__inner {
-      display: flex;
-      flex-shrink: 0;
-      align-items: center;
-      gap: 4px;
-      min-width: 100%;
-      will-change: transform;
-      animation: stamp-scroll 35s linear infinite;
-      animation-play-state: paused;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .marquee.is-ready .marquee__inner {
-      animation-play-state: running;
-      opacity: 1;
-    }
-
-    /* When the script drives the transform, the CSS animation has to get out
-      of the way. The animation still serves as the no-js fallback. */
-    .marquee.js-drive .marquee__inner {
-      animation: none;
-    }
-
-    .marquee__inner img {
-      flex-shrink: 0;
-      height: 47px;
-      width: auto;
-    }
-
-    @keyframes stamp-scroll {
-      to { transform: translateX(calc(-100% - 4px)); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .marquee__inner {
-        animation-play-state: paused !important;
-        opacity: 1 !important;
-      }
-      .welcome-scroll span {
-        animation-play-state: paused !important;
-      }
-    }
-
-    /* Row of three panels below the stamp bar.*/
+    /* Right panel is hidden via .no-mobile, so center auto-fills the freed
+      space. Extend leftward (width: 110%, all offset on the left side) so
+      the left panel pokes past the header on mobile. */
     .main-row {
-      display: flex;
-      gap: var(--gap);
-      position: relative;
-      width: 140%;
-      left: -20%;
-      min-height: 760px;
-      flex-shrink: 0;
+      width: 102%;
+      left: -2%;
+      min-height: 150vh;
     }
 
-    .panel-left   { flex: 0 0 17%; }
-    
-    /* Same bar as the subheaders, sitting at the top of the left panel. */
+    .panel-left {
+      flex: 0 0 30%;
+    }
+
+    .logo-wrap {
+      left: -55px;
+    }
+
+    .subheader:not(.stamps) {
+      height: 48px;
+    }
+
     .panel-nav {
-      height: 60px;
-      margin-left: -6px;
-      position: relative;
-      background: var(--bar-gradient);
-      box-shadow:
-        -0.75px -0.75px 0 0.75px var(--border-inner),
-        -1.5px -1.5px 0 1.5px var(--border-outer);
+      height: 120px;
+      margin-left: -12px;
     }
 
     .panel-nav::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--label) 10px center / auto 31px no-repeat;
-      opacity: 0.88;
-    }
-
-    .nav-navigate { --label: url("/images/nav_navigate.png"); }
-    .nav-offsite { --label: url("/images/nav_offsite.png"); }
-
-    .visually-hidden {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
+      background-position: center;
+      background-size: calc(100% - 16px) 58px;
     }
 
     .nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 16px;
+      margin-top: 20px;
     }
 
     .nav-btn {
-      display: flex;
-      align-items: center;
-      padding-left: 10px;
-      height: 40px;
-      border-radius: 4px;
-      background: var(--nav-gradient);
-      color: #CFE6FF;
-      font-size: 24px;
-      font-weight: bold;
-      text-decoration: none;
-      text-shadow: 0 0 2px #0B2A8A, 0 0 4px #0B2A8A;
+      height: 68px;
+      border-radius: 8px;
+      padding-left: 20px;
+      font-size: 38px;
+      text-shadow:
+        0 0 4px #0b2a8a,
+        0 0 8px #0b2a8a;
     }
 
     .nav-btn::before {
-      content: "";
-      width: 14px;
-      height: 14px;
-      margin-right: 7px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2 2.5l5.5 5.5L2 13.5M8.5 2.5L14 8l-5.5 5.5' fill='none' stroke='%23CFE6FF' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
-      filter: drop-shadow(0 0 1.5px #2A5BD7);
+      width: 28px;
+      height: 28px;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 3px #2a5bd7);
     }
 
     .nav-btn.nav-warn::before,
     .nav-btn.nav-warn::after {
-      content: "";
-      width: 20px;
-      height: 20px;
-      margin: 0 7px;
-      background: url("/stickers/warning.gif") center / contain no-repeat;
-      filter: none;
-      image-rendering: pixelated;
+      width: 40px;
+      height: 40px;
+      margin: 0 10px;
     }
 
     .nav-btn.nav-warn::before {
       margin-left: 0;
     }
 
-    .nav-btn {
-      transition: transform 0.2s, box-shadow 0.2s;
+    .stamps {
+      height: 96px;
     }
 
-    .gh-cell {
-      transition: transform 0.6s ease-out, box-shadow 0.6s ease-out;
+    .marquee {
+      height: 96px;
     }
 
-    @media (hover: hover) {
-      .nav-btn:hover,
-      .gh-cell:hover {
-        z-index: 1;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      }
-
-      .gh-cell:hover {
-        transition-duration: 0s;
-      }
+    .marquee__inner img {
+      height: 83px;
     }
 
-    .nav-btn:active,
-    .gh-cell:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    }
-
-    .panel-center { flex: 1 1 auto; display: flex; flex-direction: column; padding: 30px; }
-    .panel-right  { flex: 0 0 20%; }
-
-    .gh-chart {
-      display: grid;
-      grid-template-rows: repeat(7, 15px);
-      grid-auto-flow: column;
-      grid-auto-columns: 15px;
-      gap: 4px;
-      justify-content: center;
-      padding: 10px 0;
-    }
-
-    .gh-cell {
-      background: #4a78a4;
-      border-radius: 2px;
-    }
-    .gh-cell.is-future {
-      display: none;
-    }
-
-    .gh-cell[data-lv="1"] { background: #9be9a8; }
-    .gh-cell[data-lv="2"] { background: #40c463; }
-    .gh-cell[data-lv="3"] { background: #30a14e; }
-    .gh-cell[data-lv="4"] { background: #216e39; }
-
-    .changelog,
-    .counter {
-      margin: 8px 10px 16px;
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1.5px var(--border-inner),
-        0 0 0 3px var(--border-outer);
-      background: #3F6589;
-    }
-
-    .changelog-title,
-    .counter-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 30px;
-      padding: 0 10px;
-      background: var(--bar-gradient);
-      color: #fff;
-      font-size: 15px;
-      letter-spacing: 1px;
-    }
-
-    .changelog-head {
-      color: #fff;
-      font-size: 14px;
-      text-decoration: none;
-    }
-
-    .changelog-head:hover {
-      text-decoration: underline;
-    }
-
-    .changelog-list {
-      max-height: 200px;
-      overflow-y: auto;
-      padding: 8px 8px 8px 26px;
-      color: #fff;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .changelog-list li {
-      margin-bottom: 6px;
-    }
-
-    .changelog-list a {
-      color: #CFE6FF;
-    }
-
-    @font-face {
-      font-family: "DSEG7";
-      src: url("/fonts/DSEG7Classic-Bold.woff2") format("woff2");
-      font-display: block;
-    }
-
-    .counter-digits {
-      display: flex;
-      justify-content: center;
-      gap: 1px;
-      margin: 10px;
-      padding: 6px 4px;
-      border-radius: 3px;
-      background: linear-gradient(#a7ddb0, #8ec497);
-      box-shadow: inset 0 0 0 2px #56703a, inset 0 2px 4px rgba(0, 0, 0, 0.35);
-    }
-
-    .counter-digits :global(span) {
-      position: relative;
-      width: 19px;
-      color: #18240e;
-      font: 19px/26px "DSEG7";
-      text-align: center;
-    }
-
-    .counter-digits :global(span)::before {
-      content: "8";
-      position: absolute;
-      inset: 0;
-      color: rgba(24, 36, 14, 0.1);
-    }
-
-    .panel-content {
-      flex: 1 1 0;
-      min-height: 0;
-      overflow-y: auto;
-      background: #3F6589;
-      color: #fff;
-      padding: 20px;
-      font-size: 17.5px;
-      line-height: 1.55;
-    }
-
-    .panel-content :global(p + p) {
-      margin-top: 14px;
-    }
-
-    .panel-content :global(a) {
-      color: #CFE6FF;
-    }
-
-    .panel-content :global(h2) {
+    .welcome-scroll span {
       font-size: 26px;
-      letter-spacing: 1px;
-      margin-bottom: 14px;
-    }
-
-    /* Gradient*/
-    .panel {
-      --panel-gradient: linear-gradient(
-        to bottom,
-        rgba(101, 146, 190, 0.95) 0%,
-        rgba(84, 130, 174, 0.95) 100%
-      );
-      background: var(--panel-gradient);
     }
 
     .panel.panel-center {
-      --grid-cell: 15px;
-      --dot-pitch: 2.5px;
-      --dot-r: 0.9px;
-      --dot-color: rgba(32, 46, 70, 0.15);
-      background-image:
-        radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
-        radial-gradient(circle, var(--dot-color) var(--dot-r), transparent var(--dot-r)),
-        var(--panel-gradient);
-      background-size:
-        var(--grid-cell) var(--dot-pitch),
-        var(--dot-pitch) var(--grid-cell),
-        auto;
+      --grid-cell: calc(7px / var(--scale));
+      --dot-pitch: calc(2px / var(--scale));
+      --dot-r: calc(0.7px / var(--scale));
     }
 
-    /* ── Mobile overrides ─────────────────────────────────────────────────────
-      The whole layout is scaled down via transform in BaseLayout.
-      These values are in the *unscaled* coordinate space, the browser scales
-      them along with everything else.
-
-      Logo: left: -90px sits at -255px in layout coords (header is at -165px).
-      Setting left: 110px brings the logo onto screen after scaling.
-
-      Heights doubled so they appear the same relative size after scaling.
-    ───────────────────────────────────────────────────────────────────────── */
-    @media (max-width: 1020px) {
-      .header,
-      .subheader {
-        width: 100%;
-        left: 0;
-      }
-
-      .header {
-        height: 288px;
-      }
-
-      .logo-fallback {
-        width: 823px;
-        height: 287px;
-      }
-
-      .logo-composite canvas {
-        width: 171px;
-        height: 287px;
-      }
-
-      .logo-composite img {
-        width: 654px;
-        height: 287px;
-      }
-
-      /* Right panel is hidden via .no-mobile, so center auto-fills the freed
-        space. Extend leftward (width: 110%, all offset on the left side) so
-        the left panel pokes past the header on mobile. */
-      .main-row {
-        width: 102%;
-        left: -2%;
-        min-height: 150vh;
-      }
-
-      .panel-left {
-        flex: 0 0 30%;
-      }
-
-      .logo-wrap {
-        left: -55px;
-      }
-
-      .subheader:not(.stamps) {
-        height: 48px;
-      }
-
-      .panel-nav {
-        height: 120px;
-        margin-left: -12px;
-      }
-
-      .panel-nav::before {
-        background-position: center;
-        background-size: calc(100% - 16px) 58px;
-      }
-
-      .nav {
-        gap: 16px;
-        margin-top: 20px;
-      }
-
-      .nav-btn {
-        height: 68px;
-        border-radius: 8px;
-        padding-left: 20px;
-        font-size: 38px;
-        text-shadow: 0 0 4px #0B2A8A, 0 0 8px #0B2A8A;
-      }
-
-      .nav-btn::before {
-        width: 28px;
-        height: 28px;
-        margin-right: 10px;
-        filter: drop-shadow(0 0 3px #2A5BD7);
-      }
-
-      .nav-btn.nav-warn::before,
-      .nav-btn.nav-warn::after {
-        width: 40px;
-        height: 40px;
-        margin: 0 10px;
-      }
-
-      .nav-btn.nav-warn::before {
-        margin-left: 0;
-      }
-
-      .stamps {
-        height: 96px;
-      }
-
-      .marquee {
-        height: 96px;
-      }
-
-      .marquee__inner img {
-        height: 83px;
-      }
-
-      .welcome-scroll span {
-        font-size: 26px;
-      }
-
-      .panel.panel-center {
-        --grid-cell: calc(7px / var(--scale));
-        --dot-pitch: calc(2px / var(--scale));
-        --dot-r: calc(0.7px / var(--scale));
-      }
-
-      /* Counter the global scale so the about text renders at a constant
-        real size on phones, same trick as the 404 card */
-      .panel-content {
-        font-size: calc(12px / var(--scale));
-        padding: calc(12px / var(--scale));
-      }
-
-      .panel-content :global(p + p) {
-        margin-top: calc(8px / var(--scale));
-      }
-
-      .panel-content :global(h2) {
-        font-size: calc(14px / var(--scale));
-        letter-spacing: calc(1px / var(--scale));
-        margin-bottom: calc(6px / var(--scale));
-      }
+    /* Counter the global scale so the about text renders at a constant
+      real size on phones, same trick as the 404 card */
+    .panel-content {
+      font-size: calc(12px / var(--scale));
+      padding: calc(12px / var(--scale));
     }
-  </style>
+
+    .panel-content :global(p + p) {
+      margin-top: calc(8px / var(--scale));
+    }
+
+    .panel-content :global(h2) {
+      font-size: calc(14px / var(--scale));
+      letter-spacing: calc(1px / var(--scale));
+      margin-bottom: calc(6px / var(--scale));
+    }
+  }
+</style>
