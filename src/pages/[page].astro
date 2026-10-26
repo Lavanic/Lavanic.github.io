@@ -11,7 +11,7 @@
   const { name } = Astro.props;
   ---
 
-  <SiteShell>
+  <SiteShell title={`${name.toLowerCase()} - ohrt.dev`}>
     <h2>{name}</h2>
     <p class="construction">This page is under construction... come back later!</p>
     <img class="construction-dog" src="/images/construction_dalmatian.gif" width="220" height="170" alt="" />
@@ -56,7 +56,6 @@
       .construction-banner {
         width: 100%;
         margin: calc(12px / var(--scale)) 0 0;
-        opacity:0.8;
       }
 
       .construction-dog {
