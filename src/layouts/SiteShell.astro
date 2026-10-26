@@ -6,6 +6,7 @@ import path from 'node:path';
 import BaseLayout from './BaseLayout.astro';
 import { WEEKS, fetchDays, toCells, type Cell } from '../lib/contributions';
 import { fetchVisits, toDigits } from '../lib/goatcounter';
+import { fetchStatus, STATUS_URL, type Status } from '../lib/statuscafe';
 
 interface Props {
   title?: string;
@@ -41,6 +42,13 @@ try {
   visits = await fetchVisits();
 } catch (err) {
   console.warn(`[goatcounter] ${err}, hiding the counter until the browser loads it`);
+}
+
+let status: Status | null = null;
+try {
+  status = await fetchStatus();
+} catch (err) {
+  console.warn(`[statuscafe] ${err}, hiding the note until the browser loads it`);
 }
 
 const REPO = 'https://github.com/Lavanic/Lavanic.github.io';
@@ -362,6 +370,20 @@ try {
             ></div>
           ))}
         </a>
+        <a
+          class="status"
+          href={STATUS_URL}
+          target="_blank"
+          rel="noopener"
+          title="My status on status.cafe"
+          hidden={status === null}
+        >
+          <span class="status-face">{status?.face}</span>
+          <span class="status-text">{status?.content}</span>
+          <span class="status-meta">
+            via status.cafe · <span class="status-time">{status?.timeAgo}</span>
+          </span>
+        </a>
         {commits.length > 0 && (
           <section class="changelog">
             <h3 class="changelog-title">
@@ -394,6 +416,7 @@ try {
       <script>
         import { fetchDays, toCells } from '../lib/contributions';
         import { fetchVisits, toDigits } from '../lib/goatcounter';
+        import { fetchStatus } from '../lib/statuscafe';
 
         const ghCells = document.querySelectorAll<HTMLElement>('.gh-chart .gh-cell');
 
@@ -428,6 +451,19 @@ try {
               );
               digits.setAttribute('aria-label', String(visits));
               counter.hidden = false;
+            })
+            .catch(() => {});
+        }
+
+        const note = document.querySelector<HTMLElement>('.status');
+
+        if (note) {
+          fetchStatus()
+            .then((status) => {
+              note.querySelector('.status-face')!.textContent = status.face;
+              note.querySelector('.status-text')!.textContent = status.content;
+              note.querySelector('.status-time')!.textContent = status.timeAgo;
+              note.hidden = false;
             })
             .catch(() => {});
         }
@@ -798,6 +834,60 @@ try {
   }
   .gh-cell[data-lv='4'] {
     background: #216e39;
+  }
+
+  .status {
+    position: relative;
+    display: block;
+    margin: 16px 18px 22px;
+    padding: 16px 12px 10px;
+    background: linear-gradient(170deg, #b4d8ff, #7fb4ec);
+    color: #112c4f;
+    /* background: linear-gradient(170deg, #fffbc2, #f6e97a);
+    color: #4a3b00; */
+    font-size: 13px;
+    line-height: 1.35;
+    text-decoration: none;
+    transform: rotate(-1.5deg);
+    box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s;
+  }
+
+  .status[hidden] {
+    display: none;
+  }
+
+  .status::before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    width: 64px;
+    height: 18px;
+    margin-left: -32px;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
+    transform: rotate(-3deg);
+  }
+
+  .status-face {
+    float: left;
+    margin: -2px 7px 0 0;
+    font-size: 20px;
+  }
+
+  .status-meta {
+    display: block;
+    margin-top: 8px;
+    text-align: right;
+    font-size: 11px;
+    color: #35608f;
+  }
+
+  @media (hover: hover) {
+    .status:hover {
+      transform: rotate(0deg);
+    }
   }
 
   .changelog,
