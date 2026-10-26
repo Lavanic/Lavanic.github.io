@@ -69,11 +69,11 @@
       <div class="box header" transition:persist="header" transition:animate="none">
         <h1 class="logo-wrap" aria-label="ohrt.dev, with spinning gears in place of the two O's">
           <img class="logo-fallback" src="/images/logo_fallback.png" width="740" height="258" draggable="false" alt="ohrt.dev, with gears in place of the two O's" />
-          <div class="logo-composite">
+          <span class="logo-composite">
             <canvas class="gears" width="154" height="258" aria-hidden="true"></canvas>
             <img src="/images/static.png" width="588" height="258" alt="" draggable="false" />
             <input class="haptic-tick" type="checkbox" switch tabindex="-1" aria-hidden="true" />
-          </div>
+          </span>
         </h1>
         <script>
           // Gear spin easter egg. Tapping the logo kicks the 
@@ -102,6 +102,8 @@
             let last = 0;
             let drawn = -1;
             let blended = 0;
+            let raf = 0;
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
             const blit = (f: number) => {
               ctx.drawImage(sheet, (f % COLS) * FW, ((f / COLS) | 0) * FH, FW, FH, 0, 0, FW, FH);
@@ -129,15 +131,29 @@
                 }
                 ctx.globalAlpha = 1;
               }
-              requestAnimationFrame(step);
+              raf = requestAnimationFrame(step);
             };
 
-            sheet.decode().then(() => {
-              wrap.querySelector<HTMLElement>('.logo-fallback')!.style.display = 'none';
-              wrap.querySelector<HTMLElement>('.logo-composite')!.style.opacity = '1';
+            const fallback = wrap.querySelector<HTMLElement>('.logo-fallback')!;
+            const composite = wrap.querySelector<HTMLElement>('.logo-composite')!;
+
+            const start = () => {
+              if (raf || reduced.matches) return;
+              fallback.style.display = 'none';
+              composite.style.opacity = '1';
               last = performance.now();
-              requestAnimationFrame(step);
-            }).catch(() => {}); // decode failed, the fallback logo stays up
+              raf = requestAnimationFrame(step);
+            };
+
+            const stop = () => {
+              cancelAnimationFrame(raf);
+              raf = 0;
+              composite.style.opacity = '';
+              fallback.style.display = '';
+            };
+
+            sheet.decode().then(start).catch(() => {}); // decode failed, the fallback logo stays up
+            reduced.addEventListener('change', () => reduced.matches ? stop() : start());
 
             // iOS plays its own tick because the finger lands on the real switch
             // overlaying the logo. Android has no such tick, so ask for one.
@@ -249,7 +265,7 @@
       </div>
 
       <div class="row main-row">
-        <aside class="box panel panel-left">
+        <nav class="box panel panel-left">
           <div class="panel-nav nav-navigate"><span class="visually-hidden">Navigate</span></div>
           <div class="nav">
             <a class="nav-btn" href="/">Welcome</a>
@@ -261,7 +277,7 @@
             <div class="nav-btn nav-warn">Projects</div>
             <div class="nav-btn nav-warn">Services</div>
           </div>
-        </aside>
+        </nav>
         <main class="box panel panel-center">
           <div class="panel-content">
             <slot />
@@ -324,7 +340,7 @@
           )}
           <section class="counter" hidden={visits === null}>
             <h3 class="counter-title">Visitors</h3>
-            <div class="counter-digits" role="img" aria-label={visits ?? undefined}>
+            <div class="counter-digits" role="img" aria-label={visits?.toString()}>
               {visits !== null && toDigits(visits).map((digit) => <span>{digit}</span>)}
             </div>
           </section>
