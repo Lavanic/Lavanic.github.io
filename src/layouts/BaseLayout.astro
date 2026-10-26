@@ -173,10 +173,15 @@ const ogImage = new URL('/images/og.jpg', Astro.site);
      we scale the whole thing down like zooming out, to exactly fit the
      viewport minus the body padding. The transform and margin compensation
      live on .layout above.
+
+     --phone is 0 at the breakpoint and 1 once the scale drops under 0.45
+     (every iPhone in portrait). SiteShell blends its mobile sizes with it,
+     so tablets land between the desktop and the phone look.
   ───────────────────────────────────────────────────────────────────────── */
   @media (max-width: 1020px) {
     .layout {
       --scale: min(1, tan(atan2(100vw - 40px, 960px)));
+      --phone: clamp(0, (1 - var(--scale)) / 0.55, 1);
     }
   }
 </style>

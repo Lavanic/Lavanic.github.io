@@ -54,15 +54,15 @@ const { name } = Astro.props;
     }
 
     .construction-banner {
-      width: 100%;
-      margin: calc(12px / var(--scale)) 0 0;
+      width: calc(100% - 40px * (1 - var(--phone)));
+      margin: calc((14px - 2px * var(--phone)) / var(--scale)) calc(20px * (1 - var(--phone))) 0;
     }
 
     .construction-dog {
       display: block;
-      width: 100%;
+      width: min(100%, calc(260px / var(--scale)));
       height: auto;
-      margin-top: calc(12px / var(--scale));
+      margin: calc(12px / var(--scale)) auto 0;
       opacity: 0.9;
     }
   }

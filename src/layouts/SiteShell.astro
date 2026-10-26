@@ -935,10 +935,10 @@ try {
     These values are in the *unscaled* coordinate space, the browser scales
     them along with everything else.
 
-    Logo: left: -90px sits at -255px in layout coords (header is at -165px).
-    Setting left: 110px brings the logo onto screen after scaling.
-
-    Heights doubled so they appear the same relative size after scaling.
+    Phones need the chrome about doubled to stay tappable after scaling, but
+    a tablet is only scaled a little, so every size blends from its desktop
+    value (--phone: 0) to its phone value (--phone: 1). Text divides by
+    --scale so it keeps a constant real size.
   ───────────────────────────────────────────────────────────────────────── */
   @media (max-width: 1020px) {
     .header,
@@ -948,22 +948,22 @@ try {
     }
 
     .header {
-      height: 288px;
+      height: calc(259px + 29px * var(--phone));
     }
 
     .logo-fallback {
-      width: 823px;
-      height: 287px;
+      width: calc(740px + 83px * var(--phone));
+      height: calc(258px + 29px * var(--phone));
     }
 
     .logo-composite canvas {
-      width: 171px;
-      height: 287px;
+      width: calc(154px + 17px * var(--phone));
+      height: calc(258px + 29px * var(--phone));
     }
 
     .logo-composite img {
-      width: 654px;
-      height: 287px;
+      width: calc(588px + 66px * var(--phone));
+      height: calc(258px + 29px * var(--phone));
     }
 
     /* Right panel is hidden via .no-mobile, so center auto-fills the freed
@@ -972,7 +972,7 @@ try {
     .main-row {
       width: 102%;
       left: -2%;
-      min-height: 150vh;
+      min-height: calc(760px + (150vh - 760px) * var(--phone));
     }
 
     .panel-left {
@@ -980,50 +980,50 @@ try {
     }
 
     .logo-wrap {
-      left: -55px;
+      left: calc(-20px / var(--scale));
     }
 
     .subheader:not(.stamps) {
-      height: 48px;
+      height: calc(27px + 21px * var(--phone));
     }
 
     .panel-nav {
-      height: 120px;
-      margin-left: -12px;
+      height: calc(60px + 60px * var(--phone));
+      margin-left: calc(-6px - 6px * var(--phone));
     }
 
     .panel-nav::before {
       background-position: center;
-      background-size: calc(100% - 16px) 58px;
+      background-size: min(100% - 16px, (31px + 27px * var(--phone)) * 6.66) calc(31px + 27px * var(--phone));
     }
 
     .nav {
-      gap: 16px;
-      margin-top: 20px;
+      gap: calc(8px + 8px * var(--phone));
+      margin-top: calc(10px + 10px * var(--phone));
     }
 
     .nav-btn {
-      height: 68px;
-      border-radius: 8px;
-      padding-left: 20px;
-      font-size: 38px;
+      height: calc(40px + 28px * var(--phone));
+      border-radius: calc(4px + 4px * var(--phone));
+      padding-left: calc(10px + 10px * var(--phone));
+      font-size: calc(24px + 14px * var(--phone));
       text-shadow:
-        0 0 4px #0b2a8a,
-        0 0 8px #0b2a8a;
+        0 0 calc(2px + 2px * var(--phone)) #0b2a8a,
+        0 0 calc(4px + 4px * var(--phone)) #0b2a8a;
     }
 
     .nav-btn::before {
-      width: 28px;
-      height: 28px;
-      margin-right: 10px;
-      filter: drop-shadow(0 0 3px #2a5bd7);
+      width: calc(14px + 14px * var(--phone));
+      height: calc(14px + 14px * var(--phone));
+      margin-right: calc(7px + 3px * var(--phone));
+      filter: drop-shadow(0 0 calc(1.5px + 1.5px * var(--phone)) #2a5bd7);
     }
 
     .nav-btn.nav-warn::before,
     .nav-btn.nav-warn::after {
-      width: 40px;
-      height: 40px;
-      margin: 0 10px;
+      width: calc(20px + 20px * var(--phone));
+      height: calc(20px + 20px * var(--phone));
+      margin: 0 calc(7px + 3px * var(--phone));
     }
 
     .nav-btn.nav-warn::before {
@@ -1031,42 +1031,42 @@ try {
     }
 
     .stamps {
-      height: 96px;
+      height: calc(54px + 42px * var(--phone));
     }
 
     .marquee {
-      height: 96px;
+      height: calc(54px + 42px * var(--phone));
     }
 
     .marquee__inner img {
-      height: 83px;
+      height: calc(47px + 36px * var(--phone));
     }
 
     .welcome-scroll span {
-      font-size: 26px;
+      font-size: calc(14px + 12px * var(--phone));
     }
 
     .panel.panel-center {
-      --grid-cell: calc(7px / var(--scale));
-      --dot-pitch: calc(2px / var(--scale));
-      --dot-r: calc(0.7px / var(--scale));
+      --grid-cell: calc((15px - 8px * var(--phone)) / var(--scale));
+      --dot-pitch: calc((2.5px - 0.5px * var(--phone)) / var(--scale));
+      --dot-r: calc((0.9px - 0.2px * var(--phone)) / var(--scale));
     }
 
     /* Counter the global scale so the about text renders at a constant
       real size on phones, same trick as the 404 card */
     .panel-content {
-      font-size: calc(12px / var(--scale));
-      padding: calc(12px / var(--scale));
+      font-size: calc((17.5px - 5.5px * var(--phone)) / var(--scale));
+      padding: calc((20px - 8px * var(--phone)) / var(--scale));
     }
 
     .panel-content :global(p + p) {
-      margin-top: calc(8px / var(--scale));
+      margin-top: calc((14px - 6px * var(--phone)) / var(--scale));
     }
 
     .panel-content :global(h2) {
-      font-size: calc(14px / var(--scale));
+      font-size: calc((26px - 12px * var(--phone)) / var(--scale));
       letter-spacing: calc(1px / var(--scale));
-      margin-bottom: calc(6px / var(--scale));
+      margin-bottom: calc((14px - 8px * var(--phone)) / var(--scale));
     }
   }
 </style>
