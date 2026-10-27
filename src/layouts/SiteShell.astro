@@ -321,7 +321,20 @@ try {
           <div class="nav-btn nav-warn">Services</div>
         </div>
         <p class="desk-note">
-          <b>psst!</b> I look better on ur laptop btw
+          <i>psst!</i> I look better on ur laptop btw
+        </p>
+        <p class="nav-foot">
+          <span>
+            total site visitors: <span class="nav-hits">{visits ?? '...'}</span>
+          </span>
+          {commits[0] && (
+            <span>
+              updated @ {commits[0].date.slice(0, 5)},{' '}
+              <a href={`${REPO}/commit/${commits[0].hash}`} target="_blank" rel="noopener">
+                {commits[0].hash}
+              </a>
+            </span>
+          )}
         </p>
       </nav>
       <main class="box panel panel-center">
@@ -454,6 +467,9 @@ try {
               );
               digits.setAttribute('aria-label', String(visits));
               counter.hidden = false;
+              document.querySelectorAll<HTMLElement>('.nav-hits').forEach((el) => {
+                el.textContent = String(visits);
+              });
             })
             .catch(() => {});
         }
@@ -839,7 +855,8 @@ try {
     background: #216e39;
   }
 
-  .desk-note {
+  .desk-note,
+  .nav-foot {
     display: none;
   }
 
@@ -1073,6 +1090,8 @@ try {
     }
 
     .panel-left {
+      display: flex;
+      flex-direction: column;
       flex: 0 0 30%;
     }
 
@@ -1173,7 +1192,7 @@ try {
       width: 82%;
       margin: calc(28px + 20px * var(--phone)) auto 24px;
       padding: 26px 18px;
-      background: linear-gradient(170deg, #b4d8ff, #7fb4ec);
+      background: linear-gradient(170deg, #b2d1ff, #86aaf2);
       color: #112c4f;
       font-size: calc(14px + 20px * var(--phone));
       line-height: 1.3;
@@ -1193,6 +1212,24 @@ try {
       background: rgba(255, 255, 255, 0.55);
       box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
       transform: rotate(3deg);
+    }
+
+    .nav-foot {
+      display: block;
+      margin: auto 0 0;
+      padding: 18px 12px 14px;
+      color: #fff;
+      font-size: calc(13px + 10px * var(--phone));
+      line-height: 1.45;
+    }
+
+    .nav-foot > span {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .nav-foot a {
+      color: inherit;
     }
   }
 </style>
