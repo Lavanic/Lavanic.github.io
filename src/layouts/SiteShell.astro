@@ -320,6 +320,9 @@ try {
           <div class="nav-btn nav-warn">Projects</div>
           <div class="nav-btn nav-warn">Services</div>
         </div>
+        <p class="desk-note">
+          <b>psst!</b> I look better on ur laptop btw
+        </p>
       </nav>
       <main class="box panel panel-center">
         <div class="panel-content">
@@ -836,6 +839,10 @@ try {
     background: #216e39;
   }
 
+  .desk-note {
+    display: none;
+  }
+
   .status {
     position: relative;
     display: block;
@@ -867,7 +874,7 @@ try {
     margin-left: -32px;
     background: rgba(255, 255, 255, 0.55);
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.15);
-    transform: rotate(-3deg);
+    transform: rotate(3deg);
   }
 
   .status-face {
@@ -1157,6 +1164,35 @@ try {
       font-size: calc((26px - 12px * var(--phone)) / var(--scale));
       letter-spacing: calc(1px / var(--scale));
       margin-bottom: calc((14px - 8px * var(--phone)) / var(--scale));
+    }
+
+    .desk-note {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 82%;
+      margin: calc(28px + 20px * var(--phone)) auto 24px;
+      padding: 26px 18px;
+      background: linear-gradient(170deg, #b4d8ff, #7fb4ec);
+      color: #112c4f;
+      font-size: calc(14px + 20px * var(--phone));
+      line-height: 1.3;
+      text-align: center;
+      transform: rotate(-2.5deg);
+      box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .desk-note::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      width: 96px;
+      height: 28px;
+      margin-left: -48px;
+      background: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.15);
+      transform: rotate(3deg);
     }
   }
 </style>
