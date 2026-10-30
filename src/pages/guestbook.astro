@@ -1,13 +1,18 @@
 ---
 import SiteShell from '../layouts/SiteShell.astro';
 
-const EMBED = 'https://www.ultraguest.com/embed/wkb745kh';
+const BOOK = 'https://www.ultraguest.com';
+const BOOK_ID = 'wkb745kh';
+const EMBED = `${BOOK}/embed/${BOOK_ID}`;
 const QUERY = 'n=50&style=mine';
 ---
 
 <SiteShell title="guestbook - ohrt.dev">
   <div class="guestbook">
-    <a class="guestbook-sign" href={`${EMBED}/sign?${QUERY}`} target="guestbook">
+    <a class="guestbook-sign guestbook-sign-frame" href={`${EMBED}/sign?${QUERY}`} target="guestbook">
+      Sign the guestbook
+    </a>
+    <a class="guestbook-sign guestbook-sign-page" href={`${BOOK}/sign/${BOOK_ID}`} target="_blank" rel="noopener">
       Sign the guestbook
     </a>
     <div class="guestbook-frame">
@@ -77,6 +82,10 @@ const QUERY = 'n=50&style=mine';
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
+  .guestbook-sign-page {
+    display: none;
+  }
+
   .guestbook-frame {
     position: relative;
     flex: 1 1 0;
@@ -95,6 +104,14 @@ const QUERY = 'n=50&style=mine';
   @media (max-width: 1020px) {
     .guestbook {
       min-height: calc(240px / var(--scale));
+    }
+
+    .guestbook-sign-frame {
+      display: none;
+    }
+
+    .guestbook-sign-page {
+      display: inline-flex;
     }
 
     .guestbook-sign {
