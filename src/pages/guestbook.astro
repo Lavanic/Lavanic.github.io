@@ -7,19 +7,10 @@ const QUERY = 'n=50&style=mine';
 
 <SiteShell title="guestbook - ohrt.dev">
   <div class="guestbook">
-    <div class="guestbook-head">
-      <a class="guestbook-sign" href={`${EMBED}/sign?${QUERY}`} target="guestbook">
-        Sign the guestbook
-      </a>
-    </div>
-    <div class="guestbook-frame">
-      <iframe
-        name="guestbook"
-        src={`${EMBED}?${QUERY}`}
-        title="Guestbook messages"
-        referrerpolicy="no-referrer"
-      ></iframe>
-    </div>
+    <iframe name="guestbook" src={`${EMBED}?${QUERY}`} title="Guestbook messages" referrerpolicy="no-referrer"></iframe>
+    <a class="guestbook-sign" href={`${EMBED}/sign?${QUERY}`} target="guestbook">
+      Sign the guestbook
+    </a>
   </div>
 </SiteShell>
 
@@ -30,19 +21,24 @@ const QUERY = 'n=50&style=mine';
   }
 
   .guestbook {
+    position: relative;
     flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+    min-height: 240px;
   }
 
-  .guestbook-head {
-    display: flex;
-    justify-content: flex-end;
+  .guestbook iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
   }
 
   .guestbook-sign {
-    flex: none;
+    position: absolute;
+    top: 0;
+    right: 0;
     display: inline-flex;
     align-items: center;
     height: 36px;
@@ -57,7 +53,7 @@ const QUERY = 'n=50&style=mine';
       0 0 2px #0b2a8a,
       0 0 4px #0b2a8a;
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.3),
+      0 2px 6px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transition:
       transform 0.2s,
@@ -80,24 +76,19 @@ const QUERY = 'n=50&style=mine';
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
-  .guestbook-frame {
-    position: relative;
-    flex: 1 1 0;
-    min-height: 240px;
-    margin-top: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.3);
-  }
-
-  .guestbook-frame iframe {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: transparent;
-  }
-
   @media (max-width: 1020px) {
+    .guestbook {
+      --zoom: calc((17.5 - 5.5 * var(--phone)) / 14);
+      min-height: calc(240px / var(--scale));
+    }
+
+    .guestbook iframe {
+      width: calc(100% * var(--scale) / var(--zoom));
+      height: calc(100% * var(--scale) / var(--zoom));
+      transform: scale(calc(var(--zoom) / var(--scale)));
+      transform-origin: 0 0;
+    }
+
     .guestbook-sign {
       height: calc((36px - 8px * var(--phone)) / var(--scale));
       padding: 0 calc((16px - 6px * var(--phone)) / var(--scale));
@@ -106,20 +97,6 @@ const QUERY = 'n=50&style=mine';
       text-shadow:
         0 0 calc(2px / var(--scale)) #0b2a8a,
         0 0 calc(4px / var(--scale)) #0b2a8a;
-    }
-
-    .guestbook-frame {
-      --zoom: calc((17.5 - 5.5 * var(--phone)) / 14);
-      min-height: calc(240px / var(--scale));
-      margin-top: calc((14px - 6px * var(--phone)) / var(--scale));
-      border-top-width: calc(1px / var(--scale));
-    }
-
-    .guestbook-frame iframe {
-      width: calc(100% * var(--scale) / var(--zoom));
-      height: calc(100% * var(--scale) / var(--zoom));
-      transform: scale(calc(var(--zoom) / var(--scale)));
-      transform-origin: 0 0;
     }
   }
 </style>
