@@ -2,7 +2,7 @@
 import SiteShell from '../layouts/SiteShell.astro';
 
 export function getStaticPaths() {
-  return ['Webmaster', 'Guestbook', 'Links'].map((name) => ({
+  return ['Webmaster', 'Links'].map((name) => ({
     params: { page: name.toLowerCase() },
     props: { name },
   }));
